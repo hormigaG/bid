@@ -1,0 +1,32 @@
+<div class="row text-center mt-5">
+  <div class="col-12">
+    <h2>{{textBus}}</h2>
+    <div class="input-group input-group-lg">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-lg"></span>
+      </div>
+      <form [formGroup]="searchForm">
+        <input type="text" class="form-control" id="bus" formControlName="search" (keypress)="keyD($event);" (keydown)="keyP($event);" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+      </form>
+    </div>
+  </div>
+</div>
+<div #etiqueta (click)="testPrint()" *ngIf="product && 'prices' in product" style="height: 150px; width: 300px; " width="300" height="150" class="etiqueta">
+  <h2>$ {{product['prices'][0].price | number : '1.2'}}</h2>
+  <div>({{product['default_code']}}) {{product['name']}}</div>
+</div>
+<div class="row text-center mt-5">
+  <div class="col-12">
+    <ul class="list-group" *ngIf="product && 'prices' in product">
+      <li class="list-group-item" *ngFor="let price of product['prices']">{{ price.name }} $ {{ price.price | number : '1.2' }}</li>
+    </ul>
+  </div>
+  <button type="button" (click)="addCode()" class="btn btn-primary btn-lg btn-block">Buscar</button>
+</div>
+<div class="row text-center mt-5">
+  <div class="btn-group" role="group">
+    <button type="button btn-block" (click)="setPriceList(pricelist_ids)" class="btn btn-primary">Todas</button>
+    <button *ngFor="let pricelist_id of pricelist_ids" type="button btn-block" (click)="setPriceList([pricelist_id])" class="btn btn-secondary">{{pricelist_id.name}}</button>
+  </div>
+</div>
+<img class="overimg" *ngIf="capturedImage" (click)="capturedImage = ''" [src]="capturedImage" style="height: auto; width: 100%; box-shadow: 5px 9px 20px #333;" />

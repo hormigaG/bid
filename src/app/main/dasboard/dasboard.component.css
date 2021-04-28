@@ -1,0 +1,6 @@
+.print-state{
+	height: 20px;
+	position: fixed;
+	z-index: 4000;
+	bottom: 0;
+}

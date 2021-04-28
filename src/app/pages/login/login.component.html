@@ -1,0 +1,42 @@
+<div class="container login">
+  <div class="row text-center mt-5">
+    <div class="col-12">
+    </div>
+  </div>
+  <div class="row " *ngIf="isLogged">
+    <div class="col-md-4 col-12 mx-auto">
+      <h5>Usted esta conectado a {{server_url}}</h5>
+
+        <button (click)="logout()" class="btn btn-login btn-lg">Salir</button>
+    
+    </div>
+  </div>
+  <div class="row " *ngIf="!isLogged">
+    <div class="col-md-4 col-12 mx-auto">
+
+
+      <form [formGroup]="authForm" class="login-container" (ngSubmit)="signIn()">
+
+        <div class="form-group" [ngClass]="{ 'has-error': isSubmitted && formControls.email.errors }">
+          <label for="exampleInputEmail1" class="text-white">Usuario</label>
+          <input type="email" class="form-control input-custom" id="exampleInputEmail1" aria-describedby="emailHelp"  formControlName="email">
+          <div *ngIf="isSubmitted && formControls.email.errors" class="help-block text-white font-italic">
+            <div *ngIf="formControls.email.errors.required"><strong>*</strong>Debe ingresar un usuario</div>
+          </div>
+        </div>
+        <div class="form-group"  [ngClass]="{ 'has-error': isSubmitted && formControls.password.errors }">
+          <label for="exampleInputPassword1" class="text-white">Contraseña</label>
+          <input type="password" class="form-control input-custom" id="exampleInputPassword1" formControlName="password">
+          <div *ngIf="isSubmitted && formControls.password.errors" class="help-block text-white font-italic">
+            <div *ngIf="formControls.password.errors.required"><strong>*</strong>Debe ingresar una clave</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 text-center">
+        <button type="submit" class="btn btn-login btn-lg">Iniciar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

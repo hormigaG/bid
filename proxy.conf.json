@@ -1,0 +1,11 @@
+{
+    "\/odoo": {
+        "target": "https://www.casagoro.com.ar/",
+        "secure": false,
+        "changeOrigin": true,
+        "pathRewrite": {
+             "^\/odoo/": "/"
+        }
+    }
+}
+

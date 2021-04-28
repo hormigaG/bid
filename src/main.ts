@@ -6,7 +6,15 @@ import { environment } from './environments/environment';
 
 if (environment.production) {
   enableProdMode();
+} else {
+	platformBrowserDynamic().bootstrapModule(AppModule);	
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+let onDeviceReady = () => {
+  platformBrowserDynamic().bootstrapModule(AppModule);
+
+};
+//platformBrowserDynamic().bootstrapModule(AppModule);
+
+document.addEventListener('deviceready', onDeviceReady, false);
+

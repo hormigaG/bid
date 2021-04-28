@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  odoo_server: "/odoo",
+  db: 'www.casagoro.com.ar',
+  password:"",
+  user: "",
 };
 
 /*

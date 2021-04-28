@@ -1,0 +1,39 @@
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="print-tab" data-toggle="tab" href="#print" role="tab" aria-controls="print" aria-selected="true">Impresoras</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="config-tab" data-toggle="tab" href="#config" role="tab" aria-controls="config" aria-selected="false">Configuracion</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="print" role="tabpanel" aria-labelledby="print-tab">
+    <div class="row ">
+      <h2 class="col-12">
+        {{ selected_printer }}
+      </h2>
+      <button type="button" (click)="searchPrinters()" class="btn btn-primary btn-lg btn-block">Buscar Impresoras</button>
+    </div>
+    <div class="row col-12">
+      <ul class="list-group col-12">
+        <li class="list-group-item " *ngFor="let printer of printers">
+          {{printer.name}} ({{printer.MAC}})
+          <button type="button" (click)="connectPrinter(printer.name)" class="btn btn-primary">Conectar</button>
+        </li>
+      </ul>
+      <button type="button" (click)="status()" class="btn btn-secondary btn-lg btn-block">status</button>
+      <button type="button" (click)="disconnect()" class="btn btn-secondary btn-lg btn-block">Desconectar</button>
+      <button type="button" (click)="connected()" class="btn btn-secondary btn-lg btn-block">¿Conectada?</button>
+    </div>
+    <div class="row " *ngIf="printer_status">
+      <h3 class="col-12">Tests de conexion</h3>
+      <div class="btn-group-vertical" role="group">
+        <button type="button btn-block" (click)="printText()" class="btn btn-secondary">{{test_text}}</button>
+        <button type="button btn-block" (click)="printBarcode()" class="btn btn-secondary">Codigo</button>
+        <button type="button btn-block" (click)="lineFeed()" class="btn btn-secondary">Linea</button>
+        <button type="button btn-block" (click)="printBase64()" class="btn btn-secondary">Imagen</button>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">...</div>
+</div>
