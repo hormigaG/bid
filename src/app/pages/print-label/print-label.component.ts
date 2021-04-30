@@ -28,10 +28,11 @@ export class PrintLabelComponent implements OnInit {
   prices: any;
   capturedImage;
   searchForm: FormGroup;
-
-
+  inputMethod="form";
+  printAuto : boolean = true;
   @ViewChild("screen") screen: ElementRef;
   @ViewChild("canvas") canvas: ElementRef;
+  @ViewChild('search') searchElement: ElementRef;
 
   constructor(
     public productService: ProductService,
@@ -47,10 +48,17 @@ export class PrintLabelComponent implements OnInit {
 
     this.connected();
     this.get_pricelist();
+
     this.textBus = "";
+    if(this.inputMethod== 'form'){
+      this.searchElement.nativeElement.focus();
+
+    }
+
     if (environment.production == false) {
       //this.printer_status = true;
     }
+
     //this.addCode();
   }
   connected() {
@@ -61,48 +69,25 @@ export class PrintLabelComponent implements OnInit {
     });
   }
 
-  keyP(event: KeyboardEvent) {
-    if (this.intefaceBlocked) {
-      return;
-    }
-    if (this.keyboardDisable == true) {
-      if (event.keyCode == 13) {
-        this.addCode();
-      } else {
-        this.textBus += event.key;
-        event.stopPropagation();
-      }
-    }
-  }
-  keyD(event: KeyboardEvent) {
-    if (this.intefaceBlocked) {
-      return;
-    }
-    if (event.keyCode == 27) {
-      this.textBus = "";
-    } else if (event.keyCode == 8) {
-      this.textBus = this.textBus.substring(0, this.textBus.length - 1);
-    }
-  }
 
-
-  /*@HostListener("document:keypress", ["$event"])
+ @HostListener("document:keypress", ["$event"])
   handleKeyboardpressEvent(event: KeyboardEvent) {
-    if (this.intefaceBlocked) {
+    if (this.inputMethod == 'form' && event.keyCode == 13) {
+      this.formSearch();
+    }
+    if (this.inputMethod != 'textBus') {
       return;
     }
-    if (this.keyboardDisable == true) {
       if (event.keyCode == 13) {
-        this.addCode();
+        this.searchByCode(this.textBus);
       } else {
         this.textBus += event.key;
         event.stopPropagation();
       }
-    }
   }
   @HostListener("document:keydown", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.intefaceBlocked) {
+    if (this.inputMethod != 'textBus') {
       return;
     }
     if (event.keyCode == 27) {
@@ -110,21 +95,25 @@ export class PrintLabelComponent implements OnInit {
     } else if (event.keyCode == 8) {
       this.textBus = this.textBus.substring(0, this.textBus.length - 1);
     }
-  }*/
+  }
 
-
-  addCode() {
+  formSearch() {
     const search = this.searchForm.controls.search.value;
+    this.searchByCode(search);
+    this.searchForm.controls.search.patchValue("");  
+    this.searchElement.nativeElement.focus();
 
-    
-    this.productService.searchByCode(search).subscribe((res) => {
+  }
+  searchByCode(searchSting) {
+    this.product = [];
+    this.productService.searchByCode(searchSting).subscribe((res) => {
       if (res["length"] > 0) {
         this.product = res["records"][0];
         this.product.prices = [];
         this.load_price(res["records"][0].id);
       }
     });
-    //this.textBus = "";
+    this.textBus = "";
   }
 
   load_price(product_id) {
@@ -132,6 +121,9 @@ export class PrintLabelComponent implements OnInit {
       .load_price(product_id, this.selected_pricelist_id)
       .subscribe((res) => {
         this.product.prices.push(res);
+        /*if (this.printAuto){
+          this.testPrint();
+        }*/
       });
   }
   get_pricelist() {
@@ -150,9 +142,9 @@ export class PrintLabelComponent implements OnInit {
     if (this.product) {
       html2canvas(document.querySelector(".etiqueta"), {
         width: 300,
-        height: 150,
+        height: 200,
         windowWidth: 300,
-        windowHeight: 150,
+        windowHeight: 200,
         backgroundColor: "#FFFFFF",
       }).then((canvas) => {
         let b64 = canvas.toDataURL();
@@ -161,27 +153,11 @@ export class PrintLabelComponent implements OnInit {
         );
         this.PrinterService.printBase64(b64).subscribe((res: any) => {
           //alert(res);
-          //this.capturedImage ='';
+          this.capturedImage ='';
         });
 
-        /*let template ="linefeed|\ntext|este es un TEST\ntext|" + this.product.name + "\nlinefeed|\n" 
-      this.PrinterService.printTemplate(template);*
-      let b64  = this.downloadImage();
-    this.PrinterService.printBase64(b64).subscribe((res: any) => {
-      alert(res);
-    });
-*/
       });
 
-      /*this.PrinterService.printText(this.product.name, "4").subscribe(
-        (res: any) => {
-          this.PrinterService.lineFeed().subscribe((res: any) => {
-            this.PrinterService.printText(this.product.price[0].price, "2").subscribe(
-              (res: any) => {}
-            );
-          });
-        }
-      );*/
     }
   }
 }

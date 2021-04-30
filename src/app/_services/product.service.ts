@@ -15,7 +15,7 @@ export class ProductService {
         .searchRead(
           "product.product",
           leaf,
-          ["name", "default_code", "description"],
+          ["name", "default_code", "description","barcode","modelo_articulo"],
           1
         )
         .then((res) => {
