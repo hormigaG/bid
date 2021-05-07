@@ -1,11 +1,17 @@
 <div class="row text-center mt-5">
   <div class="col-12">
+    <div *ngIf="this.inputMethod == 'intenet'">
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let scan of scans">
+          {{ scan.timeAtDecode }} / {{ scan.type }} {{ scan.data }}</li>
+      </ul>
+    </div>
     <h2 *ngIf="this.inputMethod == 'textBus'">{{textBus}}</h2>
     <form [formGroup]="searchForm">
       <div class="input-group input-group-lg" *ngIf="this.inputMethod == 'form'">
         <input type="text" autofocus #search class="form-control" id="bus" formControlName="search" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
         <span class="input-group-append">
-          <button class="btn btn-primary btn-lg"  (click)="formSearch()" type="button">
+          <button class="btn btn-primary btn-lg" (click)="formSearch()" type="button">
             <i class="fa fa-search"></i>
           </button>
         </span>
@@ -31,11 +37,12 @@
     <button type="button btn-block" (click)="setPriceList(pricelist_ids)" class="btn btn-primary">Todas</button>
     <button *ngFor="let pricelist_id of pricelist_ids" type="button btn-block" (click)="setPriceList([pricelist_id])" class="btn btn-secondary">{{pricelist_id.name}}</button>
   </div>
-    <div class="btn-group" role="group">
+</div>
+<div class="row text-center mt-5">
+  <div class="btn-group" role="group">
     <button type="button btn-block" (click)="inputMethod = 'form'" class="btn btn-primary"><i class="fa fa-font"></i></button>
-    <button type="button btn-block" (click)="inputMethod = 'textBus'" class="btn btn-secondary"><i class="fa fa-barcode"></i>
-</button>
+    <button type="button btn-block" (click)="inputMethod = 'intent'" class="btn btn-primary"><i class="fa fa-barcode"></i>
+    </button>
   </div>
-
 </div>
 <img class="overimg" *ngIf="capturedImage" (click)="capturedImage = ''" [src]="capturedImage" style="height: auto; width: 100%; box-shadow: 5px 9px 20px #333;" />
