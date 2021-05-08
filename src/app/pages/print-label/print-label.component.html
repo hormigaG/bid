@@ -1,11 +1,6 @@
 <div class="row text-center mt-5">
   <div class="col-12">
-    <div *ngIf="this.inputMethod == 'intenet'">
-      <ul class="list-group">
-        <li class="list-group-item" *ngFor="let scan of scans">
-          {{ scan.timeAtDecode }} / {{ scan.type }} {{ scan.data }}</li>
-      </ul>
-    </div>
+
     <h2 *ngIf="this.inputMethod == 'textBus'">{{textBus}}</h2>
     <form [formGroup]="searchForm">
       <div class="input-group input-group-lg" *ngIf="this.inputMethod == 'form'">
@@ -19,30 +14,22 @@
     </form>
   </div>
 </div>
-<div #etiqueta (click)="testPrint()" *ngIf="product && 'prices' in product" style="height: 200px; width: 300px; " width="300" height="200" class="etiqueta">
-  <div style="text-align: center;"> {{product['name']}}</div>
-  <h1 style="text-align: center;background: #000; color: #FFF;">$ {{product['prices'][0].price | number : '1.2'}}</h1>
-  <div>{{ product['modelo_articulo'] }}</div>
-  <div>{{product['default_code']}} / {{product['barcode']}}</div>
-</div>
+<app-price-label #etiqueta (click)="printTag()" [product]="product"></app-price-label>
+<app-product-prices [product]="product"></app-product-prices>
+
 <div class="row text-center mt-5">
-  <div class="col-12">
-    <ul class="list-group" *ngIf="product && 'prices' in product">
-      <li class="list-group-item" *ngFor="let price of product['prices']">{{ price.name }} $ {{ price.price | number : '1.2' }}</li>
-    </ul>
+  <div class="btn-group" role="group">
+    <button type="button btn-block" (click)="inputMethod = 'form'" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': inputMethod == 'form'}"><i class="fa fa-font"></i></button>
+    <button type="button btn-block" (click)="inputMethod = 'textBus'" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': inputMethod == 'textBus'}"><i class="fa fa-barcode"></i></button>
+    <button type="button btn-block" (click)="toglePrintAuto()"  [ngClass]="{'btn': true, 'btn-secondary': true, 'active': printAuto}"><i class="fa fa-print"></i>
+    </button>
   </div>
 </div>
+
 <div class="row text-center mt-5">
   <div class="btn-group" role="group">
     <button type="button btn-block" (click)="setPriceList(pricelist_ids)" class="btn btn-primary">Todas</button>
     <button *ngFor="let pricelist_id of pricelist_ids" type="button btn-block" (click)="setPriceList([pricelist_id])" class="btn btn-secondary">{{pricelist_id.name}}</button>
-  </div>
-</div>
-<div class="row text-center mt-5">
-  <div class="btn-group" role="group">
-    <button type="button btn-block" (click)="inputMethod = 'form'" class="btn btn-primary"><i class="fa fa-font"></i></button>
-    <button type="button btn-block" (click)="inputMethod = 'intent'" class="btn btn-primary"><i class="fa fa-barcode"></i>
-    </button>
   </div>
 </div>
 <img class="overimg" *ngIf="capturedImage" (click)="capturedImage = ''" [src]="capturedImage" style="height: auto; width: 100%; box-shadow: 5px 9px 20px #333;" />

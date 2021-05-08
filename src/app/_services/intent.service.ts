@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Events } from './events.service';
 
-
+import {Subject} from "rxjs";
+import {Observable} from "rxjs";
 
 function _window(): any {
  // return the global native browser window object
@@ -11,14 +12,14 @@ function _window(): any {
 export class BarcodeProvider {
 
   private requestResultCodes = "false";
+  public BarcodeData = new Observable();
 
   constructor(public events: Events) {
     //_window().cordova.ready().then((readySource) => {
-      if(! _window().plugins.intentShim){
+      if(!_window().plugins || !_window().plugins.intentShim){
         return;
       }
 
-      alert('cargo el pluggin');
       let constructorInstance = this;
 
       //  The Datawedge service will respond via implicit broadcasts intents.  
@@ -35,7 +36,7 @@ export class BarcodeProvider {
       },
         function (intent) {
           //  Broadcast received
-          alert(JSON.stringify(intent.extras));
+          // alert(JSON.stringify(intent.extras));
           console.log('Received Intent: ' + JSON.stringify(intent.extras));
   
           //  Emit a separate event for the result associated with this scan.  This will only be present in response to
@@ -60,6 +61,13 @@ export class BarcodeProvider {
               constructorInstance.events.publish('status:dw64ApisAvailable', true);
             if (datawedgeVersion >= "6.5")
               constructorInstance.events.publish('status:dw65ApisAvailable', true);
+          }          
+          else if (intent.extras.hasOwnProperty('com.symbol.datawedge.data_string')) {
+            alert('data_string');
+            alert(JSON.stringify(intent.extras));
+            alert(intent.extras['com.symbol.datawedge.data_string']);
+            this.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
+            constructorInstance.events.publish('data:scan', {scanData: intent, time: new Date().toLocaleTimeString()});
           }
           else if (intent.extras.hasOwnProperty('com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS')) {
             //  Return from our request to enumerate the available scanners
@@ -70,9 +78,11 @@ export class BarcodeProvider {
             //  Return from our request to obtain the active profile
             let activeProfile = intent.extras['com.symbol.datawedge.api.RESULT_GET_ACTIVE_PROFILE'];
             constructorInstance.events.publish('data:activeProfile', activeProfile);
-          }
-          else if (!intent.extras.hasOwnProperty('RESULT_INFO')) {
+          } else if (!intent.extras.hasOwnProperty('RESULT_INFO')) {
             //  A barcode has been scanned
+            alert('RESULT_INFO');
+            alert(intent.extras);
+            this.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
             constructorInstance.events.publish('data:scan', {scanData: intent, time: new Date().toLocaleTimeString()});
           }
         }
@@ -93,7 +103,11 @@ export class BarcodeProvider {
   //  was introduced.
   //  extraValue may be a String or a Bundle
   sendCommand(extraName: string, extraValue) {
-    alert("Sending Command: " + extraName + ", " + JSON.stringify(extraValue));
+     if(!_window().plugins || !_window().plugins.intentShim){
+        return;
+      }
+
+    console.log("Sending Command: " + extraName + ", " + JSON.stringify(extraValue));
     _window().plugins.intentShim.sendBroadcast({
       action: 'com.symbol.datawedge.api.ACTION',
       extras: {

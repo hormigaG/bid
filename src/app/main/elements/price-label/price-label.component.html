@@ -1,0 +1,6 @@
+<div  *ngIf="product &&  product['prices']" style="height: 200px; width: 300px; " width="300" height="200" class="etiqueta">
+  <div style="text-align: center;"> {{product['name']}}</div>
+  <h1 style="text-align: center;background: #000; color: #FFF;">$ {{product['prices'][0].price | number : '1.2'}}</h1>
+  <div>{{ product['modelo_articulo'] }}</div>
+  <div>{{product['default_code']}} / {{product['barcode']}}</div>
+</div>
