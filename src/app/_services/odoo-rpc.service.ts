@@ -8,7 +8,7 @@ class Cookies { // cookies doesn't work with Android default browser / Ionic
 
     delete_sessionId() {
         this.session_id = '';
-        document.cookie = "session_id=; expires=Wed, 29 Jun 2016 00:00:00 UTC";
+        document.cookie = "cids=1; session_id=; expires=Wed, 29 Jun 2016 00:00:00 UTC";
     }
 
     get_sessionId() {
@@ -20,7 +20,7 @@ class Cookies { // cookies doesn't work with Android default browser / Ionic
     }
 
     set_sessionId(val: string) {
-        document.cookie = `session_id=${val}`;
+        document.cookie = `session_id=${val}; cids=1;`;
         this.session_id = val;
     }
 
@@ -49,7 +49,6 @@ export class OdooRPCService {
         if (this.shouldManageSessionId) {
             params.session_id = this.cookies.get_sessionId();
         }
-        params['cids'] = 1
         this.headers = new HttpHeaders({
             "Content-Type": "application/json",
             //"X-Openerp-Session-Id": this.cookies.get_sessionId(),

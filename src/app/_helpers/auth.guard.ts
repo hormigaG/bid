@@ -19,14 +19,17 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const session_act :  Observable<boolean> | Promise<boolean> | boolean = new Observable((observer) => {
-      this.odooRPC.getSessionInfo().then((res) =>{
+      /*this.odooRPC.getSessionInfo().then((res) =>{
         observer.next(true);
       }).catch((err) => {
           observer.next(false);
           observer.complete();
               this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
 
-        });
+        });*/
+                  observer.next(true);
+          observer.complete();
+
 
     });
     return session_act

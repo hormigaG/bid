@@ -26,7 +26,7 @@ export class PriceUpdateComponent implements OnInit {
 	spinner: boolean = false;
 	log: string = "";
 	showLog: boolean = false;
-	priceChageDate: string = "2021-05-14 00:00:00";
+	priceChageDate: string = "2021-06-24 00:00:00";
 	//priceChageDate: string = "14/05/2021 00:00:00";
 
 	constructor(
@@ -71,6 +71,9 @@ export class PriceUpdateComponent implements OnInit {
 
 	getPricechanges(date) {
 		let parent = this;
+		this.spinner = true;
+		this.product = false;
+
 		this.PriceChangesService.getPriceHistory(date).subscribe({
 			next(res) {
 				parent.product_ids = res["records"].map(item => item).filter(
@@ -78,7 +81,7 @@ export class PriceUpdateComponent implements OnInit {
 			},
 
 			complete() {
-				console.log(parent.product_ids);
+				parent.spinner = false;
 			},
 		});
 	}
@@ -119,7 +122,7 @@ export class PriceUpdateComponent implements OnInit {
 				},
 				complete() {
 					parent.spinner = false;
-					parent.changeDate(line.datetime);
+					parent.changeDate(line.last_change);
 					line.printed = true;
 					if (parent) {
 						//parent.changeDetectorRef.detectChanges();

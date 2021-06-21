@@ -40,6 +40,7 @@ export class ProductService {
         .then((res) => {
           for (let list in pricelist_ids) {
             observer.next({
+              id: pricelist_ids[list].id,
               name: pricelist_ids[list].name,
               price: res[pricelist_ids[list].id],
             });
