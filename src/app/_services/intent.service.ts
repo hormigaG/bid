@@ -3,6 +3,7 @@ import { Events } from './events.service';
 
 import {Subject} from "rxjs";
 import {Observable} from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 function _window(): any {
  // return the global native browser window object
@@ -12,13 +13,16 @@ function _window(): any {
 export class BarcodeProvider {
 
   private requestResultCodes = "false";
-  public BarcodeData = new Observable();
+  BarcodeData = new BehaviorSubject(null); //la declaro como observable
 
   constructor(public events: Events) {
     //_window().cordova.ready().then((readySource) => {
       if(!_window().plugins || !_window().plugins.intentShim){
         return;
       }
+
+
+
 
       let constructorInstance = this;
 
@@ -62,13 +66,6 @@ export class BarcodeProvider {
             if (datawedgeVersion >= "6.5")
               constructorInstance.events.publish('status:dw65ApisAvailable', true);
           }          
-          else if (intent.extras.hasOwnProperty('com.symbol.datawedge.data_string')) {
-            alert('data_string');
-            alert(JSON.stringify(intent.extras));
-            alert(intent.extras['com.symbol.datawedge.data_string']);
-            this.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
-            constructorInstance.events.publish('data:scan', {scanData: intent, time: new Date().toLocaleTimeString()});
-          }
           else if (intent.extras.hasOwnProperty('com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS')) {
             //  Return from our request to enumerate the available scanners
             let enumeratedScanners = intent.extras['com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS'];
@@ -78,17 +75,35 @@ export class BarcodeProvider {
             //  Return from our request to obtain the active profile
             let activeProfile = intent.extras['com.symbol.datawedge.api.RESULT_GET_ACTIVE_PROFILE'];
             constructorInstance.events.publish('data:activeProfile', activeProfile);
+           }
+          else if (intent.extras.hasOwnProperty('com.symbol.datawedge.data_string')) {
+             setTimeout(() => {
+              constructorInstance.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
+              }, 10)
+
           } else if (!intent.extras.hasOwnProperty('RESULT_INFO')) {
             //  A barcode has been scanned
-            alert('RESULT_INFO');
-            alert(intent.extras);
-            this.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
-            constructorInstance.events.publish('data:scan', {scanData: intent, time: new Date().toLocaleTimeString()});
+             setTimeout(() => {
+              constructorInstance.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
+              }, 10)
+
+            //this.BarcodeData.next(intent.extras['com.symbol.datawedge.data_string']);
+            //constructorInstance.events.publish('data:scan', {scanData: intent, time: new Date().toLocaleTimeString()});
           }
         }
       );
 
  //   });
+
+  }
+
+  test(){
+     console.log('start test');
+
+          setTimeout(() => {
+            this.BarcodeData.next('41568');
+            console.log('aca');
+          }, 3000)
 
   }
 

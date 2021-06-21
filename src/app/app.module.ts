@@ -22,6 +22,9 @@ import { BarcodeProvider } from "./_services/intent.service"
 import { HTTP } from '@ionic-native/http/ngx';
 import { PriceLabelComponent } from './main/elements/price-label/price-label.component';
 import { ProductPricesComponent } from './main/elements/product-prices/product-prices.component';
+import { OmniBarcodeComponent } from './main/elements/omni-barcode/omni-barcode.component';
+import { LeftPadFilterPipe } from './_helpers/left-pad-filter.pipe';
+import { PriceUpdateComponent } from './pages/price-update/price-update.component';
 
 
 @NgModule({
@@ -34,12 +37,16 @@ import { ProductPricesComponent } from './main/elements/product-prices/product-p
     PinterStateComponent,
     DasboardComponent,
     PriceLabelComponent,
-    ProductPricesComponent
+    ProductPricesComponent,
+    OmniBarcodeComponent,
+    LeftPadFilterPipe,
+    PriceUpdateComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     HttpClientModule
   ],

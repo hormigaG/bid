@@ -1,4 +1,6 @@
 import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
+import { ConfigService } from "../../../_services/config.service";
+
 
 @Component({
   selector: 'app-price-label',
@@ -7,7 +9,7 @@ import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
 })
 export class PriceLabelComponent implements OnInit {
 
-  constructor() { }
+  constructor(public ConfigService: ConfigService) { }
   @Output() printLabel = new EventEmitter();
 
   @Input() product: any;
