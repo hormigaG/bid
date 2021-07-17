@@ -26,6 +26,8 @@ import { OmniBarcodeComponent } from './main/elements/omni-barcode/omni-barcode.
 import { LeftPadFilterPipe } from './_helpers/left-pad-filter.pipe';
 import { PriceUpdateComponent } from './pages/price-update/price-update.component';
 import { FilterPricePipe } from './_helpers/filter-price.pipe';
+import { EntWhSelectorComponent } from './pages/stock/ent-wh-selector/ent-wh-selector.component';
+import { EntLocationComponent } from './pages/stock/ent-location/ent-location.component';
 
 
 @NgModule({
@@ -42,7 +44,9 @@ import { FilterPricePipe } from './_helpers/filter-price.pipe';
     OmniBarcodeComponent,
     LeftPadFilterPipe,
     PriceUpdateComponent,
-    FilterPricePipe
+    FilterPricePipe,
+    EntWhSelectorComponent,
+    EntLocationComponent
   ],
   imports: [
     BrowserModule,

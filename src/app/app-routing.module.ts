@@ -6,6 +6,8 @@ import { PrintLabelComponent } from "./pages/print-label/print-label.component";
 import { DasboardComponent } from "./main/dasboard/dasboard.component";
 import {AuthGuard} from "./_helpers/auth.guard";
 import { PriceUpdateComponent } from './pages/price-update/price-update.component';
+import { EntWhSelectorComponent } from './pages/stock/ent-wh-selector/ent-wh-selector.component';
+import { EntLocationComponent } from './pages/stock/ent-location/ent-location.component';
 
 const routes: Routes = [
 	{ path: "login", component: LoginComponent },
@@ -20,6 +22,8 @@ const routes: Routes = [
 			{ path: "print-config", component: PrintConfigComponent ,canActivate: [AuthGuard]},
 			{ path: "label", component: PrintLabelComponent ,canActivate: [AuthGuard]},
 			{ path: "prices", component: PriceUpdateComponent ,canActivate: [AuthGuard]},
+			{ path: "stock-entry/wh-selector", component:  EntWhSelectorComponent ,canActivate: [AuthGuard]},
+			{ path: "stock-entry/location/:lot_stock_id", component:  EntLocationComponent ,canActivate: [AuthGuard]},
 		],
 	},
 ];

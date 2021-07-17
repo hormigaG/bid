@@ -1,0 +1,79 @@
+<div class="row text-center mt-2">
+  <div class="col-12">
+    <div *ngIf="this.inputMethod == 'textBus'" class="text-center"><strong>{{textBus}}</strong></div>
+    <form [formGroup]="searchForm" *ngIf="this.inputMethod == 'form'">
+      <div class="input-group input-group-lg">
+        <input type="text" autofocus #search class="form-control" id="bus" formControlName="search" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+        <span class="input-group-append">
+          <button class="btn btn-primary btn-lg" (click)="formSearch()" type="button">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
+    </form>
+    <ul class="list-group">
+      <li *ngFor="let item of moves;let i = index;" class="text-left list-group-item">
+        <div class="row">
+          <div class="text-center col-2 pt-0 pb-0 pl-0 pr-0">
+            <div class="text-bold  bg-danger text-white text-white">{{ item['quantity_done']}}<br />
+              <small class="text-bold">Scan</small>
+            </div>
+            <div>{{ item['reserved_availability'] }}
+              <small class="">Res</small>
+            </div>
+          </div>
+          <div class="col-8">
+            {{ item['product_id'][1] }}
+          </div>
+          <div class="col-2">
+            <button type="button" (click)="active_index=i;" data-toggle="modal" data-target="#moveLineModal"  [ngClass]="{'btn': true}"><i class="fa fa-list"></i></button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="text-center spinnerContent">
+  <div class="spinner-grow text-warning" *ngIf="spinner" style="width: 5rem; height: 5rem;" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<div class="row text-center ">
+  <div class="btn-group btn-group-lg fixed-bottom" role="group">
+    <button type="button btn-block" (click)="inputMethod = 'form'" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': inputMethod == 'form'}"><i class="fa fa-font"></i></button>
+    <button type="button btn-block" (click)="inputMethod = 'textBus'" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': inputMethod == 'textBus'}"><i class="fa fa-barcode"></i></button>
+  </div>
+</div>
+
+<div *ngIf="active_index"  class="modal fade" id="moveLineModal" tabindex="-1" role="dialog" aria-labelledby="moveLineModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{ moves[active_index]['product_id'][1]}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" >
+
+        <h2 class="bg-danger text-center text-white mb-0"> {{ moves[active_index]['quantity_done'] }}</h2>
+        <div class="bg-dark text-center  text-white mt-0">Escaneados</div>
+
+        <div *ngIf="moves[active_index]['picking_id']">Remito: <strong>{{ moves[active_index]['picking_id'][1]}}</strong></div>
+      	<div>Realizados: <strong>{{ moves[active_index]['quantity_done'] }}</strong></div>
+        <div>Reservados: <strong>{{ moves[active_index]['reserved_availability'] }}</strong></div>
+        <div>Total: <strong>{{ moves[active_index]['product_uom_qty'] }}</strong></div>
+
+        <div *ngIf="moves[active_index]['barcode']">Codigo de barra: <strong>{{ moves[active_index]['barcode'] }}</strong></div>
+        <div>Codigo interno: <strong>{{ moves[active_index]['default_code'] }}</strong></div>
+        <div *ngIf="moves[active_index]['modelo_articulo']">Modelo: <strong>{{ moves[active_index]['modelo_articulo'] }}</strong></div>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
