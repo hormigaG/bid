@@ -23,7 +23,7 @@ import { StockService } from "../../../_services/stock.service";
 })
 export class EntLocationComponent implements OnInit {
 
-  active_index : number =0;
+  active_index : number = undefined ;
   moves:any = [];
   textBus: string = "";
   keyboardDisable: boolean = true;
@@ -60,7 +60,8 @@ export class EntLocationComponent implements OnInit {
   private uiHideFloatingActionButton = true;
   //ZEBRA
   @ViewChild("search") searchElement: ElementRef;
-  
+  @ViewChild('theModal',{static: false}) theModal: ElementRef;
+
   constructor(
     public productService: ProductService,
     private formBuilder: FormBuilder,
@@ -276,22 +277,78 @@ export class EntLocationComponent implements OnInit {
 
   searchByCode(code){
     let qty = 1
+
     var line = this.moves.findIndex(function(item) {
+      let codeLow = code.toLowerCase()
       return (
-        (item.default_code === code || item.ean13 === code) &&
+        (item.default_code.toLowerCase().indexOf(codeLow) !== -1
+          || item.product_id[1].toLowerCase().indexOf(codeLow) !== -1
+        ) &&
         item.quantity_done < item.reserved_availability
       );
     });
-    if (line != -1) {
-
-        this.moves[line]['quantity_done'] += qty;
-
-
+      console.log(line);
+    if (line == -1) {
+        alert(code + ' NO diponible');
     } else {
-      alert(code + ' NO diponible');
+      console.log(line);
+      this.active_index = line;
+      this.theModal.nativeElement.className = 'modal fade show';
 
     }
 
   }
+  addScannedQuantity(line, qty=1){
+    this.moves[line]['scanned_qty'] += qty;
+    if (this.moves[line]['scanned_qty'] < 1){
+      this.moves[line]['scanned_qty'] = 0;
+      return;
+    }
+    if (qty > 0 && this.moves[line]['quantity_done'] + qty > this.moves[line]['reserved_availability']) {
+      let message = "Esta por confirmar mas items de los esperados ¿esta seguro?";
+      if (!window.confirm(message)){
+            this.moves[line]['scanned_qty'] -= qty;
+            this.moves[line]['quantity_done']  = this.moves[line]['reserved_availability'];
+            return ;
+      }
+    } 
+    this.moves[line]['quantity_done'] += qty;
 
+    let line_id = this.moves[line];
+    if (line_id.quantity_done == line_id.reserved_availability){
+    //if (line_id.scanned_qty == 5){
+        this.spinner = true;
+        this.stockService.move_products(
+          this.moves[line],
+          this.moves[line]['scanned_qty']
+         ).subscribe((res) => {
+          this.moves[line]['scanned_qty'] = 0;
+          // delete this.moves[line];
+          this.spinner = false;
+          this.getAssignedMoves();
+
+          console.log(res);
+
+        });
+    }
+
+  }
+  parcialMoveProducts(line){
+    if (this.moves[line]['scanned_qty'] >0 ){
+
+        this.spinner = true;
+        this.stockService.move_products(
+          this.moves[line],
+          this.moves[line]['scanned_qty']
+         ).subscribe((res) => {
+          this.moves[line]['scanned_qty'] = 0;
+          // delete this.moves[line];
+          this.spinner = false;
+          this.getAssignedMoves();
+          console.log(res);
+
+        });
+    }
+
+  }
 }

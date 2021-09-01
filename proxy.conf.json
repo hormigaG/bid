@@ -1,6 +1,6 @@
 {
     "\/odoo": {
-        "target": "https://www.casagoro.com.ar/",
+        "target": "http://localhost:8013/",
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
