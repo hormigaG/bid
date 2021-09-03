@@ -27,7 +27,7 @@
             <small> remito: {{ item['picking_id'][1]}}</small>
           </div>
           <div class="col-2">
-            <button type="button" (click)="active_index=i;" data-toggle="modal" data-target="#moveLineModal"  [ngClass]="{'btn': true}"><i class="fa fa-list"></i></button>
+            <button type="button" (click)="active_index=i;addQty=1;" data-toggle="modal" data-target="#moveLineModal"  [ngClass]="{'btn': true}"><i class="fa fa-list"></i></button>
           </div>
         </div>
       </li>
@@ -47,8 +47,8 @@
   </div>
 </div>
 
-<div *ngIf="active_index !== undefined" #theModal class="modal fade" id="moveLineModal" tabindex="-1" role="dialog" aria-labelledby="moveLineModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div  #theModal class="modal fade" id="moveLineModal" tabindex="-1" role="dialog" aria-labelledby="moveLineModalLabel" aria-hidden="true">
+  <div *ngIf="active_index !== undefined" class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">{{ moves[active_index]['product_id'][1]}}</h5>
@@ -69,13 +69,21 @@
         <div *ngIf="moves[active_index]['barcode']">Codigo de barra: <strong>{{ moves[active_index]['barcode'] }}</strong></div>
         <div>Codigo interno: <strong>{{ moves[active_index]['default_code'] }}</strong></div>
         <div *ngIf="moves[active_index]['modelo_articulo']">Modelo: <strong>{{ moves[active_index]['modelo_articulo'] }}</strong></div>
-
+        <div class="btn-group  w-100" role="group">
+          <button type="button" (click)="addQty=1" [ngClass]="{'btn': true, 'btn-dark': true, 'active': addQty==1}">1</button>
+          <button type="button" (click)="addQty=5" [ngClass]="{'btn': true, 'btn-dark': true, 'active': addQty==5}">5</button>
+          <button type="button" (click)="addQty=10" [ngClass]="{'btn': true, 'btn-dark': true, 'active': addQty==10}">10 </button>
+          <button type="button" (click)="addQty=20" [ngClass]="{'btn': true, 'btn-dark': true, 'active': addQty==2}">20 </button>
+          <button type="button" (click)="addQty=50" [ngClass]="{'btn': true, 'btn-dark': true, 'active': addQty==50}">50 </button>
+          <button type="button" (click)="addQty=100" [ngClass]="{'btn': true, 'btn-dark': true, 'active': addQty==100}">100 </button>
+        </div>
         <div class="btn-group btn-group-lg w-100" role="group">
-          <button type="button" (click)="addScannedQuantity(active_index,-1)" class="btn btn-danger"><i class="fa fa-minus"></i></button>
-          <button type="button" (click)="addScannedQuantity(active_index,1)" class="btn btn-danger"><i class="fa fa-plus"></i></button>
+          <button type="button" (click)="addScannedQuantity(active_index,-1 * addQty)" class="btn btn-danger"><i class="fa fa-minus"></i></button>
+          <button type="button" (click)="addScannedQuantity(active_index,addQty)" class="btn btn-danger"><i class="fa fa-plus"></i></button>
 
         </div>
-          <button  type="button" (click)="parcialMoveProducts(active_index)" class="btn btn-block btn-success w-100">Movimiento parcial de productos</button>
+        <hr/>
+          <button  type="button" (click)="parcialMoveProducts(active_index)" class="btn btn-block btn-success btn-lg w-100">Movimiento parcial de productos</button>
 
 
       </div>

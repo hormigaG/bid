@@ -24,6 +24,7 @@ import { StockService } from "../../../_services/stock.service";
 export class EntLocationComponent implements OnInit {
 
   active_index : number = undefined ;
+  addQty : number =1;
   moves:any = [];
   textBus: string = "";
   keyboardDisable: boolean = true;
@@ -277,33 +278,40 @@ export class EntLocationComponent implements OnInit {
 
   searchByCode(code){
     let qty = 1
+/*picking_id
+barcode
+default_code
+modelo_articulo*/
 
     var line = this.moves.findIndex(function(item) {
       let codeLow = code.toLowerCase()
       return (
-        (item.default_code.toLowerCase().indexOf(codeLow) !== -1
-          || item.product_id[1].toLowerCase().indexOf(codeLow) !== -1
+        ( item.default_code.toLowerCase().indexOf(codeLow) !== -1
+       || item.product_id[1].toLowerCase().indexOf(codeLow) !== -1
+       || item.barcode == code
+       || item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
         ) &&
         item.quantity_done < item.reserved_availability
       );
     });
-      console.log(line);
     if (line == -1) {
         alert(code + ' NO diponible');
     } else {
       console.log(line);
       this.active_index = line;
-      this.theModal.nativeElement.className = 'modal fade show';
+      //this.theModal.nativeElement.className = 'modal fade show';
+      //this.theModal.nativeElement.style.display = 'block';
 
     }
 
   }
   addScannedQuantity(line, qty=1){
-    this.moves[line]['scanned_qty'] += qty;
-    if (this.moves[line]['scanned_qty'] < 1){
+    if (this.moves[line]['scanned_qty'] + qty < 1){
+      this.moves[line]['quantity_done'] = this.moves[line]['quantity_done'] - this.moves[line]['scanned_qty']
       this.moves[line]['scanned_qty'] = 0;
       return;
     }
+    this.moves[line]['scanned_qty'] += qty;
     if (qty > 0 && this.moves[line]['quantity_done'] + qty > this.moves[line]['reserved_availability']) {
       let message = "Esta por confirmar mas items de los esperados ¿esta seguro?";
       if (!window.confirm(message)){
