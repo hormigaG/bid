@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
       .login(environment.db, username, password)
       .then((res) => {
         this.isLogged = res;
-        this.router.navigate(["/print-config"]);
+        this.router.navigate(["/"]);
       })
       .catch((err) => {
         console.log(err);

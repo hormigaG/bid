@@ -14,7 +14,7 @@ import { ConfigService } from "../../../_services/config.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router, ActivatedRoute, ParamMap } from "@angular/router";
 import { StockService } from "../../../_services/stock.service";
-
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-ent-location',
@@ -23,8 +23,10 @@ import { StockService } from "../../../_services/stock.service";
 })
 export class EntLocationComponent implements OnInit {
 
+  showOk :boolean = false;
   active_index : number = undefined ;
   addQty : number =1;
+  qtyDir : number =1;
   moves:any = [];
   textBus: string = "";
   keyboardDisable: boolean = true;
@@ -38,7 +40,8 @@ export class EntLocationComponent implements OnInit {
   log: string = "";
   showLog: boolean = false;
   lot_stock_id: number;
-
+  op: string;
+  filters : any = []
 
   //ZEBRA
   private scans = [];
@@ -61,7 +64,7 @@ export class EntLocationComponent implements OnInit {
   private uiHideFloatingActionButton = true;
   //ZEBRA
   @ViewChild("search") searchElement: ElementRef;
-  @ViewChild('theModal',{static: false}) theModal: ElementRef;
+  @ViewChild('moveLineModal') moveLineModal: ElementRef;
 
   constructor(
     public productService: ProductService,
@@ -72,7 +75,7 @@ export class EntLocationComponent implements OnInit {
     public ConfigService: ConfigService,
     private route: ActivatedRoute,
     public stockService: StockService,
-
+    private modalService: NgbModal,
   ) {
 
     this.barcodeProvider.sendCommand("com.symbol.datawedge.api.GET_VERSION_INFO", "");
@@ -218,6 +221,7 @@ export class EntLocationComponent implements OnInit {
       });
   }
   ngOnInit(): void {
+
     this.inputMethod = this.ConfigService.params.scanMethod;
     this.showLog = this.ConfigService.params.showLog;
 
@@ -227,7 +231,20 @@ export class EntLocationComponent implements OnInit {
     this.lot_stock_id = Number(
             this.route.snapshot.paramMap.get("lot_stock_id")
     );
+    this.op = String(
+            this.route.snapshot.paramMap.get("op")
+    );
+
     this.getAssignedMoves();
+    let parent = this;
+    this.barcodeProvider.BarcodeData.subscribe((res: any) => {
+      if (parent.inputMethod == "textBus" && res) {
+        parent.searchByCode(res);
+        parent.changeDetectorRef.detectChanges();
+
+      }
+    });
+
   }
   @HostListener("document:keypress", ["$event"])
   handleKeyboardpressEvent(event: KeyboardEvent) {
@@ -255,17 +272,46 @@ export class EntLocationComponent implements OnInit {
       this.textBus = this.textBus.substring(0, this.textBus.length - 1);
     }
   }
+  togleShowOk(){
+    if (this.showOk){
+      this.showOk = false;
+    } else{
+      this.showOk = true;
+    }
+  }
+  refresh(){
+    this.spinner = true;
+    this.getAssignedMoves();  
 
+  }
+
+  selectPiking(picking_id){
+    this.spinner = true;
+
+    this.op='picking';
+    this.lot_stock_id=picking_id;
+
+    this.getAssignedMoves();  
+  }
   getAssignedMoves(){
-    const leaf = [['state','=','assigned'],['location_dest_id', 'child_of', this.lot_stock_id]]
-    this.stockService.getMoves(leaf).subscribe((res) => {
-          res["records"].forEach(function(part, index, theArray) {
+    let leaf = [];
+    if (this.op=='location-entry'){
+      leaf = [['state','=',['assigned','draft']],['location_dest_id', 'child_of', this.lot_stock_id]]
 
-          });
+    } else if(this.op=='picking'){
+      leaf = [['state','in',['assigned','draft']],['picking_id', '=', this.lot_stock_id]]
+    }
+    if (leaf.length){
 
-          this.moves = res['records'];
-          this.spinner = false;
-    });
+      this.stockService.getMoves(leaf).subscribe((res) => {
+            res["records"].forEach(function(part, index, theArray) {
+
+            });
+
+            this.moves = res['records'];
+            this.spinner = false;
+      });
+    }
 
   }
   formSearch() {
@@ -277,34 +323,53 @@ export class EntLocationComponent implements OnInit {
 
 
   searchByCode(code){
-    let qty = 1
-/*picking_id
-barcode
-default_code
-modelo_articulo*/
 
+    let qty = 1
+    if (code.length<3){
+      return; 
+    }
     var line = this.moves.findIndex(function(item) {
       let codeLow = code.toLowerCase()
       return (
         ( item.default_code.toLowerCase().indexOf(codeLow) !== -1
        || item.product_id[1].toLowerCase().indexOf(codeLow) !== -1
        || item.barcode == code
-       || item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
+       //|| item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
         ) &&
-        item.quantity_done < item.reserved_availability
+        item.quantity_done < item.product_uom_qty
       );
     });
+    this.textBus = "";
+
     if (line == -1) {
         alert(code + ' NO diponible');
     } else {
-      console.log(line);
+      let openModal = !!this.modalService.activeInstances;
       this.active_index = line;
-      //this.theModal.nativeElement.className = 'modal fade show';
-      //this.theModal.nativeElement.style.display = 'block';
+      this.addScannedQuantity(line, 1);
+      this.addQty = 1;
+      this.qtyDir = 1;
+      if (openModal){
+        this.modalService.open(this.moveLineModal).result.then((result)=>{
+        this.active_index = undefined; 
+
+      });
+      } 
 
     }
 
   }
+  openMoveLineModal(line){
+      this.active_index = line;
+      this.addQty = 1;
+      this.qtyDir = 1;
+ 
+      this.modalService.open(this.moveLineModal).result.then((result)=>{
+        this.active_index = undefined;
+
+      });
+  }
+ 
   addScannedQuantity(line, qty=1){
     if (this.moves[line]['scanned_qty'] + qty < 1){
       this.moves[line]['quantity_done'] = this.moves[line]['quantity_done'] - this.moves[line]['scanned_qty']
@@ -312,34 +377,59 @@ modelo_articulo*/
       return;
     }
     this.moves[line]['scanned_qty'] += qty;
-    if (qty > 0 && this.moves[line]['quantity_done'] + qty > this.moves[line]['reserved_availability']) {
+    this.moves[line]['quantity_done'] += qty;
+    if (qty > 0 && this.moves[line]['quantity_done'] > this.moves[line]['product_uom_qty']) {
       let message = "Esta por confirmar mas items de los esperados ¿esta seguro?";
       if (!window.confirm(message)){
             this.moves[line]['scanned_qty'] -= qty;
-            this.moves[line]['quantity_done']  = this.moves[line]['reserved_availability'];
-            return ;
+            this.moves[line]['quantity_done']  -= qty;
+            return;
       }
     } 
-    this.moves[line]['quantity_done'] += qty;
 
     let line_id = this.moves[line];
-    if (line_id.quantity_done == line_id.reserved_availability){
+    if (line_id.quantity_done == line_id.product_uom_qty){
     //if (line_id.scanned_qty == 5){
-        this.spinner = true;
+         this.spinner = true;
         this.stockService.move_products(
           this.moves[line],
           this.moves[line]['scanned_qty']
          ).subscribe((res) => {
           this.moves[line]['scanned_qty'] = 0;
           // delete this.moves[line];
-          this.spinner = false;
           this.getAssignedMoves();
 
-          console.log(res);
+          this.modalService.dismissAll('Cross click');
+          this.check_pick_ok(this.active_index);
+          this.active_index = undefined;
 
         });
     }
 
+  }
+  check_pick_ok(line){
+    let picking_id = this.moves[line]['picking_id'][0];
+    let no_ok = this.moves.filter(
+      function(el){
+        if (el['picking_id'][0] ==picking_id && el['quantity_done'] < el['product_uom_qty'] ){
+          return true;
+        } else{
+          return false;
+        }
+      }
+    );
+   if(no_ok.length==0){
+     this.spinner = true;
+
+     this.stockService.button_validate(picking_id).subscribe((res: any) => {
+
+       if(res.name){
+         alert(res.name);
+       }
+       this.getAssignedMoves();
+     });
+   }
+   console.log(no_ok);
   }
   parcialMoveProducts(line){
     if (this.moves[line]['scanned_qty'] >0 ){
@@ -353,10 +443,15 @@ modelo_articulo*/
           // delete this.moves[line];
           this.spinner = false;
           this.getAssignedMoves();
-          console.log(res);
+          this.modalService.dismissAll('Cross click');
+          this.active_index = undefined;
 
         });
     }
 
   }
+  private getDismissReason(reason: any)  {
+
+  }
 }
+  

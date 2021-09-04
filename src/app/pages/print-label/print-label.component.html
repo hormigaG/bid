@@ -24,11 +24,11 @@
 <app-product-prices [product]="product"></app-product-prices>
 <div class="row text-center ">
   <div class="btn-group btn-group-lg fixed-bottom" role="group">
-    <button type="button btn-block" (click)="inputMethod = 'form'" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': inputMethod == 'form'}"><i class="fa fa-font"></i></button>
-    <button type="button btn-block" (click)="inputMethod = 'textBus'" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': inputMethod == 'textBus'}"><i class="fa fa-barcode"></i></button>
-    <button type="button btn-block" (click)="toglePrintAuto()" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': printAuto}"><i class="fa fa-print"></i>
+    <button type="button" (click)="inputMethod = 'form'" [ngClass]="{'btn': true, 'btn-info': true, 'active': inputMethod == 'form'}"><i class="fa fa-font"></i></button>
+    <button type="button" (click)="inputMethod = 'textBus'" [ngClass]="{'btn': true, 'btn-info': true, 'active': inputMethod == 'textBus'}"><i class="fa fa-barcode"></i></button>
+    <button type="button" (click)="toglePrintAuto()" [ngClass]="{'btn': true, 'btn-info': true, 'active': printAuto}"><i class="fa fa-print"></i>
     </button>
-    <button type="button btn-block" data-toggle="modal" data-target="#pricelistModal" [ngClass]="{'btn': true, 'btn-secondary': true}"><i class="fa fa-list"></i>
+    <button type="button" data-toggle="modal" data-target="#pricelistModal" [ngClass]="{'btn': true, 'btn-info': true}"><i class="fa fa-list"></i>
     </button>
   </div>
 </div>

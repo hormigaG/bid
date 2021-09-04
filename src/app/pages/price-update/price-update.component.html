@@ -1,5 +1,5 @@
-<div class="row text-center mt-2 ">
-  <div class="col-12">
+<div class="row text-center mt-2 " >
+  <div class="col-12" >
     <div [style.height.px]="ConfigService.params.labelHeight" style="background: #eee; ">
       <app-price-label #etiqueta (click)="printTag()" [product]="product"></app-price-label>
     </div>
@@ -12,9 +12,9 @@
 </div>
 <div class="row text-center ">
   <div class="btn-group btn-group-lg fixed-bottom" role="group">
-    <button type="button btn-block" (click)="toglePrintAuto()" [ngClass]="{'btn': true, 'btn-secondary': true, 'active': printAuto}"><i class="fa fa-print"></i>
+    <button type="button btn-block" (click)="toglePrintAuto()" [ngClass]="{'btn': true, 'btn-info': true, 'active': printAuto}"><i class="fa fa-print"></i>
     </button>
-    <button type="button btn-block" data-toggle="modal" data-target="#pricelistModal" [ngClass]="{'btn': true, 'btn-secondary': true}"><i class="fa fa-list"></i>
+    <button type="button btn-block" data-toggle="modal" data-target="#pricelistModal" [ngClass]="{'btn': true, 'btn-info': true}"><i class="fa fa-list"></i>
     </button>
   </div>
 </div>

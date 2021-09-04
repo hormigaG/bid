@@ -28,6 +28,8 @@ import { PriceUpdateComponent } from './pages/price-update/price-update.componen
 import { FilterPricePipe } from './_helpers/filter-price.pipe';
 import { EntWhSelectorComponent } from './pages/stock/ent-wh-selector/ent-wh-selector.component';
 import { EntLocationComponent } from './pages/stock/ent-location/ent-location.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MainPageComponent } from './pages/main-page/main-page.component';
 
 
 @NgModule({
@@ -46,7 +48,8 @@ import { EntLocationComponent } from './pages/stock/ent-location/ent-location.co
     PriceUpdateComponent,
     FilterPricePipe,
     EntWhSelectorComponent,
-    EntLocationComponent
+    EntLocationComponent,
+    MainPageComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ import { EntLocationComponent } from './pages/stock/ent-location/ent-location.co
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [HTTP, OdooRPCService],
   exports: [

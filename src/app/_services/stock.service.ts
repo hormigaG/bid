@@ -110,4 +110,22 @@ export class StockService {
     return transaction$;
     }
 
+ button_validate(picking_id) {
+
+    const transaction$ = new Observable((observer) => {
+      this.odooRPC
+         .call('stock.picking', 'button_validate', [picking_id], {}).then((res) =>{
+
+              observer.next(res);
+              observer.complete();
+
+         }).catch((err) => {
+           alert(err);
+         });
+        
+    });
+
+    return transaction$;
+    }
 }
+

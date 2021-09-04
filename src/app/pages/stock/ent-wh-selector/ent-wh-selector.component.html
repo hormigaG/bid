@@ -3,7 +3,7 @@
   <h3 class=''>Seleccione la ubicación</h3>
 
     <ul class="list-group">
-      <li *ngFor="let item of wh" routerLink="/stock-entry/location/{{ item.lot_stock_id[0] }}" class="text-left list-group-item">
+      <li *ngFor="let item of wh" routerLink="/stock/location-entry/{{ item.lot_stock_id[0] }}" class="text-left list-group-item">
          <i class="fa fa-fw fa-building"></i> {{ item['name']}} ({{ item.lot_stock_id[1] }})
       </li>
     </ul>
