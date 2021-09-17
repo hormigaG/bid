@@ -323,6 +323,7 @@ export class EntLocationComponent implements OnInit {
 
 
   searchByCode(code){
+    this.changeDetectorRef.detectChanges();
 
     let qty = 1
     if (code.length<3){
@@ -349,10 +350,11 @@ export class EntLocationComponent implements OnInit {
       this.addScannedQuantity(line, 1);
       this.addQty = 1;
       this.qtyDir = 1;
+      this.changeDetectorRef.detectChanges();
       if (openModal){
         this.modalService.open(this.moveLineModal).result.then((result)=>{
         this.active_index = undefined; 
-
+        this.changeDetectorRef.detectChanges();
       });
       } 
 
@@ -371,6 +373,8 @@ export class EntLocationComponent implements OnInit {
   }
  
   addScannedQuantity(line, qty=1){
+    this.changeDetectorRef.detectChanges();
+
     if (this.moves[line]['scanned_qty'] + qty < 1){
       this.moves[line]['quantity_done'] = this.moves[line]['quantity_done'] - this.moves[line]['scanned_qty']
       this.moves[line]['scanned_qty'] = 0;
@@ -388,6 +392,8 @@ export class EntLocationComponent implements OnInit {
     } 
 
     let line_id = this.moves[line];
+    this.changeDetectorRef.detectChanges();
+
     if (line_id.quantity_done == line_id.product_uom_qty){
     //if (line_id.scanned_qty == 5){
          this.spinner = true;
