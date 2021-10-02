@@ -52,16 +52,15 @@ export class StockService {
             return move['product_id'][0]
           });
           this.odooRPC
-            .read("product.product",product_ids,['uom_id','barcode','default_code', 'modelo_articulo']).then((products) =>{
+            .read("product.product",product_ids,['uom_id','barcode','default_code']).then((products) =>{
               let product_dict:any = {}; 
               products.map(function(p){
                 product_dict[p['id']] = p; 
               })
               res["records"].forEach(function(part, index, theArray) {
-
+                // TODO: agregar LOCALSTORAGE
                 res["records"][index]['barcode'] = product_dict[part['product_id'][0]]['barcode'];
                 res["records"][index]['default_code'] = product_dict[part['product_id'][0]]['default_code'];
-                res["records"][index]['modelo_articulo'] = product_dict[part['product_id'][0]]['modelo_articulo'];
                 res["records"][index]['uom_id'] = product_dict[part['product_id'][0]]['uom_id'];
                 res["records"][index]['scanned_qty'] = 0;
 

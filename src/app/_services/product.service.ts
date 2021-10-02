@@ -15,7 +15,7 @@ export class ProductService {
         .searchRead(
           "product.product",
           leaf,
-          ["name", "display_name", "default_code", "description","barcode","modelo_articulo",'second_price'],
+          ["name", "display_name", "default_code", "description","barcode"],
           1,0,{"lang": "es_AR", 'display_default_code': false}
         )
         .then((res) => {
@@ -98,7 +98,7 @@ export class ProductService {
         .searchRead(
           "product.product",
           [['product_tmpl_id', '=', id]],
-          ["name", "display_name", "default_code", "description","barcode","modelo_articulo",'second_price'],
+          ["name", "display_name", "default_code", "description","barcode"],
           1,0,{"lang": "es_AR", 'display_default_code': false}
         )
         .then((res) => {

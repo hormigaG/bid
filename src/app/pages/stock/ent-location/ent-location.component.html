@@ -73,7 +73,6 @@
 
         <div *ngIf="moves[active_index]['barcode']">Codigo de barra: <strong>{{ moves[active_index]['barcode'] }}</strong></div>
         <div>Codigo interno: <strong>{{ moves[active_index]['default_code'] }}</strong></div>
-        <div *ngIf="moves[active_index]['modelo_articulo']">Modelo: <strong>{{ moves[active_index]['modelo_articulo'] }}</strong></div>
         <div class="btn-group  w-100" role="group">
           <button type="button" (click)="qtyDir = -1;" [ngClass]="{'btn': true, 'btn-dark': true, 'active': qtyDir==-1}"><i class="fa fa-minus"></i></button>
           <button type="button" (click)="qtyDir = 1;" [ngClass]="{'btn': true, 'btn-dark': true, 'active': qtyDir==1}"><i class="fa fa-plus"></i></button>

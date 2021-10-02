@@ -382,6 +382,7 @@ export class EntLocationComponent implements OnInit {
     }
     this.moves[line]['scanned_qty'] += qty;
     this.moves[line]['quantity_done'] += qty;
+    // TODO: LocalSOTRAGE -> this.moves[line]['scanned_qty']
     if (qty > 0 && this.moves[line]['quantity_done'] > this.moves[line]['product_uom_qty']) {
       let message = "Esta por confirmar mas items de los esperados ¿esta seguro?";
       if (!window.confirm(message)){
@@ -401,6 +402,7 @@ export class EntLocationComponent implements OnInit {
           this.moves[line],
           this.moves[line]['scanned_qty']
          ).subscribe((res) => {
+          // Todo borro el localstorage del movimiento
           this.moves[line]['scanned_qty'] = 0;
           // delete this.moves[line];
           this.getAssignedMoves();
@@ -408,7 +410,6 @@ export class EntLocationComponent implements OnInit {
           this.modalService.dismissAll('Cross click');
           this.check_pick_ok(this.active_index);
           this.active_index = undefined;
-
         });
     }
 
