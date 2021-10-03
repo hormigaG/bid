@@ -24,15 +24,14 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",              
-              "node_modules/font-awesome/css/font-awesome.css", 
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/font-awesome/css/font-awesome.css",
               "src/styles.css"
             ],
             "scripts": [
-                "node_modules/jquery/dist/jquery.min.js",
-                "node_modules/@popperjs/core/dist/umd/popper.min.js",
-                "node_modules/bootstrap/dist/js/bootstrap.min.js"
-
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@popperjs/core/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
           },
           "configurations": {
@@ -127,5 +126,8 @@
       }
     }
   },
-  "defaultProject": "cp"
+  "defaultProject": "cp",
+  "cli": {
+    "analytics": "5e482263-377a-46c0-9f7b-b4e95f5093ac"
+  }
 }

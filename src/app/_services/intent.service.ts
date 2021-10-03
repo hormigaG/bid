@@ -102,7 +102,6 @@ export class BarcodeProvider {
 
           setTimeout(() => {
             this.BarcodeData.next('41568');
-            console.log('aca');
           }, 3000)
 
   }

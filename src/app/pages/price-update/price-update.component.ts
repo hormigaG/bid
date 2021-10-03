@@ -53,8 +53,8 @@ export class PriceUpdateComponent implements OnInit {
 	conectPrinter() {
 		this.PrinterService.connected().subscribe((res: any) => {
 			if (res) {
-				console.log("impresora conectada");
-			} else {
+/* 				console.log("impresora conectada");
+ */			} else {
 				this.PrinterService.connectPrinter(
 					this.ConfigService.params.PrinterName
 				).subscribe();

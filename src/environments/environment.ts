@@ -4,11 +4,12 @@
 
 export const environment = {
   production: false,
-  odoo_server: "/odoo",
+  odoo_server: '/odoo',
   //db: '13_goro',
-  db: 'testing.casagoro.com.ar',
-  password:"",
-  user: "",
+  //db: 'testing.casagoro.com.ar',
+  db: '13_bid',
+  password: '',
+  user: '',
 };
 
 /*

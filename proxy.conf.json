@@ -1,6 +1,15 @@
 {
-    "\/odoo": {
+    "\/test": {
         "target": "https://testing.casagoro.com.ar/",
+        "secure": false,
+        "changeOrigin": true,
+        "pathRewrite": {
+             "^\/odoo/": "/"
+        }
+    },
+
+    "\/odoo": {
+        "target": "http://localhost:8069/",
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
