@@ -523,6 +523,7 @@ export class EntLocationComponent implements OnInit {
           this.spinner = false;
           this.getAssignedMoves();
           this.modalService.dismissAll('Cross click');
+          this.removeToLocalStorage(this.moves[line]);
           this.active_index = undefined;
         });
     }
