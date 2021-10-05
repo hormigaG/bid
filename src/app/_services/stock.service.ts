@@ -51,6 +51,8 @@ export class StockService {
             'company_id',
             'location_id',
             'location_dest_id',
+            'purchase_line_id',
+            'origin'
           ],
           0,
           0

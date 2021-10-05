@@ -334,7 +334,6 @@ export class EntLocationComponent implements OnInit {
   }
   selectPiking(picking_id) {
     this.spinner = true;
-    console.log(picking_id);
     const element = {
       name: 'picking_id',
       label: picking_id[1],
@@ -343,7 +342,6 @@ export class EntLocationComponent implements OnInit {
     const buscado = this.filters.find(
       (e) => e.value === element.value && e.name === element.name
     );
-    console.log(buscado, this.filters);
 
     if (!buscado) {
       this.filters.push(element);

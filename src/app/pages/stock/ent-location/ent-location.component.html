@@ -82,9 +82,8 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="selectPiking(item['picking_id'])"
-              >
-                remito: {{ item["picking_id"][1] }}
-              </button> 
+              >remito: {{ item["picking_id"][1] }}
+              </button> <small> Origen: {{ item["origin"] }}</small>
             </div>
             <div class="col-2">
               <button
@@ -179,6 +178,11 @@
         <div>
           Total: <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
         </div>
+        <div>
+          Origen:
+          <strong>{{ moves[active_index]["origin"] }}</strong>
+        </div>
+
 
         <div *ngIf="moves[active_index]['barcode']">
           Codigo de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>
