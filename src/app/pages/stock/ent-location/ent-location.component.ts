@@ -403,14 +403,13 @@ export class EntLocationComponent implements OnInit {
     if (line == -1) {
       alert(code + ' NO diponible');
     } else {
-      let openModal = !!this.modalService.activeInstances;
+      let openModal = this.modalService.hasOpenModals();
       this.active_index = line;
       this.addScannedQuantity(line, 1);
       this.addQty = 1;
       this.qtyDir = 1;
       this.changeDetectorRef.detectChanges();
-      if (openModal) {
-        //TODO: ACA ALGO HACE MAL
+      if (! openModal) {
         this.modalService.open(this.moveLineModal).result.then((result) => {
           this.active_index = undefined;
           this.changeDetectorRef.detectChanges();
@@ -475,13 +474,12 @@ export class EntLocationComponent implements OnInit {
       this.stockService
         .move_products(this.moves[line], this.moves[line]['scanned_qty'])
         .subscribe((res) => {
-          // Todo borro el localstorage del movimiento
           this.removeToLocalStorage(this.moves[line]);
           this.moves[line]['scanned_qty'] = 0;
           // delete this.moves[line];
           this.getAssignedMoves();
 
-          this.modalService.dismissAll('Cross click');
+          this.modalService.dismissAll('ccc');
           this.check_pick_ok(this.active_index);
           this.active_index = undefined;
         });
@@ -522,7 +520,7 @@ export class EntLocationComponent implements OnInit {
           // delete this.moves[line];
           this.spinner = false;
           this.getAssignedMoves();
-          this.modalService.dismissAll('Cross click');
+          this.modalService.dismissAll();
           this.removeToLocalStorage(this.moves[line]);
           this.active_index = undefined;
         });

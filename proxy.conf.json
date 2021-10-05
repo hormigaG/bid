@@ -1,5 +1,5 @@
 {
-    "\/test": {
+    "\/odoox": {
         "target": "https://testing.casagoro.com.ar/",
         "secure": false,
         "changeOrigin": true,
@@ -9,8 +9,8 @@
     },
 
     "\/odoo": {
-        "target": "http://localhost:8069/",
-        "secure": false,
+        "target": "https://train-bidargentinasa-07-07-1.nubeadhoc.com/",
+        "secure": true,
         "changeOrigin": true,
         "pathRewrite": {
              "^\/odoo/": "/"

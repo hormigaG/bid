@@ -5,7 +5,8 @@
 export const environment = {
   production: true,
   odoo_server: "https://testing.casagoro.com.ar",
-  db: 'testing.casagoro.com.ar',
+  //db: 'testing.casagoro.com.ar',
+  db: 'train-bidargentinasa-07-07-1',
   password:"",
   user: "",
 };

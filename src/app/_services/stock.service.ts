@@ -43,6 +43,7 @@ export class StockService {
             'product_id',
             'name',
             'product_uom_qty',
+            'product_uom',
             'reserved_availability',
             'quantity_done',
             'sequence',
@@ -61,6 +62,7 @@ export class StockService {
           this.odooRPC
             .read('product.product', product_ids, [
               'uom_id',
+              'uom_po_id',
               'barcode',
               'default_code',
             ])
@@ -75,6 +77,8 @@ export class StockService {
                   product_dict[part['product_id'][0]]['barcode'];
                 res['records'][index]['default_code'] =
                   product_dict[part['product_id'][0]]['default_code'];
+                res['records'][index]['uom_po_id'] =
+                  product_dict[part['product_id'][0]]['uom_po_id'];
                 res['records'][index]['uom_id'] =
                   product_dict[part['product_id'][0]]['uom_id'];
                 if (self.getQuantity(res['records'][index].id) > -1) {
@@ -112,14 +116,13 @@ export class StockService {
       move_id: move_id.id,
       company_id: move_id.company_id[0],
       product_id: move_id.product_id[0],
-      product_uom_id: move_id.uom_id[0],
+      product_uom_id: move_id.product_uom[0],
       location_id: move_id.location_id[0],
       location_dest_id: move_id.location_dest_id[0],
       description_picking: description_picking,
       qty_done: qty_done || move_id['qty_done'],
     };
     this.deleteQuantity(move_id.move_id);
-    console.info(move_line);
 
     const transaction$ = new Observable((observer) => {
       this.odooRPC

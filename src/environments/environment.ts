@@ -7,7 +7,9 @@ export const environment = {
   odoo_server: '/odoo',
   //db: '13_goro',
   //db: 'testing.casagoro.com.ar',
-  db: '13_bid',
+  //db: '13_bid',
+  db: 'train-bidargentinasa-07-07-1',
+
   password: '',
   user: '',
 };

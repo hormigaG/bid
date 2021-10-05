@@ -84,7 +84,7 @@
                 (click)="selectPiking(item['picking_id'])"
               >
                 remito: {{ item["picking_id"][1] }}
-              </button>
+              </button> 
             </div>
             <div class="col-2">
               <button
@@ -144,14 +144,14 @@
         <h5 class="modal-title" id="exampleModalLabel">
           {{ moves[active_index]["product_id"][1] }}
         </h5>
-        <button
+        <!--button
           type="button"
           class="close"
           aria-label="Close"
           (click)="modal.dismiss('Cross click')"
         >
           <span aria-hidden="true">&times;</span>
-        </button>
+        </button-->
       </div>
       <div class="modal-body">
         <h2 class="bg-danger text-center text-white mb-0">
@@ -163,6 +163,11 @@
           Remito: <strong>{{ moves[active_index]["picking_id"][1] }}</strong>
         </div>
         <div>
+          Unidad:
+          <strong>{{ moves[active_index]["product_uom"][1]}}</strong>
+        </div>
+        
+        <div>
           Realizados:
           <strong>{{ moves[active_index]["quantity_done"] }}</strong>
         </div>
@@ -170,6 +175,7 @@
           Reservados:
           <strong>{{ moves[active_index]["reserved_availability"] }}</strong>
         </div>
+
         <div>
           Total: <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
         </div>
@@ -253,7 +259,7 @@
           type="button"
           class="btn btn-secondary"
           aria-label="Close"
-          (click)="modal.dismiss('Cross click')"
+          (click)="modal.dismiss()"
         >
           Cerrar
         </button>

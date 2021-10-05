@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
       this.isLogged = res;
     });
   }
-
+  
   logout() {
     this.odooRPC.logout();
     this.isLogged = false;
