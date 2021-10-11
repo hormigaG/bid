@@ -11,39 +11,70 @@
 <div class="row text-center mt-2">
   <div class="col-12">
     <!-- <div *ngIf="this.inputMethod == 'textBus'" class="text-center card "><strong>{{textBus}}</strong></div> -->
-    <div
-      *ngIf="this.inputMethod == 'textBus'"
-      class="text-center card text-bus mb-2"
-    >
-      {{ textBus ? textBus : "Lector de código" }}
-    </div>
-    <form [formGroup]="searchForm" *ngIf="this.inputMethod == 'form'">
-      <div class="input-group input-group-lg">
-        <input
-          type="text"
-          autofocus
-          #search
-          class="form-control"
-          id="bus"
-          formControlName="search"
-          aria-label="Large"
-          aria-describedby="inputGroup-sizing-sm"
-        />
-        <span class="input-group-append">
-          <button
-            class="btn btn-primary btn-lg"
-            (click)="formSearch()"
-            type="button"
-          >
-            <i class="fa fa-search"></i>
-          </button>
-        </span>
+
+    <div class="row">
+      <div class="col-2">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="collapse.toggle()"
+          [attr.aria-expanded]="!isCollapsed"
+          aria-controls="collapseExample"
+          class="btn btn-outline-primary"
+        >
+          <i class="fa fa-filter"></i>
+        </button>
       </div>
-    </form>
+      <div
+        *ngIf="this.inputMethod == 'textBus'"
+        class="col-10 text-center card text-bus mb-2"
+      >
+        {{ textBus ? textBus : "Lector de código" }}
+      </div>
+
+      <form
+        [formGroup]="searchForm"
+        class="col-10"
+        *ngIf="this.inputMethod == 'form'"
+      >
+        <div class="input-group input-group-lg">
+          <input
+            type="text"
+            autofocus
+            #search
+            class="form-control"
+            id="bus"
+            formControlName="search"
+            aria-label="Large"
+            aria-describedby="inputGroup-sizing-sm"
+          />
+          <span class="input-group-append">
+            <button
+              class="btn btn-primary btn-lg"
+              (click)="formSearch()"
+              type="button"
+            >
+              <i class="fa fa-search"></i>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+      <div class="card pb-0">
+        <div class="row pb-0">
+          <div class="col-2">
+            <range-picker (evento)="reciboRango($event)"> </range-picker>
+          </div>
+          <div class="col-10"></div>
+        </div>
+      </div>
+    </div>
     <div class="text-left">
       <strong *ngIf="filters.length">Filtros: </strong>
       <span
-        *ngFor="let filter of filters; let i=index"
+        *ngFor="let filter of filters; let i = index"
         class="badge badge-primary"
         (click)="removeFilter(i)"
       >
@@ -82,8 +113,10 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="selectPiking(item['picking_id'])"
-              >remito: {{ item["picking_id"][1] }}
-              </button> <small> Origen: {{ item["origin"] }}</small>
+              >
+                remito: {{ item["picking_id"][1] }}
+              </button>
+              <small> Origen: {{ item["origin"] }}</small>
             </div>
             <div class="col-2">
               <button
@@ -163,9 +196,9 @@
         </div>
         <div>
           Unidad:
-          <strong>{{ moves[active_index]["product_uom"][1]}}</strong>
+          <strong>{{ moves[active_index]["product_uom"][1] }}</strong>
         </div>
-        
+
         <div>
           Realizados:
           <strong>{{ moves[active_index]["quantity_done"] }}</strong>
@@ -182,7 +215,6 @@
           Origen:
           <strong>{{ moves[active_index]["origin"] }}</strong>
         </div>
-
 
         <div *ngIf="moves[active_index]['barcode']">
           Codigo de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>

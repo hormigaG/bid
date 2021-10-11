@@ -30,6 +30,7 @@ import { EntWhSelectorComponent } from './pages/stock/ent-wh-selector/ent-wh-sel
 import { EntLocationComponent } from './pages/stock/ent-location/ent-location.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainPageComponent } from './pages/main-page/main-page.component';
+import { RangePickerComponent } from './main/comunes/range-picker/range-picker.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
     FilterPricePipe,
     EntWhSelectorComponent,
     EntLocationComponent,
-    MainPageComponent
+    MainPageComponent,
+    RangePickerComponent
   ],
   imports: [
     BrowserModule,
