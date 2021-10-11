@@ -575,9 +575,16 @@ export class EntLocationComponent implements OnInit {
       this.filters.splice(index, 1);
     }
     if (value.fromDate && value.toDate) {
+      const fromDate =
+        value.fromDate.day +
+        '/' +
+        value.fromDate.month +
+        '/' +
+        value.fromDate.year;
+      const toDate =
+        value.toDate.day + '/' + value.toDate.month + '/' + value.toDate.year;
       this.filters.push({
-        label:
-          this.parseDate(value.fromDate) + '-' + this.parseDate(value.toDate),
+        label: fromDate + ' a ' + toDate,
         value: {
           fromDate: this.parseDate(value.fromDate),
           toDate: this.parseDate(value.toDate),
@@ -588,11 +595,11 @@ export class EntLocationComponent implements OnInit {
       const fromDate =
         value.fromDate.day +
         '/' +
-        value.fromDate.day +
+        value.fromDate.month +
         '/' +
         value.fromDate.year;
       this.filters.push({
-        label: this.parseDate(value.fromDate),
+        label: fromDate,
         value: { fromDate: this.parseDate(value.fromDate) },
         name: 'date_expected',
       });
