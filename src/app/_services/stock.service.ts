@@ -112,6 +112,7 @@ export class StockService {
     }
     return -1;
   }
+
   move_products(move_id, qty_done, description_picking = '') {
     let move_line = {
       picking_id: move_id.picking_id[0],
@@ -192,5 +193,6 @@ export class StockService {
     });
 
     return transaction$;
-  }
+    }
 }
+
