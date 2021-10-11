@@ -16,7 +16,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
 @Component({
   selector: 'app-ent-location',
   templateUrl: './ent-location.component.html',
@@ -33,7 +32,7 @@ export class EntLocationComponent implements OnInit {
   intefaceBlocked: boolean = false;
   product: any;
   capturedImage;
-
+  isCollapsed: boolean = true;
   searchForm: FormGroup;
   inputMethod = 'textBus';
   spinner: boolean = true;
@@ -367,6 +366,7 @@ export class EntLocationComponent implements OnInit {
   }
   getAssignedMoves() {
     let leaf = [];
+
     if (this.op == 'location-entry') {
       leaf = [
         ['state', '=', ['assigned', 'draft']],
@@ -377,6 +377,36 @@ export class EntLocationComponent implements OnInit {
         ['state', 'in', ['assigned', 'draft']],
         ['picking_id', '=', this.lot_stock_id],
       ];
+    }
+    for (let i = 0; i < this.filters.length; i++) {
+      switch (this.filters[i].name) {
+        case 'date_expected': {
+          if (this.filters[i].value.fromDate && !this.filters[i].value.toDate) {
+            leaf.push([
+              'date_expected',
+              '>=',
+              this.filters[i].value.fromDate + ' 00:00:00',
+            ]);
+            leaf.push([
+              'date_expected',
+              '<',
+              this.filters[i].value.fromDate + ' 23:59:59',
+            ]);
+          } else {
+            leaf.push([
+              'date_expected',
+              '>=',
+              this.filters[i].value.fromDate + ' 00:00:00',
+            ]);
+            leaf.push([
+              'date_expected',
+              '<',
+              this.filters[i].value.toDate + ' 23:59:59',
+            ]);
+          }
+          break;
+        }
+      }
     }
     if (leaf.length) {
       this.stockService.getMoves(leaf).subscribe((res) => {
@@ -422,7 +452,7 @@ export class EntLocationComponent implements OnInit {
       this.addQty = 1;
       this.qtyDir = 1;
       this.changeDetectorRef.detectChanges();
-      if (! openModal) {
+      if (!openModal) {
         this.modalService.open(this.moveLineModal).result.then((result) => {
           this.active_index = undefined;
           this.changeDetectorRef.detectChanges();
@@ -538,6 +568,42 @@ export class EntLocationComponent implements OnInit {
           this.active_index = undefined;
         });
     }
+  }
+  reciboRango(value) {
+    const index = this.filters.findIndex((e) => e.name == 'date_expected');
+    if (index >= 0) {
+      this.filters.splice(index, 1);
+    }
+    if (value.fromDate && value.toDate) {
+      this.filters.push({
+        label:
+          this.parseDate(value.fromDate) + '-' + this.parseDate(value.toDate),
+        value: {
+          fromDate: this.parseDate(value.fromDate),
+          toDate: this.parseDate(value.toDate),
+        },
+        name: 'date_expected',
+      });
+    } else if (value.fromDate) {
+      const fromDate =
+        value.fromDate.day +
+        '/' +
+        value.fromDate.day +
+        '/' +
+        value.fromDate.year;
+      this.filters.push({
+        label: this.parseDate(value.fromDate),
+        value: { fromDate: this.parseDate(value.fromDate) },
+        name: 'date_expected',
+      });
+    }
+    this.getAssignedMoves();
+  }
+  private parseDate(date) {
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
+    return (
+      date.year + '-' + zeroPad(date.month, 2) + '-' + zeroPad(date.day, 2)
+    );
   }
   private getDismissReason(reason: any) {}
 }

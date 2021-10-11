@@ -43,7 +43,7 @@ export class StockService {
             'product_id',
             'name',
             'product_uom_qty',
-            'product_uom',
+            'product_uom', // UNIDAD DE MEDIDA ESTA EN LA ORDEN DE COMPRA 
             'reserved_availability',
             'quantity_done',
             'sequence',
@@ -52,7 +52,8 @@ export class StockService {
             'location_id',
             'location_dest_id',
             'purchase_line_id',
-            'origin'
+            'origin',
+            'date_expected'
           ],
           0,
           0
