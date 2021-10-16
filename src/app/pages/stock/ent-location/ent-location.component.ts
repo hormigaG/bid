@@ -286,12 +286,11 @@ export class EntLocationComponent implements OnInit {
         parent.changeDetectorRef.detectChanges();
       }
     });
-
+    this.HoneyService.startBarcode();
     this.HoneyService.BarcodeData.subscribe((res: any) => {
-      console.log(res);
-      console.log(parent.inputMethod);
+      this.changeDetectorRef.detectChanges();
+
       if (parent.inputMethod == 'textBus' && res) {
-        console.log(parent);
         parent.searchByCode(res);
         parent.changeDetectorRef.detectChanges();
       }

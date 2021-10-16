@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import {Injectable, ApplicationRef } from '@angular/core';
 
 import { Subject } from "rxjs";
 import { Observable } from "rxjs";
@@ -14,13 +14,15 @@ function _window(): any {
 })
 export class HoneyService {
   BarcodeData = new BehaviorSubject(null); //la declaro como observable
-  constructor() {}
+  constructor(private ref: ApplicationRef) {}
   startBarcode() {
+
     let self = this;
     cordova.plugins.honeywell.barcode.onBarcodeScanned(
       (result) => {
         self.BarcodeData.next(result.data);
-        alert(result.data);
+        self.ref.tick();
+
       },
       (error) => {
         alert(error);
@@ -32,7 +34,7 @@ export class HoneyService {
     console.log("start test");
 
     setTimeout(() => {
-      console.log("Netx");
+
       this.BarcodeData.next("MF");
       this.test();
     }, 3000);
