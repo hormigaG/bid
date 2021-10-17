@@ -285,12 +285,12 @@ export class EntLocationComponent implements OnInit {
       }
     });
   }
-  @HostListener('document:keypress', ['$event'])
+  /* @HostListener('document:keypress', ['$event'])
   handleKeyboardpressEvent(event: KeyboardEvent) {
     if (this.inputMethod == 'form' && event.keyCode == 13) {
       this.formSearch();
     }
-    if (this.inputMethod != 'textBus') {
+    if (this.inputMethod == 'textBus') {
       return;
     }
     if (event.keyCode == 13) {
@@ -299,8 +299,8 @@ export class EntLocationComponent implements OnInit {
       this.textBus += event.key;
       event.stopPropagation();
     }
-  }
-  @HostListener('document:keydown', ['$event'])
+  } */
+  /* @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.inputMethod != 'textBus') {
       return;
@@ -310,7 +310,8 @@ export class EntLocationComponent implements OnInit {
     } else if (event.keyCode == 8) {
       this.textBus = this.textBus.substring(0, this.textBus.length - 1);
     }
-  }
+  } */
+
   togleShowOk() {
     if (this.showOk) {
       this.showOk = false;
@@ -410,6 +411,7 @@ export class EntLocationComponent implements OnInit {
   }
 
   searchByCode(code) {
+    console.log('code', code);
     this.changeDetectorRef.detectChanges();
 
     let qty = 1;

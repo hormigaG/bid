@@ -1,0 +1,12 @@
+.my-card {
+  min-height: 150px;
+  width: 100%;
+}
+.icon {
+  font-size: 4em;
+  color: white;
+}
+
+.text-long {
+  font-size: 1.3em;
+}
