@@ -10,6 +10,7 @@ import { ProductService } from '../../../_services/product.service';
 import { environment } from '../../../../environments/environment';
 import { Events } from '../../../_services/events.service';
 import { BarcodeProvider } from '../../../_services/intent.service';
+import { HoneyService } from '../../../_services/honey.service';
 import { ConfigService } from '../../../_services/config.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
@@ -75,6 +76,7 @@ export class EntLocationComponent implements OnInit {
     public productService: ProductService,
     private formBuilder: FormBuilder,
     public barcodeProvider: BarcodeProvider,
+    public HoneyService: HoneyService,
     public events: Events,
     private changeDetectorRef: ChangeDetectorRef,
     public ConfigService: ConfigService,
@@ -284,6 +286,18 @@ export class EntLocationComponent implements OnInit {
         parent.changeDetectorRef.detectChanges();
       }
     });
+    this.HoneyService.startBarcode();
+    this.HoneyService.BarcodeData.subscribe((res: any) => {
+      this.changeDetectorRef.detectChanges();
+
+      if (parent.inputMethod == 'textBus' && res) {
+        parent.searchByCode(res);
+        parent.changeDetectorRef.detectChanges();
+      }
+    });
+
+    // Test del servicio honey simula un scaning de MF
+    //this.HoneyService.test();
   }
   /* @HostListener('document:keypress', ['$event'])
   handleKeyboardpressEvent(event: KeyboardEvent) {
@@ -413,9 +427,9 @@ export class EntLocationComponent implements OnInit {
   searchByCode(code) {
     console.log('code', code);
     this.changeDetectorRef.detectChanges();
-
+    console.log(code);
     let qty = 1;
-    if (code.length < 3) {
+    if (code.length < 2) {
       return;
     }
     var line = this.moves.findIndex(function (item) {
