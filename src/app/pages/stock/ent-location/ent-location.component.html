@@ -25,16 +25,20 @@
           <i class="fa fa-filter"></i>
         </button>
       </div>
-      <div
+      <read-code
+        class="col-10"
+        [inputMethod]="inputMethod"
+        (searchByCode)="searchByCode($event)"
+      ></read-code>
+      <!-- <div
         *ngIf="this.inputMethod == 'textBus'"
         class="col-10 text-center card text-bus mb-2"
       >
         {{ textBus ? textBus : "Lector de código" }}
-      </div>
+      </div> -->
 
-      <form
+      <!-- <form
         [formGroup]="searchForm"
-        class="col-10"
         *ngIf="this.inputMethod == 'form'"
       >
         <div class="input-group input-group-lg">
@@ -52,13 +56,13 @@
             <button
               class="btn btn-primary btn-lg"
               (click)="formSearch()"
-              type="button"
+              type="submit"
             >
               <i class="fa fa-search"></i>
             </button>
           </span>
         </div>
-      </form>
+      </form> -->
     </div>
 
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
