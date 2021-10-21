@@ -183,6 +183,11 @@ export class OdooRPCService {
 
     public logout(force: boolean = true) {
         this.cookies.delete_sessionId();
+        return this.sendRequest("/web/session/destroy",{}).then(function(result: any) {
+                return Promise.resolve();
+            
+        });
+
         if (force) {
             return this.getSessionInfo().then((r: any) => { // get db from sessionInfo
                 if (r.db){

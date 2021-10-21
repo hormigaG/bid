@@ -4,14 +4,14 @@
       <form [formGroup]="authForm" class="login-container p-3" (ngSubmit)="configure()">
         <div class="form-group" [ngClass]="{ 'has-error': isSubmitted && formControls.url.errors }">
           <label for="url">Servidor:</label>
-          <input type="url" placeholder="url" class="form-control input-custom" id="url" aria-describedby="urlHelp" formControlName="url">
+          <input type="text" placeholder="https://miodoo.com" class="form-control input-custom" id="url" aria-describedby="urlHelp" formControlName="url">
           <div *ngIf="isSubmitted && formControls.url.errors" class="help-block text-white font-italic">
             <div *ngIf="formControls.url.errors.required"><strong>*</strong>Debe ingresar un servidor</div>
           </div>
         </div>
         <div class="form-group" [ngClass]="{ 'has-error': isSubmitted && formControls.url.errors }">
           <label for="dbName">Nombre de la base de datos</label>
-          <input type="dbName" placeholder="dbName" class="form-control input-custom" id="dbName" aria-describedby="dbNameHelp" formControlName="dbName">
+          <input type="text" placeholder="odoo" class="form-control input-custom" id="dbName" aria-describedby="dbNameHelp" formControlName="dbName">
           <div *ngIf="isSubmitted && formControls.dbName.errors" class="help-block text-white font-italic">
             <div *ngIf="formControls.dbName.errors.required"><strong>*</strong>Debe ingresar una base de datos</div>
           </div>

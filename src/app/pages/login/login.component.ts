@@ -34,7 +34,11 @@ export class LoginComponent implements OnInit {
     });
 
     this.server_url = localStorage.getItem('url');
-    this.server_db = localStorage.getItem('dbName')
+    this.server_db = localStorage.getItem('dbName');
+    if (!localStorage.getItem('url') || !localStorage.getItem('dbName')){
+      this.router.navigate(["/db"]);
+
+    }
     this.odooRPC.isLoggedIn().then((res) => {
       this.isLogged = res;
     });
