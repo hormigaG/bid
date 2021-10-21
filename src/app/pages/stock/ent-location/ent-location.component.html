@@ -16,20 +16,19 @@
       <div class="col-2">
         <button
           type="button"
-          class="btn btn-outline-primary"
+          class="btn btn-primary shadow"
           (click)="collapse.toggle()"
           [attr.aria-expanded]="!isCollapsed"
           aria-controls="collapseExample"
-          class="btn btn-outline-primary"
         >
           <i class="fa fa-filter"></i>
         </button>
       </div>
       <div
         *ngIf="this.inputMethod == 'textBus'"
-        class="col-10 text-center card text-bus mb-2"
+        class="col-9 text-center card text-bus shadow mb-2"
       >
-        {{ textBus ? textBus : "Lector de código" }}
+        {{ textBus ? textBus : "código" }}
       </div>
 
       <form
@@ -62,10 +61,10 @@
     </div>
 
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-      <div class="card pb-0">
+      <div class="pb-0">
         <div class="row pb-0">
           <div class="col-2">
-            <range-picker (evento)="reciboRango($event)"> </range-picker>
+            <range-picker (evento)="dateRange($event)"> </range-picker>
           </div>
           <div class="col-10"></div>
         </div>
@@ -76,7 +75,7 @@
       <span
         *ngFor="let filter of filters; let i = index"
         class="badge badge-primary"
-        (click)="removeFilter(i)"
+        (click)="removeFilter(filter.name)"
       >
         {{ filter.label }}
       </span>

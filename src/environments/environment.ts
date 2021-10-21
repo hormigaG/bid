@@ -8,7 +8,7 @@ export const environment = {
   //db: '13_goro',
   //db: 'testing.casagoro.com.ar',
   //db: '13_bid',
-  db: 'train-bidargentinasa-07-07-1',
+  db: 'train-bidargentinasa-20-10-2',
 
   password: '',
   user: '',

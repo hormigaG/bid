@@ -343,7 +343,8 @@ export class EntLocationComponent implements OnInit {
   removeFilter(i) {
     this.filters.splice(i, 1);
     //TODO: VER COMO USAR FILTERS PARA FILTRAR
-    this.refresh();
+    this.spinner = true;
+    this.getAssignedMoves();
   }
   selectPiking(picking_id) {
     this.spinner = true;
@@ -352,17 +353,18 @@ export class EntLocationComponent implements OnInit {
       label: picking_id[1],
       value: picking_id[0],
     };
-    const buscado = this.filters.find(
+    const exist = this.filters.find(
       (e) => e.value === element.value && e.name === element.name
     );
 
-    if (!buscado) {
+    if (!exist) {
       this.filters.push(element);
       this.op = 'picking';
       this.lot_stock_id = picking_id[0];
       this.getAssignedMoves();
     }
   }
+
   getAssignedMoves() {
     let leaf = [];
 
@@ -377,36 +379,22 @@ export class EntLocationComponent implements OnInit {
         ['picking_id', '=', this.lot_stock_id],
       ];
     }
-    for (let i = 0; i < this.filters.length; i++) {
-      switch (this.filters[i].name) {
-        case 'date_expected': {
-          if (this.filters[i].value.fromDate && !this.filters[i].value.toDate) {
-            leaf.push([
-              'date_expected',
-              '>=',
-              this.filters[i].value.fromDate + ' 00:00:00',
-            ]);
-            leaf.push([
-              'date_expected',
-              '<',
-              this.filters[i].value.fromDate + ' 23:59:59',
-            ]);
-          } else {
-            leaf.push([
-              'date_expected',
-              '>=',
-              this.filters[i].value.fromDate + ' 00:00:00',
-            ]);
-            leaf.push([
-              'date_expected',
-              '<',
-              this.filters[i].value.toDate + ' 23:59:59',
-            ]);
-          }
-          break;
-        }
-      }
+
+    let dateExpected = this.filters.filter(filter => filter.name == 'date_expected')
+    if (dateExpected.length){
+      dateExpected = this.makeDateLeaf(dateExpected[0]['value']['fromDate'],dateExpected[0]['value']['toDate'])
+    } else if(!this.filters.length) {
+      dateExpected = this.makeDateLeaf(this.parseDateObject(new Date()),undefined);
+      this.filters.push({
+        label: 'Ingresos de hoy',
+        value: { fromDate:this.parseDateObject(new Date()) },
+        name: 'date_expected',
+      });
+
+
     }
+    leaf.push(...dateExpected);
+
     if (leaf.length) {
       this.stockService.getMoves(leaf).subscribe((res) => {
         res['records'].forEach(function (part, index, theArray) {});
@@ -416,6 +404,25 @@ export class EntLocationComponent implements OnInit {
       });
     }
   }
+
+  makeDateLeaf(fromDate,toDate){
+    let leaf : any = [];
+    if (!toDate){
+      toDate = fromDate
+    }
+    leaf.push([
+        'date_expected',
+        '>=',
+        fromDate + ' 00:00:00',
+      ]);
+    leaf.push([
+      'date_expected',
+      '<',
+      toDate + ' 23:59:59',
+    ]);
+    return leaf;
+
+  } 
   formSearch() {
     const search = this.searchForm.controls.search.value;
     this.searchByCode(search);
@@ -568,7 +575,7 @@ export class EntLocationComponent implements OnInit {
         });
     }
   }
-  reciboRango(value) {
+  dateRange(value) {
     const index = this.filters.findIndex((e) => e.name == 'date_expected');
     if (index >= 0) {
       this.filters.splice(index, 1);
@@ -603,6 +610,8 @@ export class EntLocationComponent implements OnInit {
         name: 'date_expected',
       });
     }
+    this.spinner = true;
+
     this.getAssignedMoves();
   }
   private parseDate(date) {
@@ -611,5 +620,12 @@ export class EntLocationComponent implements OnInit {
       date.year + '-' + zeroPad(date.month, 2) + '-' + zeroPad(date.day, 2)
     );
   }
+  private parseDateObject(date) {
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
+    return (
+      date.getFullYear() + '-' + zeroPad(date.getMonth()+1, 2) + '-' + zeroPad(date.getDate(), 2)
+    );
+  }
+
   private getDismissReason(reason: any) {}
 }
