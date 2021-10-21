@@ -386,7 +386,7 @@ export class EntLocationComponent implements OnInit {
     } else if(!this.filters.length) {
       dateExpected = this.makeDateLeaf(this.parseDateObject(new Date()),undefined);
       this.filters.push({
-        label: 'Ingresos de hoy',
+        label: 'Ingresos para hoy',
         value: { fromDate:this.parseDateObject(new Date()) },
         name: 'date_expected',
       });

@@ -31,6 +31,7 @@ import { EntLocationComponent } from './pages/stock/ent-location/ent-location.co
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MainPageComponent } from './pages/main-page/main-page.component';
 import { RangePickerComponent } from './main/comunes/range-picker/range-picker.component';
+import { SelectDbComponent } from './pages/select-db/select-db.component';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { RangePickerComponent } from './main/comunes/range-picker/range-picker.c
     EntWhSelectorComponent,
     EntLocationComponent,
     MainPageComponent,
-    RangePickerComponent
+    RangePickerComponent,
+    SelectDbComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +80,7 @@ export class AppModule {
 
         ) { 
         this.odooRPC.init({
-            odoo_server: environment.odoo_server,
+            odoo_server: localStorage.getItem('url'),
             http_auth: "username:password" // optional
         });
 

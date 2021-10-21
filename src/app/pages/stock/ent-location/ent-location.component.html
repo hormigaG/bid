@@ -24,9 +24,9 @@
           <i class="fa fa-filter"></i>
         </button>
       </div>
-      <div
+      <div 
         *ngIf="this.inputMethod == 'textBus'"
-        class="col-9 text-center card text-bus shadow mb-2"
+        class="col-9 text-center card text-bus shadow mb-2 text-monospace"
       >
         {{ textBus ? textBus : "código" }}
       </div>
@@ -66,12 +66,21 @@
           <div class="col-2">
             <range-picker (evento)="dateRange($event)"> </range-picker>
           </div>
-          <div class="col-10"></div>
+          <div class="col-2">
+              <button type="button" (click)="togleShowOk()" class="btn btn-light shadow">
+      <i
+        [ngClass]="{ fa: true, 'fa-eye': showOk, 'fa-eye-slash': !showOk }"
+      ></i>
+    </button>
+
+
+  </div>
+          <div class="col-8"></div>
         </div>
       </div>
     </div>
     <div class="text-left">
-      <strong *ngIf="filters.length">Filtros: </strong>
+      <strong *ngIf="filters.length">:: </strong>
       <span
         *ngFor="let filter of filters; let i = index"
         class="badge badge-primary"
@@ -160,11 +169,6 @@
     >
       <i class="fa fa-refresh"></i>
     </button>
-    <button type="button" (click)="togleShowOk()" class="btn btn-info">
-      <i
-        [ngClass]="{ fa: true, 'fa-eye': showOk, 'fa-eye-slash': !showOk }"
-      ></i>
-    </button>
   </div>
 </div>
 
@@ -216,10 +220,10 @@
         </div>
 
         <div *ngIf="moves[active_index]['barcode']">
-          Codigo de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>
+          Código de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>
         </div>
         <div>
-          Codigo interno:
+          Código interno:
           <strong>{{ moves[active_index]["default_code"] }}</strong>
         </div>
         <div class="btn-group w-100" role="group">

@@ -9,9 +9,11 @@ import { PriceUpdateComponent } from './pages/price-update/price-update.componen
 import { EntWhSelectorComponent } from './pages/stock/ent-wh-selector/ent-wh-selector.component';
 import { EntLocationComponent } from './pages/stock/ent-location/ent-location.component';
 import { MainPageComponent } from './pages/main-page/main-page.component';
+import { SelectDbComponent } from './pages/select-db/select-db.component';
 
 const routes: Routes = [
 	{ path: "login", component: LoginComponent },
+	{ path: "db", component: SelectDbComponent },
 	{
 		path: "",
 		component: DasboardComponent,

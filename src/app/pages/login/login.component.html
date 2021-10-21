@@ -1,11 +1,11 @@
-<div class="container login wh-100 bg-light">
+<div class="container login wh-100">
   <div class="row text-center mt-5">
     <div class="col-12">
     </div>
   </div>
   <div class="row w-100 h-100" *ngIf="isLogged">
     <div class="col-md-4 mb-4 col-12 mx-auto">
-      <h5 class="mb-4">Usted esta conectado a {{server_url}}</h5>
+      <h5 class="mb-4">Usted esta conectado a {{server_url}}?db={{server_db}}</h5>
 
         <button (click)="logout()" class="btn btn-login btn-block btn-danger btn-lg w-100">Salir</button>
     
@@ -13,11 +13,7 @@
   </div>
   <div class="row " *ngIf="!isLogged">
     <div class="col-md-4 col-12 mx-auto">
-
-        <div class="bg-danger p-3 m-2 rounded-lg text-light text-center">{{server_url}}</div>
-
-
-      <form [formGroup]="authForm" class="login-container p-3 border" (ngSubmit)="signIn()">
+      <form [formGroup]="authForm" class="login-container p-3" (ngSubmit)="signIn()">
 
         <div class="form-group" [ngClass]="{ 'has-error': isSubmitted && formControls.email.errors }">
           <label for="email" class="d-none" >Usuario</label>
@@ -39,6 +35,8 @@
           </div>
         </div>
       </form>
+             <a routerLink="/db" class="btn bg-danger p-3 m-2 rounded-lg text-light text-center">{{server_url}}?db={{server_db}}</a>
+ 
     </div>
   </div>
 </div>
