@@ -16,6 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-ent-location',
   templateUrl: './ent-location.component.html',
@@ -370,12 +371,12 @@ export class EntLocationComponent implements OnInit {
 
     if (this.op == 'location-entry') {
       leaf = [
-        ['state', '=', ['assigned', 'draft']],
+        ['state', '=', ['assigned', 'draft', 'partially_available']],
         ['location_dest_id', 'child_of', this.lot_stock_id],
       ];
     } else if (this.op == 'picking') {
       leaf = [
-        ['state', 'in', ['assigned', 'draft']],
+        ['state', 'in', ['assigned', 'draft', 'partially_available']],
         ['picking_id', '=', this.lot_stock_id],
       ];
     }
@@ -444,7 +445,7 @@ export class EntLocationComponent implements OnInit {
           item.product_id[1].toLowerCase().indexOf(codeLow) !== -1 ||
           item.barcode == code) &&
         //|| item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
-        item.quantity_done < item.product_uom_qty
+        item.quantity_done < item.reserved_availability
       );
     });
     this.textBus = '';
@@ -458,7 +459,7 @@ export class EntLocationComponent implements OnInit {
       this.addQty = 1;
       this.qtyDir = 1;
       this.changeDetectorRef.detectChanges();
-      if (!openModal) {
+      if (! openModal) {
         this.modalService.open(this.moveLineModal).result.then((result) => {
           this.active_index = undefined;
           this.changeDetectorRef.detectChanges();
@@ -500,7 +501,7 @@ export class EntLocationComponent implements OnInit {
     this.addToLocalStorage(this.moves[line], qty);
     if (
       qty > 0 &&
-      this.moves[line]['quantity_done'] > this.moves[line]['product_uom_qty']
+      this.moves[line]['quantity_done'] > this.moves[line]['reserved_availability']
     ) {
       let message =
         'Esta por confirmar mas items de los esperados ¿esta seguro?';
@@ -517,18 +518,19 @@ export class EntLocationComponent implements OnInit {
     let line_id = this.moves[line];
     this.changeDetectorRef.detectChanges();
 
-    if (line_id.quantity_done == line_id.product_uom_qty) {
+    if (line_id.quantity_done == line_id.reserved_availability) {
       //if (line_id.scanned_qty == 5){
       this.spinner = true;
       this.stockService
-        .move_products(this.moves[line], this.moves[line]['scanned_qty'])
+        .move_products(this.moves[line], this.moves[line]['scanned_qty'], line)
         .subscribe((res) => {
           this.removeToLocalStorage(this.moves[line]);
           this.moves[line]['scanned_qty'] = 0;
+          this.moves[line]['move_line_ids'] = [res];
           // delete this.moves[line];
           this.getAssignedMoves();
 
-          this.modalService.dismissAll('ccc');
+          this.modalService.dismissAll();
           this.check_pick_ok(this.active_index);
           this.active_index = undefined;
         });
@@ -539,7 +541,7 @@ export class EntLocationComponent implements OnInit {
     let no_ok = this.moves.filter(function (el) {
       if (
         el['picking_id'][0] == picking_id &&
-        el['quantity_done'] < el['product_uom_qty']
+        el['quantity_done'] < el['reserved_availability']
       ) {
         return true;
       } else {
@@ -563,9 +565,11 @@ export class EntLocationComponent implements OnInit {
     if (this.moves[line]['scanned_qty'] > 0) {
       this.spinner = true;
       this.stockService
-        .move_products(this.moves[line], this.moves[line]['scanned_qty'])
+        .move_products(this.moves[line], this.moves[line]['scanned_qty'], line)
         .subscribe((res) => {
           this.moves[line]['scanned_qty'] = 0;
+          this.moves[line]['move_line_ids'] = [res];
+
           // delete this.moves[line];
           this.spinner = false;
           this.getAssignedMoves();

@@ -92,7 +92,7 @@
     <ul class="list-group">
       <ng-container *ngFor="let item of moves; let i = index">
         <li
-          *ngIf="item['product_uom_qty'] > item['quantity_done'] || showOk"
+          *ngIf="item['reserved_availability'] > item['quantity_done'] || showOk"
           class="text-left list-group-item"
         >
           <div class="row">
@@ -102,17 +102,17 @@
                 [ngClass]="{
                   'text-bold': true,
                   'text-white': true,
-                  'bg-danger': item['product_uom_qty'] > item['quantity_done'],
+                  'bg-danger': item['reserved_availability'] > item['quantity_done'],
                   'bg-success':
-                    item['product_uom_qty'] == item['quantity_done'],
-                  'bg-warning': item['product_uom_qty'] < item['quantity_done']
+                    item['reserved_availability'] == item['quantity_done'],
+                  'bg-warning': item['reserved_availability'] < item['quantity_done']
                 }"
               >
                 {{ item["quantity_done"] }}<br />
                 <small class="text-bold">Scan</small>
               </div>
               <div>
-                {{ item["product_uom_qty"] }}
+                {{ item["reserved_availability"] }}
                 <small class="">Res</small>
               </div>
             </div>
@@ -121,10 +121,8 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="selectPiking(item['picking_id'])"
-              >
-                remito: {{ item["picking_id"][1] }}
-              </button>
-              <small> Origen: {{ item["origin"] }}</small>
+              >remito: {{ item["picking_id"][1] }}
+              </button> <small> Origen: {{ item["origin"] }}</small>
             </div>
             <div class="col-2">
               <button
@@ -203,16 +201,11 @@
         </div>
 
         <div>
-          Realizados:
-          <strong>{{ moves[active_index]["quantity_done"] }}</strong>
-        </div>
-        <div>
-          Reservados:
-          <strong>{{ moves[active_index]["reserved_availability"] }}</strong>
-        </div>
-
-        <div>
-          Total: <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
+          Real/Total:
+          <strong>{{ moves[active_index]["quantity_done"] }}</strong>/
+          <strong>{{ moves[active_index]["reserved_availability"] }}</strong>(
+          <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
+          )
         </div>
         <div>
           Origen:
@@ -220,10 +213,10 @@
         </div>
 
         <div *ngIf="moves[active_index]['barcode']">
-          Código de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>
+          Codigo de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>
         </div>
         <div>
-          Código interno:
+          Codigo interno:
           <strong>{{ moves[active_index]["default_code"] }}</strong>
         </div>
         <div class="btn-group w-100" role="group">
