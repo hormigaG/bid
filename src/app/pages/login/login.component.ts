@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
 
   isLogged: boolean;
   server_url: string;
+  server_db: string;
 
   constructor(
     private router: Router,
@@ -32,7 +33,12 @@ export class LoginComponent implements OnInit {
       password: ["", Validators.required],
     });
 
-    this.server_url = environment.odoo_server;
+    this.server_url = localStorage.getItem('url');
+    this.server_db = localStorage.getItem('dbName');
+    if (!localStorage.getItem('url') || !localStorage.getItem('dbName')){
+      this.router.navigate(["/db"]);
+
+    }
     this.odooRPC.isLoggedIn().then((res) => {
       this.isLogged = res;
     });
@@ -54,7 +60,7 @@ export class LoginComponent implements OnInit {
     const username = this.authForm.controls.email.value;
     const password = this.authForm.controls.password.value;
     this.odooRPC
-      .login(environment.db, username, password)
+      .login(localStorage.getItem('dbName'), username, password)
       .then((res) => {
         this.isLogged = res;
         this.router.navigate(["/"]);

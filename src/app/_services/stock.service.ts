@@ -52,8 +52,9 @@ export class StockService {
             'location_id',
             'location_dest_id',
             'purchase_line_id',
-            'origin',
-            'date_expected'
+            'move_line_ids',
+            'move_line_nosuggest_ids',
+            'origin'
           ],
           0,
           0
@@ -129,15 +130,30 @@ export class StockService {
     this.deleteQuantity(move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
-      this.odooRPC
-        .call('stock.move.line', 'create', [move_line], {})
-        .then((res) => {
-          observer.next(res);
-          observer.complete();
-        })
-        .catch((err) => {
-          alert(err);
-        });
+      if (move_id.move_line_ids.length()){
+        move_line['qty_done'] = qty_done + move_id['qty_done'] || move_id['qty_done'];
+
+        this.odooRPC
+           .call('stock.move.line', 'write', [[move_id.move_line_ids[0]],[move_line]], {}).then((res) =>{
+
+                observer.next(move_id.move_line_ids[0]);
+                observer.complete();
+
+           }).catch((err) => {
+             alert(err);
+           });
+      } else{      
+        this.odooRPC
+           .call('stock.move.line', 'create', [move_line], {}).then((res) =>{
+
+                observer.next(res);
+                observer.complete();
+
+           }).catch((err) => {
+             alert(err);
+           });
+      }
+        
     });
     return transaction$;
   }

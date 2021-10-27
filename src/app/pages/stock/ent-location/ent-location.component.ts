@@ -16,6 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
   selector: 'app-ent-location',
   templateUrl: './ent-location.component.html',
@@ -344,7 +345,8 @@ export class EntLocationComponent implements OnInit {
   removeFilter(i) {
     this.filters.splice(i, 1);
     //TODO: VER COMO USAR FILTERS PARA FILTRAR
-    this.refresh();
+    this.spinner = true;
+    this.getAssignedMoves();
   }
   selectPiking(picking_id) {
     this.spinner = true;
@@ -353,61 +355,48 @@ export class EntLocationComponent implements OnInit {
       label: picking_id[1],
       value: picking_id[0],
     };
-    const buscado = this.filters.find(
+    const exist = this.filters.find(
       (e) => e.value === element.value && e.name === element.name
     );
 
-    if (!buscado) {
+    if (!exist) {
       this.filters.push(element);
       this.op = 'picking';
       this.lot_stock_id = picking_id[0];
       this.getAssignedMoves();
     }
   }
+
   getAssignedMoves() {
     let leaf = [];
 
     if (this.op == 'location-entry') {
       leaf = [
-        ['state', '=', ['assigned', 'draft']],
+        ['state', '=', ['assigned', 'draft', 'partially_available']],
         ['location_dest_id', 'child_of', this.lot_stock_id],
       ];
     } else if (this.op == 'picking') {
       leaf = [
-        ['state', 'in', ['assigned', 'draft']],
+        ['state', 'in', ['assigned', 'draft', 'partially_available']],
         ['picking_id', '=', this.lot_stock_id],
       ];
     }
-    for (let i = 0; i < this.filters.length; i++) {
-      switch (this.filters[i].name) {
-        case 'date_expected': {
-          if (this.filters[i].value.fromDate && !this.filters[i].value.toDate) {
-            leaf.push([
-              'date_expected',
-              '>=',
-              this.filters[i].value.fromDate + ' 00:00:00',
-            ]);
-            leaf.push([
-              'date_expected',
-              '<',
-              this.filters[i].value.fromDate + ' 23:59:59',
-            ]);
-          } else {
-            leaf.push([
-              'date_expected',
-              '>=',
-              this.filters[i].value.fromDate + ' 00:00:00',
-            ]);
-            leaf.push([
-              'date_expected',
-              '<',
-              this.filters[i].value.toDate + ' 23:59:59',
-            ]);
-          }
-          break;
-        }
-      }
+
+    let dateExpected = this.filters.filter(filter => filter.name == 'date_expected')
+    if (dateExpected.length){
+      dateExpected = this.makeDateLeaf(dateExpected[0]['value']['fromDate'],dateExpected[0]['value']['toDate'])
+    } else if(!this.filters.length) {
+      dateExpected = this.makeDateLeaf(this.parseDateObject(new Date()),undefined);
+      this.filters.push({
+        label: 'Ingresos hasta hoy',
+        value: { toDate:this.parseDateObject(new Date()) },
+        name: 'date_expected',
+      });
+
+
     }
+    leaf.push(...dateExpected);
+
     if (leaf.length) {
       this.stockService.getMoves(leaf).subscribe((res) => {
         res['records'].forEach(function (part, index, theArray) {});
@@ -417,6 +406,25 @@ export class EntLocationComponent implements OnInit {
       });
     }
   }
+
+  makeDateLeaf(fromDate,toDate){
+    let leaf : any = [];
+    if (!toDate){
+      toDate = fromDate
+    }
+    leaf.push([
+        'date_expected',
+        '>=',
+        fromDate + ' 00:00:00',
+      ]);
+    leaf.push([
+      'date_expected',
+      '<',
+      toDate + ' 23:59:59',
+    ]);
+    return leaf;
+
+  } 
   formSearch() {
     const search = this.searchForm.controls.search.value;
     this.searchByCode(search);
@@ -439,7 +447,7 @@ export class EntLocationComponent implements OnInit {
           item.product_id[1].toLowerCase().indexOf(codeLow) !== -1 ||
           item.barcode == code) &&
         //|| item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
-        item.quantity_done < item.product_uom_qty
+        item.quantity_done < item.reserved_availability
       );
     });
     this.textBus = '';
@@ -453,7 +461,7 @@ export class EntLocationComponent implements OnInit {
       this.addQty = 1;
       this.qtyDir = 1;
       this.changeDetectorRef.detectChanges();
-      if (!openModal) {
+      if (! openModal) {
         this.modalService.open(this.moveLineModal).result.then((result) => {
           this.active_index = undefined;
           this.changeDetectorRef.detectChanges();
@@ -495,7 +503,7 @@ export class EntLocationComponent implements OnInit {
     this.addToLocalStorage(this.moves[line], qty);
     if (
       qty > 0 &&
-      this.moves[line]['quantity_done'] > this.moves[line]['product_uom_qty']
+      this.moves[line]['quantity_done'] > this.moves[line]['reserved_availability']
     ) {
       let message =
         'Esta por confirmar mas items de los esperados ¿esta seguro?';
@@ -512,18 +520,19 @@ export class EntLocationComponent implements OnInit {
     let line_id = this.moves[line];
     this.changeDetectorRef.detectChanges();
 
-    if (line_id.quantity_done == line_id.product_uom_qty) {
+    if (line_id.quantity_done == line_id.reserved_availability) {
       //if (line_id.scanned_qty == 5){
       this.spinner = true;
       this.stockService
-        .move_products(this.moves[line], this.moves[line]['scanned_qty'])
+        .move_products(this.moves[line], this.moves[line]['scanned_qty'], line)
         .subscribe((res) => {
           this.removeToLocalStorage(this.moves[line]);
           this.moves[line]['scanned_qty'] = 0;
+          this.moves[line]['move_line_ids'] = [res];
           // delete this.moves[line];
           this.getAssignedMoves();
 
-          this.modalService.dismissAll('ccc');
+          this.modalService.dismissAll();
           this.check_pick_ok(this.active_index);
           this.active_index = undefined;
         });
@@ -534,7 +543,7 @@ export class EntLocationComponent implements OnInit {
     let no_ok = this.moves.filter(function (el) {
       if (
         el['picking_id'][0] == picking_id &&
-        el['quantity_done'] < el['product_uom_qty']
+        el['quantity_done'] < el['reserved_availability']
       ) {
         return true;
       } else {
@@ -558,9 +567,11 @@ export class EntLocationComponent implements OnInit {
     if (this.moves[line]['scanned_qty'] > 0) {
       this.spinner = true;
       this.stockService
-        .move_products(this.moves[line], this.moves[line]['scanned_qty'])
+        .move_products(this.moves[line], this.moves[line]['scanned_qty'], line)
         .subscribe((res) => {
           this.moves[line]['scanned_qty'] = 0;
+          this.moves[line]['move_line_ids'] = [res];
+
           // delete this.moves[line];
           this.spinner = false;
           this.getAssignedMoves();
@@ -570,7 +581,7 @@ export class EntLocationComponent implements OnInit {
         });
     }
   }
-  reciboRango(value) {
+  dateRange(value) {
     const index = this.filters.findIndex((e) => e.name == 'date_expected');
     if (index >= 0) {
       this.filters.splice(index, 1);
@@ -605,6 +616,8 @@ export class EntLocationComponent implements OnInit {
         name: 'date_expected',
       });
     }
+    this.spinner = true;
+
     this.getAssignedMoves();
   }
   private parseDate(date) {
@@ -613,5 +626,12 @@ export class EntLocationComponent implements OnInit {
       date.year + '-' + zeroPad(date.month, 2) + '-' + zeroPad(date.day, 2)
     );
   }
+  private parseDateObject(date) {
+    const zeroPad = (num, places) => String(num).padStart(places, '0');
+    return (
+      date.getFullYear() + '-' + zeroPad(date.getMonth()+1, 2) + '-' + zeroPad(date.getDate(), 2)
+    );
+  }
+
   private getDismissReason(reason: any) {}
 }

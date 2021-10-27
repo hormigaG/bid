@@ -16,11 +16,10 @@
       <div class="col-2">
         <button
           type="button"
-          class="btn btn-outline-primary"
+          class="btn btn-primary shadow"
           (click)="collapse.toggle()"
           [attr.aria-expanded]="!isCollapsed"
           aria-controls="collapseExample"
-          class="btn btn-outline-primary"
         >
           <i class="fa fa-filter"></i>
         </button>
@@ -31,9 +30,8 @@
         (searchByCode)="searchByCode($event)"
       ></read-code>
       <!-- <div
-        *ngIf="this.inputMethod == 'textBus'"
-        class="col-10 text-center card text-bus mb-2"
-      >
+      <div 
+
         {{ textBus ? textBus : "Lector de código" }}
       </div> -->
 
@@ -66,21 +64,30 @@
     </div>
 
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
-      <div class="card pb-0">
+      <div class="pb-0">
         <div class="row pb-0">
           <div class="col-2">
-            <range-picker (evento)="reciboRango($event)"> </range-picker>
+            <range-picker (evento)="dateRange($event)"> </range-picker>
           </div>
-          <div class="col-10"></div>
+          <div class="col-2">
+              <button type="button" (click)="togleShowOk()" class="btn btn-light shadow">
+      <i
+        [ngClass]="{ fa: true, 'fa-eye': showOk, 'fa-eye-slash': !showOk }"
+      ></i>
+    </button>
+
+
+  </div>
+          <div class="col-8"></div>
         </div>
       </div>
     </div>
     <div class="text-left">
-      <strong *ngIf="filters.length">Filtros: </strong>
+      <strong *ngIf="filters.length">:: </strong>
       <span
         *ngFor="let filter of filters; let i = index"
         class="badge badge-primary"
-        (click)="removeFilter(i)"
+        (click)="removeFilter(filter.name)"
       >
         {{ filter.label }}
       </span>
@@ -88,7 +95,7 @@
     <ul class="list-group">
       <ng-container *ngFor="let item of moves; let i = index">
         <li
-          *ngIf="item['product_uom_qty'] > item['quantity_done'] || showOk"
+          *ngIf="item['reserved_availability'] > item['quantity_done'] || showOk"
           class="text-left list-group-item"
         >
           <div class="row">
@@ -98,17 +105,17 @@
                 [ngClass]="{
                   'text-bold': true,
                   'text-white': true,
-                  'bg-danger': item['product_uom_qty'] > item['quantity_done'],
+                  'bg-danger': item['reserved_availability'] > item['quantity_done'],
                   'bg-success':
-                    item['product_uom_qty'] == item['quantity_done'],
-                  'bg-warning': item['product_uom_qty'] < item['quantity_done']
+                    item['reserved_availability'] == item['quantity_done'],
+                  'bg-warning': item['reserved_availability'] < item['quantity_done']
                 }"
               >
                 {{ item["quantity_done"] }}<br />
                 <small class="text-bold">Scan</small>
               </div>
               <div>
-                {{ item["product_uom_qty"] }}
+                {{ item["reserved_availability"] }}
                 <small class="">Res</small>
               </div>
             </div>
@@ -117,10 +124,8 @@
               <button
                 class="btn btn-primary btn-sm"
                 (click)="selectPiking(item['picking_id'])"
-              >
-                remito: {{ item["picking_id"][1] }}
-              </button>
-              <small> Origen: {{ item["origin"] }}</small>
+              >remito: {{ item["picking_id"][1] }}
+              </button> <small> Origen: {{ item["origin"] }}</small>
             </div>
             <div class="col-2">
               <button
@@ -165,11 +170,6 @@
     >
       <i class="fa fa-refresh"></i>
     </button>
-    <button type="button" (click)="togleShowOk()" class="btn btn-info">
-      <i
-        [ngClass]="{ fa: true, 'fa-eye': showOk, 'fa-eye-slash': !showOk }"
-      ></i>
-    </button>
   </div>
 </div>
 
@@ -204,16 +204,11 @@
         </div>
 
         <div>
-          Realizados:
-          <strong>{{ moves[active_index]["quantity_done"] }}</strong>
-        </div>
-        <div>
-          Reservados:
-          <strong>{{ moves[active_index]["reserved_availability"] }}</strong>
-        </div>
-
-        <div>
-          Total: <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
+          Real/Total:
+          <strong>{{ moves[active_index]["quantity_done"] }}</strong>/
+          <strong>{{ moves[active_index]["reserved_availability"] }}</strong>(
+          <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
+          )
         </div>
         <div>
           Origen:
