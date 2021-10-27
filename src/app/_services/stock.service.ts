@@ -130,11 +130,11 @@ export class StockService {
     this.deleteQuantity(move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
-      if (move_id.move_line_ids.length()){
+      if (move_id.move_line_ids.length){
         move_line['qty_done'] = qty_done + move_id['qty_done'] || move_id['qty_done'];
 
         this.odooRPC
-           .call('stock.move.line', 'write', [[move_id.move_line_ids[0]],[move_line]], {}).then((res) =>{
+           .call('stock.move.line', 'write', [[move_id.move_line_ids[0]],move_line], {}).then((res) =>{
 
                 observer.next(move_id.move_line_ids[0]);
                 observer.complete();

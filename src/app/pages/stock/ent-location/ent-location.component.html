@@ -29,38 +29,6 @@
         [inputMethod]="inputMethod"
         (searchByCode)="searchByCode($event)"
       ></read-code>
-      <!-- <div
-      <div 
-
-        {{ textBus ? textBus : "Lector de código" }}
-      </div> -->
-
-      <!-- <form
-        [formGroup]="searchForm"
-        *ngIf="this.inputMethod == 'form'"
-      >
-        <div class="input-group input-group-lg">
-          <input
-            type="text"
-            autofocus
-            #search
-            class="form-control"
-            id="bus"
-            formControlName="search"
-            aria-label="Large"
-            aria-describedby="inputGroup-sizing-sm"
-          />
-          <span class="input-group-append">
-            <button
-              class="btn btn-primary btn-lg"
-              (click)="formSearch()"
-              type="submit"
-            >
-              <i class="fa fa-search"></i>
-            </button>
-          </span>
-        </div>
-      </form> -->
     </div>
 
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">

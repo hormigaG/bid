@@ -1,0 +1,13 @@
+ENCENDER PROYECTO DE ANGULAR CON EL SIGUIENTE COMANDO
+
+ng serve --proxy-config proxy.conf.json
+
+BASE ODOO 13_bid 
+admin
+argamonte
+
+
+ODOO BID
+https://train-bidargentinasa-07-07-1.nubeadhoc.com/web/login#action=317&model=stock.picking.type&view_type=kanban&cids=1&menu_id=195
+encl@bidargentina.com
+logistica
