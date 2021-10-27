@@ -27,7 +27,7 @@ export class ConfigService {
   }
 
   saveParam(param , value){
-    this.params['param'] = value;
+    this.params[param] = value;
      localStorage.setItem('appConfig',JSON.stringify(this.params));  
   }
 

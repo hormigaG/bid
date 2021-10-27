@@ -9,7 +9,7 @@
     },
 
     "\/odoo": {
-        "target": "https://train-bidargentinasa-07-07-1.nubeadhoc.com/",
+        "target": "https://train-bidargentinasa-20-10-2.nubeadhoc.com/",
         "secure": true,
         "changeOrigin": true,
         "pathRewrite": {
