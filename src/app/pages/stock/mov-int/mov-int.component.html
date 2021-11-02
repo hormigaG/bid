@@ -1,0 +1,22 @@
+<div class="text-center">
+  <h2>Seleccione remito</h2>
+</div>
+<read-code
+  class="col-12"
+  [inputMethod]="inputMethod"
+  (searchByCode)="searchByCode($event)"
+></read-code>
+<ul class="list-group">
+  <ng-container *ngFor="let item of pickings; let i = index">
+    <li
+      class="text-left list-group-item"
+      routerLink="/picking-selector/{{ item.id }}"
+    >
+      <b> Nombre Remito:</b> {{ item.display_name }}
+      <br />
+      <b>Ubicacion Origen:</b> {{ item.location_id[1] }}
+      <br />
+      <b>Ubicacion Destino:</b> {{ item.location_dest_id[1] }}
+    </li>
+  </ng-container>
+</ul>

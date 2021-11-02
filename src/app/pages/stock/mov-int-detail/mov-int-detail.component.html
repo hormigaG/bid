@@ -1,0 +1,18 @@
+<div class="text-center">
+  <h2>Seleccione Productos</h2>
+</div>
+<read-code
+  class="col-12"
+  [inputMethod]="inputMethod"
+  (searchByCode)="searchByCode($event)"
+></read-code>
+<ul class="list-group">
+  <ng-container *ngFor="let item of location_id; let i = index">
+    <li
+      class="text-left list-group-item"
+      routerLink="/product-selector/{{ item.location_id[0] }}"
+    >
+      {{ item.location_id[1] }}
+    </li>
+  </ng-container>
+</ul>

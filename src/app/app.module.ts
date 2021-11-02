@@ -33,6 +33,9 @@ import { MainPageComponent } from './pages/main-page/main-page.component';
 import { RangePickerComponent } from './main/comunes/range-picker/range-picker.component';
 import { ReadCodeComponent } from './main/comunes/read-code/read-code.component';
 import { SelectDbComponent } from './pages/select-db/select-db.component';
+import { MovIntComponent } from './pages/stock/mov-int/mov-int.component';
+import { MovIntDetailComponent } from './pages/stock/mov-int-detail/mov-int-detail.component';
+import { MovIntDetailProductComponent } from './pages/stock/mov-int-detail-product/mov-int-detail-product.component';
 
 
 @NgModule({
@@ -56,6 +59,9 @@ import { SelectDbComponent } from './pages/select-db/select-db.component';
     RangePickerComponent,
     ReadCodeComponent,
     SelectDbComponent,
+    MovIntComponent,
+    MovIntDetailComponent,
+    MovIntDetailProductComponent,
   ],
   imports: [
     BrowserModule,

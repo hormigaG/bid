@@ -33,6 +33,16 @@ export class StockService {
     return transaction$;
   }
 
+  getPicking(leaf = []) {
+    const transaction$ = new Observable((observer) => {
+      this.odooRPC.searchRead('stock.picking', leaf, [], 0, 0).then((res) => {
+        observer.next(res);
+        observer.complete();
+      });
+    });
+    return transaction$;
+  }
+
   getMoves(leaf) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
@@ -43,7 +53,7 @@ export class StockService {
             'product_id',
             'name',
             'product_uom_qty',
-            'product_uom', // UNIDAD DE MEDIDA ESTA EN LA ORDEN DE COMPRA 
+            'product_uom', // UNIDAD DE MEDIDA ESTA EN LA ORDEN DE COMPRA
             'reserved_availability',
             'quantity_done',
             'sequence',
@@ -54,7 +64,7 @@ export class StockService {
             'purchase_line_id',
             'move_line_ids',
             'move_line_nosuggest_ids',
-            'origin'
+            'origin',
           ],
           0,
           0
@@ -130,30 +140,35 @@ export class StockService {
     this.deleteQuantity(move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
-      if (move_id.move_line_ids.length){
-        move_line['qty_done'] = qty_done + move_id['qty_done'] || move_id['qty_done'];
+      if (move_id.move_line_ids.length) {
+        move_line['qty_done'] =
+          qty_done + move_id['qty_done'] || move_id['qty_done'];
 
         this.odooRPC
-           .call('stock.move.line', 'write', [[move_id.move_line_ids[0]],move_line], {}).then((res) =>{
-
-                observer.next(move_id.move_line_ids[0]);
-                observer.complete();
-
-           }).catch((err) => {
-             alert(err);
-           });
-      } else{      
+          .call(
+            'stock.move.line',
+            'write',
+            [[move_id.move_line_ids[0]], move_line],
+            {}
+          )
+          .then((res) => {
+            observer.next(move_id.move_line_ids[0]);
+            observer.complete();
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      } else {
         this.odooRPC
-           .call('stock.move.line', 'create', [move_line], {}).then((res) =>{
-
-                observer.next(res);
-                observer.complete();
-
-           }).catch((err) => {
-             alert(err);
-           });
+          .call('stock.move.line', 'create', [move_line], {})
+          .then((res) => {
+            observer.next(res);
+            observer.complete();
+          })
+          .catch((err) => {
+            alert(err);
+          });
       }
-        
     });
     return transaction$;
   }
@@ -210,6 +225,5 @@ export class StockService {
     });
 
     return transaction$;
-    }
+  }
 }
-
