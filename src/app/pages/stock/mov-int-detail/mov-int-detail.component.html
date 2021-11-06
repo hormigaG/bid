@@ -10,9 +10,11 @@
   <ng-container *ngFor="let item of location_id; let i = index">
     <li
       class="text-left list-group-item"
-      routerLink="/product-selector/{{ item.location_id[0] }}"
+      routerLink="/product-selector/{{ picking_id }}/{{ item.location_id[0] }}"
     >
       {{ item.location_id[1] }}
     </li>
   </ng-container>
+
+  <button (click)="moverProductos()">Dejar Productos</button>
 </ul>

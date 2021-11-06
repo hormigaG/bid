@@ -9,10 +9,15 @@ import { StockService } from '../../../_services/stock.service';
 export class MovIntComponent implements OnInit {
   pickings: any = [];
   filter: any = [];
+  inputMethod: String = 'textBus';
+
   constructor(public stockService: StockService) {}
 
   ngOnInit(): void {
     this.getPicking();
+  }
+  searchByCode(code) {
+    console.log(code);
   }
 
   getPicking() {
