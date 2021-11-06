@@ -8,9 +8,18 @@
         }
     },
 
-    "\/odoo": {
-        "target": "https://train-bidargentinasa-20-10-2.nubeadhoc.com/",
+    "\/odo2o": {
+        "target": "https://train-bidargentinasa-07-07-1.nubeadhoc.com/",
         "secure": true,
+        "changeOrigin": true,
+        "pathRewrite": {
+             "^\/odoo/": "/"
+        }
+    },
+
+    "\/odoo": {
+        "target": "http://localhost:8069/",
+        "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
              "^\/odoo/": "/"

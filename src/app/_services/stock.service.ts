@@ -43,7 +43,7 @@ export class StockService {
     return transaction$;
   }
 
-  getMoves(leaf) {
+  getMoves(storage, leaf) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
         .searchRead(
@@ -95,8 +95,11 @@ export class StockService {
                   product_dict[part['product_id'][0]]['uom_po_id'];
                 res['records'][index]['uom_id'] =
                   product_dict[part['product_id'][0]]['uom_id'];
-                if (self.getQuantity(res['records'][index].id) > -1) {
-                  const cant = self.getQuantity(res['records'][index].id);
+                if (self.getQuantity(storage, res['records'][index].id) > -1) {
+                  const cant = self.getQuantity(
+                    storage,
+                    res['records'][index].id
+                  );
                   res['records'][index]['scanned_qty'] = cant;
                   res['records'][index]['quantity_done'] = cant;
                 } else {
@@ -114,10 +117,10 @@ export class StockService {
     });
     return transaction$;
   }
-  private getQuantity(id) {
+  private getQuantity(storage, id) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
-    if (scanned_qty_array) {
-      let element = scanned_qty_array.find((e) => id == e.id);
+    if (scanned_qty_array[storage]) {
+      let element = scanned_qty_array[storage].find((e) => id == e.id);
       if (element) {
         return element.scanned_qty;
       }
@@ -125,7 +128,7 @@ export class StockService {
     return -1;
   }
 
-  move_products(move_id, qty_done, description_picking = '') {
+  move_products(storage, move_id, qty_done, description_picking = '') {
     let move_line = {
       picking_id: move_id.picking_id[0],
       move_id: move_id.id,
@@ -137,7 +140,7 @@ export class StockService {
       description_picking: description_picking,
       qty_done: qty_done || move_id['qty_done'],
     };
-    this.deleteQuantity(move_id.move_id);
+    this.deleteQuantity(storage, move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
       if (move_id.move_line_ids.length) {
@@ -172,43 +175,59 @@ export class StockService {
     });
     return transaction$;
   }
-  private pushObject(id, scanned_qty, array) {
+  private pushObject(storage, id, scanned_qty, array) {
     const obj = {
       id,
       scanned_qty,
     };
     array.push(obj);
-    localStorage.setItem('scanned_qty', JSON.stringify(array));
-  }
-  deleteQuantity(id) {
+
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
     if (scanned_qty_array) {
-      let index = scanned_qty_array.findIndex((e) => id == e.id);
+      if (scanned_qty_array && scanned_qty_array[storage]) {
+        scanned_qty_array[storage] = array;
+      } else {
+        scanned_qty_array[storage] = array;
+      }
+    } else {
+      scanned_qty_array = {
+        [storage]: array,
+      };
+    }
+    localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));
+  }
+  deleteQuantity(storage, id) {
+    let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+
+    if (scanned_qty_array && scanned_qty_array[storage]) {
+      let index = scanned_qty_array[storage].findIndex((e) => id == e.id);
       if (index > -1) {
-        scanned_qty_array.splice(index, 1);
+        scanned_qty_array[storage].splice(index, 1);
         localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));
       }
     }
   }
 
-  setQuantity(id, scanned_qty) {
+  setQuantity(storage, id, scanned_qty) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
-    if (scanned_qty_array) {
-      let index = scanned_qty_array.findIndex((e) => id == e.id);
+    if (scanned_qty_array && scanned_qty_array[storage]) {
+      let index = scanned_qty_array[storage].findIndex((e) => id == e.id);
       if (index > -1) {
-        let element = scanned_qty_array.find((e) => id == e.id);
+        let element = scanned_qty_array[storage].find((e) => id == e.id);
+        console.log('mi elemento buscado', element);
         element.scanned_qty += scanned_qty;
-        scanned_qty_array[index] = element;
+        scanned_qty_array[storage][index] = element;
         localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));
       } else {
         this.pushObject(
+          storage,
           id,
           scanned_qty,
-          scanned_qty_array ? scanned_qty_array : []
+          scanned_qty_array[storage] ? scanned_qty_array[storage] : []
         );
       }
     } else {
-      this.pushObject(id, scanned_qty, []);
+      this.pushObject(storage, id, scanned_qty, []);
     }
   }
   button_validate(picking_id) {

@@ -173,7 +173,7 @@ export class EntLocationComponent implements OnInit {
     leaf.push(...dateExpected);
 
     if (leaf.length) {
-      this.stockService.getMoves(leaf).subscribe((res) => {
+      this.stockService.getMoves('ingreso_mercaderia',leaf).subscribe((res) => {
         res['records'].forEach(function (part, index, theArray) {});
 
         this.moves = res['records'];
@@ -242,14 +242,14 @@ export class EntLocationComponent implements OnInit {
     });
   }
 
-  removeToLocalStorage(move) {
+  removeToLocalStorage(storage, move) {
     //console.log('aca me llego', move.id, move.scanned_qty);
-    this.stockService.deleteQuantity(move.id);
+    this.stockService.deleteQuantity(storage, move.id);
   }
 
-  addToLocalStorage(move, qty) {
+  addToLocalStorage(storage, move, qty) {
     //console.log('aca me llego', move.id, move.scanned_qty);
-    this.stockService.setQuantity(move.id, qty);
+    this.stockService.setQuantity(storage, move.id, qty);
   }
   addScannedQuantity(line, qty = 1) {
     this.changeDetectorRef.detectChanges();
@@ -263,7 +263,7 @@ export class EntLocationComponent implements OnInit {
     this.moves[line]['scanned_qty'] += qty;
     this.moves[line]['quantity_done'] += qty;
     // TODO: LocalSOTRAGE -> this.moves[line]['scanned_qty']
-    this.addToLocalStorage(this.moves[line], qty);
+    this.addToLocalStorage('ingreso_mercaderia', this.moves[line], qty);
     if (
       qty > 0 &&
       this.moves[line]['quantity_done'] >
@@ -274,11 +274,11 @@ export class EntLocationComponent implements OnInit {
       if (!window.confirm(message)) {
         this.moves[line]['scanned_qty'] -= qty;
         this.moves[line]['quantity_done'] -= qty;
-        this.addToLocalStorage(this.moves[line], -qty);
+        this.addToLocalStorage('ingreso_mercaderia', this.moves[line], -qty);
 
         return;
       }
-      this.removeToLocalStorage(this.moves[line]);
+      this.removeToLocalStorage('ingreso_mercaderia', this.moves[line]);
     }
 
     let line_id = this.moves[line];
@@ -288,9 +288,14 @@ export class EntLocationComponent implements OnInit {
       //if (line_id.scanned_qty == 5){
       this.spinner = true;
       this.stockService
-        .move_products(this.moves[line], this.moves[line]['scanned_qty'], line)
+        .move_products(
+          'ingreso_mercaderia',
+          this.moves[line],
+          this.moves[line]['scanned_qty'],
+          line
+        )
         .subscribe((res) => {
-          this.removeToLocalStorage(this.moves[line]);
+          this.removeToLocalStorage('ingreso_mercaderia', this.moves[line]);
           this.moves[line]['scanned_qty'] = 0;
           this.moves[line]['move_line_ids'] = [res];
           // delete this.moves[line];
@@ -331,7 +336,12 @@ export class EntLocationComponent implements OnInit {
     if (this.moves[line]['scanned_qty'] > 0) {
       this.spinner = true;
       this.stockService
-        .move_products(this.moves[line], this.moves[line]['scanned_qty'], line)
+        .move_products(
+          'ingreso_mercaderia',
+          this.moves[line],
+          this.moves[line]['scanned_qty'],
+          line
+        )
         .subscribe((res) => {
           this.moves[line]['scanned_qty'] = 0;
           this.moves[line]['move_line_ids'] = [res];
@@ -339,7 +349,7 @@ export class EntLocationComponent implements OnInit {
           this.spinner = false;
           this.getAssignedMoves();
           this.modalService.dismissAll();
-          this.removeToLocalStorage(this.moves[line]);
+          this.removeToLocalStorage('ingreso_mercaderia', this.moves[line]);
           this.active_index = undefined;
         });
     }
