@@ -1,7 +1,8 @@
 {
-    "\/odoox": {
-        "target": "https://testing.casagoro.com.ar/",
-        "secure": false,
+
+    "\/odoo2": {
+        "target": "https://train-bidargentinasa-20-10-2.nubeadhoc.com/",
+        "secure": true,
         "changeOrigin": true,
         "pathRewrite": {
              "^\/odoo/": "/"
