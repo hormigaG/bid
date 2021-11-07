@@ -12,10 +12,12 @@ export class MovIntDetailComponent implements OnInit {
   location_id: any = [];
   inputMethod: String = 'textBus';
   moves_int: any = [];
+  action: String ="select_location"
   constructor(
     private route: ActivatedRoute,
     private stockService: StockService
   ) {}
+
 
   ngOnInit(): void {
     this.getMoves();
@@ -29,11 +31,17 @@ export class MovIntDetailComponent implements OnInit {
     }, []);
   }
   searchByCode(code) {
-    console.log(code);
+    switch (this.action) {
+      case "select_location":
+        console.log("select_location");
+      case "get":
+        console.log("get_products");
+      case "leave":        
+        console.log("leave_products");
+     }
   }
   async moverProductos() {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
-    console.log(scanned_qty_array);
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
       for (let i = 0; i < len; i++) {
@@ -49,9 +57,11 @@ export class MovIntDetailComponent implements OnInit {
     this.picking_id = this.route['params']['value']['picking_id'];
     let leaf = [['picking_id', '=', Number(this.picking_id)]];
 
-    this.stockService.getMoves('ingreso_mercaderia', leaf).subscribe((res) => {
+    this.stockService.getMoves(leaf, 'internal', true).subscribe((res) => {
       this.moves = res['records'];
+      console.log(res);
       this.filterLocations();
     });
   }
+  refresh(){}
 }

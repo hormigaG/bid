@@ -1,22 +1,77 @@
-<div class="text-center">
-  <h2>Seleccione remito</h2>
+<div class="text-center fixed-top spinnerContent">
+  <div
+    class="spinner-grow text-warning"
+    *ngIf="spinner"
+    style="width: 5rem; height: 5rem"
+    role="status"
+  >
+    <span class="sr-only">Loading...</span>
+  </div>
 </div>
-<read-code
-  class="col-12"
-  [inputMethod]="inputMethod"
-  (searchByCode)="searchByCode($event)"
-></read-code>
+<div class="row">
+  <div class="col-2">
+    <button type="button" class="btn btn-primary shadow" (click)="collapse.toggle()" [attr.aria-expanded]="!isCollapsed" aria-controls="collapseExample">
+      <i class="fa fa-filter"></i>
+    </button>
+  </div>
+  <read-code class="col-10" [inputMethod]="inputMethod" (searchByCode)="searchByCode($event)"></read-code>
+</div>
+<div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+  <div class="pb-0">
+    <div class="row pb-0">
+      <div class="col-2">
+        <range-picker (evento)="dateRange($event)"> </range-picker>
+      </div>
+      <div class="col-10"></div>
+    </div>
+  </div>
+</div>
+<div class="text-left">
+  <strong *ngIf="filters.length">:: </strong>
+  <span *ngFor="let filter of filters; let i = index" class="badge badge-primary" (click)="removeFilter(filter.name)">
+    {{ filter.label }}
+  </span>
+</div>
 <ul class="list-group">
   <ng-container *ngFor="let item of pickings; let i = index">
-    <li
-      class="text-left list-group-item"
-      routerLink="/picking-selector/{{ item.id }}"
-    >
-      <b> Nombre Remito:</b> {{ item.display_name }}
+    <li class="text-left list-group-item" routerLink="/picking-selector/{{ item.id }}">
+      <strong class="h5">{{ item.display_name }} - {{ item.location_id[1] }}</strong>
       <br />
-      <b>Ubicacion Origen:</b> {{ item.location_id[1] }}
+      <strong>Fecha:</strong> {{ item.scheduled_date | date: "d/M/Y H:mm":"UTC -6"}}
       <br />
-      <b>Ubicacion Destino:</b> {{ item.location_dest_id[1] }}
+      <strong>Destino:</strong> {{ item.location_dest_id[1] }}
+      <br />
+      <strong>A preparar:</strong> {{ item.move_lines.length }}
+
     </li>
   </ng-container>
 </ul>
+<div class="row text-center">
+  <div class="btn-group btn-group-lg fixed-bottom" role="group">
+    <button
+      type="button"
+      (click)="inputMethod = 'form'"
+      [ngClass]="{ btn: true, 'btn-info': true, active: inputMethod == 'form' }"
+    >
+      <i class="fa fa-font"></i>
+    </button>
+    <button
+      type="button"
+      (click)="inputMethod = 'textBus'"
+      [ngClass]="{
+        btn: true,
+        'btn-info': true,
+        active: inputMethod == 'textBus'
+      }"
+    >
+      <i class="fa fa-barcode"></i>
+    </button>
+    <button
+      type="button"
+      (click)="refresh()"
+      [ngClass]="{ btn: true, 'btn-info': true }"
+    >
+      <i class="fa fa-refresh"></i>
+    </button>
+  </div>
+</div>  

@@ -173,7 +173,7 @@ export class EntLocationComponent implements OnInit {
     leaf.push(...dateExpected);
 
     if (leaf.length) {
-      this.stockService.getMoves('ingreso_mercaderia',leaf).subscribe((res) => {
+      this.stockService.getMoves(leaf, 'incoming').subscribe((res) => {
         res['records'].forEach(function (part, index, theArray) {});
 
         this.moves = res['records'];
@@ -263,7 +263,7 @@ export class EntLocationComponent implements OnInit {
     this.moves[line]['scanned_qty'] += qty;
     this.moves[line]['quantity_done'] += qty;
     // TODO: LocalSOTRAGE -> this.moves[line]['scanned_qty']
-    this.addToLocalStorage('ingreso_mercaderia', this.moves[line], qty);
+    this.addToLocalStorage('incoming', this.moves[line], qty);
     if (
       qty > 0 &&
       this.moves[line]['quantity_done'] >
@@ -274,11 +274,11 @@ export class EntLocationComponent implements OnInit {
       if (!window.confirm(message)) {
         this.moves[line]['scanned_qty'] -= qty;
         this.moves[line]['quantity_done'] -= qty;
-        this.addToLocalStorage('ingreso_mercaderia', this.moves[line], -qty);
+        this.addToLocalStorage('incoming', this.moves[line], -qty);
 
         return;
       }
-      this.removeToLocalStorage('ingreso_mercaderia', this.moves[line]);
+      this.removeToLocalStorage('incoming', this.moves[line]);
     }
 
     let line_id = this.moves[line];
@@ -289,13 +289,13 @@ export class EntLocationComponent implements OnInit {
       this.spinner = true;
       this.stockService
         .move_products(
-          'ingreso_mercaderia',
+          'incoming',
           this.moves[line],
           this.moves[line]['scanned_qty'],
           line
         )
         .subscribe((res) => {
-          this.removeToLocalStorage('ingreso_mercaderia', this.moves[line]);
+          this.removeToLocalStorage('incoming', this.moves[line]);
           this.moves[line]['scanned_qty'] = 0;
           this.moves[line]['move_line_ids'] = [res];
           // delete this.moves[line];
@@ -337,7 +337,7 @@ export class EntLocationComponent implements OnInit {
       this.spinner = true;
       this.stockService
         .move_products(
-          'ingreso_mercaderia',
+          'incoming',
           this.moves[line],
           this.moves[line]['scanned_qty'],
           line
@@ -349,7 +349,7 @@ export class EntLocationComponent implements OnInit {
           this.spinner = false;
           this.getAssignedMoves();
           this.modalService.dismissAll();
-          this.removeToLocalStorage('ingreso_mercaderia', this.moves[line]);
+          this.removeToLocalStorage('incoming', this.moves[line]);
           this.active_index = undefined;
         });
     }

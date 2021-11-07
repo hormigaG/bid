@@ -35,7 +35,17 @@ export class StockService {
 
   getPicking(leaf = []) {
     const transaction$ = new Observable((observer) => {
-      this.odooRPC.searchRead('stock.picking', leaf, [], 0, 0).then((res) => {
+      this.odooRPC.searchRead(
+        'stock.picking',
+        leaf,
+        ['display_name',
+         'scheduled_date',
+         'location_id',
+         'location_dest_id',
+         'move_lines',
+         'priority'
+
+        ], 0, 0,{},'priority asc').then((res) => {
         observer.next(res);
         observer.complete();
       });
@@ -43,7 +53,7 @@ export class StockService {
     return transaction$;
   }
 
-  getMoves(storage, leaf) {
+  getMoves(leaf, storage = 'moves', get_lines = false) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
         .searchRead(
@@ -73,6 +83,7 @@ export class StockService {
           let product_ids = res['records'].map(function (move) {
             return move['product_id'][0];
           });
+ 
           this.odooRPC
             .read('product.product', product_ids, [
               'uom_id',
@@ -106,9 +117,29 @@ export class StockService {
                   res['records'][index]['scanned_qty'] = 0;
                 }
               });
+              if (get_lines){
+                let move_ids = res['records'].map(function (move) {
+                  return move['id'];
+                });
 
-              observer.next(res);
-              observer.complete();
+                this.odooRPC
+                  .searchRead('stock.move.line', [['move_id', 'in', move_ids]], [
+                    'move_id',
+                    'picking_id',
+                    'location_id',
+                    'location_dest_id',
+                    'state',
+                  ]).then((lines) => {
+
+                    observer.next(res);
+                    observer.complete();            
+
+                  })
+
+              } else {
+                  observer.next(res);
+                  observer.complete();            
+              }
             });
         })
         .catch((err) => {

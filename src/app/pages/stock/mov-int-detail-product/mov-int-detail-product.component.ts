@@ -126,7 +126,7 @@ export class MovIntDetailProductComponent implements OnInit {
       ['location_id', '=', Number(this.location_id)],
       ['picking_id', '=', Number(this.picking_id)],
     ];
-    this.stockService.getMoves('mov_int', leaf).subscribe((res) => {
+    this.stockService.getMoves(leaf, 'internal').subscribe((res) => {
       this.moves = res['records'];
       console.log('aca mis moves', this.moves);
       this.filterLocations();

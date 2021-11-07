@@ -1,15 +1,7 @@
 {
-    "\/odoox": {
-        "target": "https://testing.casagoro.com.ar/",
-        "secure": false,
-        "changeOrigin": true,
-        "pathRewrite": {
-             "^\/odoo/": "/"
-        }
-    },
 
-    "\/odo2o": {
-        "target": "https://train-bidargentinasa-07-07-1.nubeadhoc.com/",
+    "\/odoo2": {
+        "target": "https://train-bidargentinasa-20-10-2.nubeadhoc.com/",
         "secure": true,
         "changeOrigin": true,
         "pathRewrite": {
@@ -18,7 +10,7 @@
     },
 
     "\/odoo": {
-        "target": "http://localhost:8069/",
+        "target": "http://localhost:8013/",
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
