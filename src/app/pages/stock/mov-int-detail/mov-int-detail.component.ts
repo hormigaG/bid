@@ -12,15 +12,22 @@ export class MovIntDetailComponent implements OnInit {
   location_id: any = [];
   inputMethod: String = 'textBus';
   moves_int: any = [];
-  action: String ="select_location"
+  action: String = 'select_location';
+  selected_location = true;
+  products = [];
   constructor(
     private route: ActivatedRoute,
     private stockService: StockService
   ) {}
 
-
   ngOnInit(): void {
     this.getMoves();
+  }
+  selectLocation() {
+    this.action = 'select_location';
+  }
+  leaveProduct() {
+    this.action = 'leave';
   }
   filterLocations() {
     this.location_id = this.moves.reduce((unique, o) => {
@@ -32,13 +39,25 @@ export class MovIntDetailComponent implements OnInit {
   }
   searchByCode(code) {
     switch (this.action) {
-      case "select_location":
-        console.log("select_location");
-      case "get":
-        console.log("get_products");
-      case "leave":        
-        console.log("leave_products");
-     }
+      case 'select_location':
+        this.select_location_product(code);
+      case 'get':
+        console.log('get_products');
+      case 'leave':
+        this.leave_pruduct_location(code);
+    }
+  }
+  leave_pruduct_location(code) {
+    if (code === this.moves[0].location_dest_name) {
+      this.moverProductos();
+    } else {
+      alert('Error, escaneo una ubicación erronea');
+    }
+  }
+  select_location_product(code) {
+    const index = this.moves.findIndex((e) => e.location_name === code);
+    this.moves[index];
+    this.select_location(this.moves[index].location_id[0]);
   }
   async moverProductos() {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
@@ -53,15 +72,27 @@ export class MovIntDetailComponent implements OnInit {
       }
     }
   }
+  getProductsByLocation(id) {
+    let products;
+    products = this.moves.filter((e) => e.location_id[0] == id);
+    this.selected_location = !this.selected_location;
+    return products;
+  }
   getMoves() {
     this.picking_id = this.route['params']['value']['picking_id'];
     let leaf = [['picking_id', '=', Number(this.picking_id)]];
 
-    this.stockService.getMoves(leaf, 'internal', true).subscribe((res) => {
+    this.stockService.getMovesLines(leaf).subscribe((res) => {
       this.moves = res['records'];
-      console.log(res);
+      console.log(this.moves);
       this.filterLocations();
     });
   }
-  refresh(){}
+  volver() {
+    this.selected_location = true;
+  }
+  select_location(location_id) {
+    this.products = this.getProductsByLocation(location_id);
+  }
+  refresh() {}
 }

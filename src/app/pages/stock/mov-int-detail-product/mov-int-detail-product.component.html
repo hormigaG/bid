@@ -7,45 +7,25 @@
   (searchByCode)="searchByCode($event)"
 ></read-code>
 <ul class="list-group">
-  <ng-container *ngFor="let item of moves; let i = index">
-    <li class="text-left list-group-item">
+  <ng-container *ngFor="let item of products; let i = index">
+    <li class="text-left list-group-item" (click)="openMoveLineModal(i)">
       <div class="row">
         <div class="text-center col-2 pt-0 pb-0 pl-0 pr-0">
           <div
-            (click)="openMoveLineModal(i)"
             [ngClass]="{
               'text-bold': true,
               'text-white': true,
               'bg-warning': true
             }"
           >
-            {{ item["quantity_done"] }}<br />
-            <small class="text-bold">Scan</small>
-          </div>
-          <div>
-            {{ item["reserved_availability"] }}
-            <small class="">Res</small>
+            {{ item["scanned_qty"] }}<br />
           </div>
         </div>
         <div class="col-8">
           <div>{{ item["product_id"][1] }}</div>
-          <button
-            class="btn btn-primary btn-sm"
-            (click)="selectPiking(item['picking_id'])"
-          >
-            remito: {{ item["picking_id"][1] }}
-          </button>
-          <small> Origen: {{ item["origin"] }}</small>
         </div>
-        <div class="col-2">
-          <button
-            type="button"
-            (click)="openMoveLineModal(i)"
-            [ngClass]="{ btn: true }"
-          >
-            <i class="fa fa-list"></i>
-          </button>
-        </div>
+        <div class="col-2"></div>
+        <div class="col-12">Ubicacion Origen {{ item["location_id"][1] }}</div>
       </div>
     </li>
   </ng-container>
@@ -55,50 +35,44 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
-          {{ moves[active_index]["product_id"][1] }}
+          {{ products[active_index]["product_id"][1] }}
         </h5>
-        <!--button
-          type="button"
-          class="close"
-          aria-label="Close"
-          (click)="modal.dismiss('Cross click')"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button-->
       </div>
       <div class="modal-body">
         <h2 class="bg-danger text-center text-white mb-0">
-          {{ moves[active_index]["scanned_qty"] }}
+          {{ products[active_index]["scanned_qty"] }}
         </h2>
         <div class="bg-dark text-center text-white mt-0">Escaneados</div>
 
-        <div *ngIf="moves[active_index]['picking_id']">
-          Remito: <strong>{{ moves[active_index]["picking_id"][1] }}</strong>
+        <div *ngIf="products[active_index]['picking_id']">
+          Remito: <strong>{{ products[active_index]["picking_id"][1] }}</strong>
         </div>
         <div>
           Unidad:
-          <strong>{{ moves[active_index]["product_uom"][1] }}</strong>
+          <strong>{{ products[active_index]["product_uom_id"][1] }}</strong>
         </div>
 
         <div>
           Real/Total:
-          <strong>{{ moves[active_index]["quantity_done"] }}</strong
-          >/ <strong>{{ moves[active_index]["reserved_availability"] }}</strong
+          <strong>{{ products[active_index]["quantity_done"] }}</strong
+          >/
+          <strong>{{ products[active_index]["reserved_availability"] }}</strong
           >(
-          <strong>{{ moves[active_index]["product_uom_qty"] }}</strong>
+          <strong>{{ products[active_index]["product_uom_qty"] }}</strong>
           )
         </div>
         <div>
           Origen:
-          <strong>{{ moves[active_index]["origin"] }}</strong>
+          <strong>{{ products[active_index]["location_id"][1] }}</strong>
         </div>
 
-        <div *ngIf="moves[active_index]['barcode']">
-          Codigo de barra: <strong>{{ moves[active_index]["barcode"] }}</strong>
+        <div *ngIf="products[active_index]['barcode']">
+          Codigo de barra:
+          <strong>{{ products[active_index]["barcode"] }}</strong>
         </div>
         <div>
           Codigo interno:
-          <strong>{{ moves[active_index]["default_code"] }}</strong>
+          <strong>{{ products[active_index]["default_code"] }}</strong>
         </div>
         <div class="btn-group w-100" role="group">
           <button
@@ -154,18 +128,6 @@
           </button>
         </div>
         <hr />
-        <button
-          *ngIf="
-            moves[active_index]['scanned_qty'] &&
-            moves[active_index]['quantity_done'] !=
-              moves[active_index]['product_uom_qty']
-          "
-          type="button"
-          (click)="parcialMoveProducts(active_index)"
-          class="btn btn-block btn-success btn-lg w-100"
-        >
-          Movimiento parcial de productos
-        </button>
       </div>
       <div class="modal-footer">
         <button

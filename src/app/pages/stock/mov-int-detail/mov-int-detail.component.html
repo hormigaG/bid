@@ -2,27 +2,62 @@
   class="col-12"
   [inputMethod]="inputMethod"
   (searchByCode)="searchByCode($event)"
+  *ngIf="selected_location"
 ></read-code>
-<ul class="list-group">
+<ul
+  class="list-group"
+  *ngIf="selected_location && action === 'select_location'"
+>
   <ng-container *ngFor="let item of location_id; let i = index">
     <li
       class="text-left list-group-item"
-      routerLink="/product-selector/{{ picking_id }}/{{ item.location_id[0] }}"
+      (click)="select_location(item.location_id[0])"
     >
       {{ item.location_id[1] }}
     </li>
   </ng-container>
 </ul>
+
+<ng-container *ngIf="selected_location && action === 'leave'">
+  <div class="h4">
+    Por favor dirigirse a la ubicacion
+    <span class="font-weight-bold">{{ moves[0].location_dest_id[1] }}</span
+    >, escanear la ubicación y deje los productos escaneados anteriormente
+  </div>
+</ng-container>
+
+<app-mov-int-detail-product
+  [products]="products"
+  *ngIf="!selected_location"
+></app-mov-int-detail-product>
 <div class="row text-center">
   <div class="btn-group btn-group-lg fixed-bottom" role="group">
     <button
       type="button"
-      (click)="refresh()"
+      *ngIf="selected_location && action === 'select_location'"
+      (click)="leaveProduct()"
       [ngClass]="{ btn: true, 'btn-info': true }"
     >
       Dejar Productos
     </button>
 
+    <button
+      type="button"
+      *ngIf="selected_location && action === 'leave'"
+      (click)="selectLocation()"
+      [ngClass]="{ btn: true, 'btn-info': true }"
+    >
+      Cambiar Ubicación
+    </button>
+
+    <button
+      *ngIf="!selected_location"
+      type="button"
+      (click)="selected_location = !selected_location"
+      [ngClass]="{ btn: true, 'btn-info': true }"
+    >
+      Volver
+    </button>
     <button
       type="button"
       (click)="refresh()"
@@ -31,4 +66,4 @@
       <i class="fa fa-refresh"></i>
     </button>
   </div>
-</div>  
+</div>

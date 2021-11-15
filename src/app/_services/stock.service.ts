@@ -35,20 +35,102 @@ export class StockService {
 
   getPicking(leaf = []) {
     const transaction$ = new Observable((observer) => {
-      this.odooRPC.searchRead(
-        'stock.picking',
-        leaf,
-        ['display_name',
-         'scheduled_date',
-         'location_id',
-         'location_dest_id',
-         'move_lines',
-         'priority'
+      this.odooRPC
+        .searchRead(
+          'stock.picking',
+          leaf,
+          [
+            'display_name',
+            'scheduled_date',
+            'location_id',
+            'location_dest_id',
+            'move_lines',
+            'priority',
+          ],
+          0,
+          0,
+          {},
+          'priority asc'
+        )
+        .then((res) => {
+          observer.next(res);
+          observer.complete();
+        });
+    });
+    return transaction$;
+  }
 
-        ], 0, 0,{},'priority asc').then((res) => {
-        observer.next(res);
-        observer.complete();
-      });
+  getMovesLines(leaf = []) {
+    const transaction$ = new Observable((observer) => {
+      this.odooRPC
+        .searchRead('stock.move.line', leaf, [], 0, 0, {}, 'id asc')
+        .then((res) => {
+          let product_ids = res['records'].map(function (move) {
+            return move['product_id'][0];
+          });
+
+          let ubications_ids = res['records'].map(function (move) {
+            return move['location_id'][0];
+          });
+          let ubications_dest_ids = res['records'].map(function (move) {
+            return move['location_dest_id'][0];
+          });
+          const ubications = [
+            ...new Set([...ubications_ids, ...ubications_dest_ids]),
+          ];
+
+          this.odooRPC
+            .read('product.product', product_ids, [
+              'uom_id',
+              'uom_po_id',
+              'barcode',
+              'default_code',
+            ])
+            .then((products) => {
+              let product_dict: any = {};
+              products.map(function (p) {
+                product_dict[p['id']] = p;
+              });
+              this.odooRPC
+                .read('stock.location', ubications, ['name'])
+                .then((locations) => {
+                  let location_dict: any = {};
+                  locations.map(function (p) {
+                    location_dict[p['id']] = p;
+                  });
+                  var self = this;
+                  res['records'].forEach(async function (part, index) {
+                    res['records'][index]['barcode'] =
+                      product_dict[part['product_id'][0]]['barcode'];
+                    res['records'][index]['default_code'] =
+                      product_dict[part['product_id'][0]]['default_code'];
+                    res['records'][index]['uom_po_id'] =
+                      product_dict[part['product_id'][0]]['uom_po_id'];
+                    res['records'][index]['uom_id'] =
+                      product_dict[part['product_id'][0]]['uom_id'];
+                    res['records'][index]['location_name'] =
+                      location_dict[part['location_id'][0]]['name'];
+                    res['records'][index]['location_dest_name'] =
+                      location_dict[part['location_dest_id'][0]]['name'];
+                    if (
+                      self.getQuantity('mov_int', res['records'][index].id) > -1
+                    ) {
+                      const cant = self.getQuantity(
+                        'mov_int',
+                        res['records'][index].id
+                      );
+                      res['records'][index]['scanned_qty'] = cant;
+                      res['records'][index]['quantity_done'] = cant;
+                    } else {
+                      res['records'][index]['scanned_qty'] = 0;
+                    }
+                  });
+
+                  observer.next(res);
+                  observer.complete();
+                });
+            });
+        });
     });
     return transaction$;
   }
@@ -83,7 +165,7 @@ export class StockService {
           let product_ids = res['records'].map(function (move) {
             return move['product_id'][0];
           });
- 
+
           this.odooRPC
             .read('product.product', product_ids, [
               'uom_id',
@@ -117,28 +199,30 @@ export class StockService {
                   res['records'][index]['scanned_qty'] = 0;
                 }
               });
-              if (get_lines){
+              if (get_lines) {
                 let move_ids = res['records'].map(function (move) {
                   return move['id'];
                 });
 
                 this.odooRPC
-                  .searchRead('stock.move.line', [['move_id', 'in', move_ids]], [
-                    'move_id',
-                    'picking_id',
-                    'location_id',
-                    'location_dest_id',
-                    'state',
-                  ]).then((lines) => {
-
+                  .searchRead(
+                    'stock.move.line',
+                    [['move_id', 'in', move_ids]],
+                    [
+                      'move_id',
+                      'picking_id',
+                      'location_id',
+                      'location_dest_id',
+                      'state',
+                    ]
+                  )
+                  .then((lines) => {
                     observer.next(res);
-                    observer.complete();            
-
-                  })
-
+                    observer.complete();
+                  });
               } else {
-                  observer.next(res);
-                  observer.complete();            
+                observer.next(res);
+                observer.complete();
               }
             });
         })
@@ -150,7 +234,7 @@ export class StockService {
   }
   private getQuantity(storage, id) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
-    if (scanned_qty_array[storage]) {
+    if (scanned_qty_array && scanned_qty_array[storage]) {
       let element = scanned_qty_array[storage].find((e) => id == e.id);
       if (element) {
         return element.scanned_qty;
