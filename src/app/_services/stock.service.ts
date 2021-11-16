@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { OdooRPCService } from './odoo-rpc.service';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { OdooRPCService } from "./odoo-rpc.service";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class StockService {
   constructor(public odooRPC: OdooRPCService) {}
@@ -14,9 +14,9 @@ export class StockService {
 
       this.odooRPC
         .searchRead(
-          'stock.warehouse',
+          "stock.warehouse",
           [],
-          ['name', 'lot_stock_id', 'wh_input_stock_loc_id'],
+          ["name", "lot_stock_id", "wh_input_stock_loc_id"],
           0,
           0
         )
@@ -37,20 +37,20 @@ export class StockService {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
         .searchRead(
-          'stock.picking',
+          "stock.picking",
           leaf,
           [
-            'display_name',
-            'scheduled_date',
-            'location_id',
-            'location_dest_id',
-            'move_lines',
-            'priority',
+            "display_name",
+            "scheduled_date",
+            "location_id",
+            "location_dest_id",
+            "move_lines",
+            "priority",
           ],
           0,
           0,
           {},
-          'priority asc'
+          "priority asc"
         )
         .then((res) => {
           observer.next(res);
@@ -63,66 +63,67 @@ export class StockService {
   getMovesLines(leaf = []) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
-        .searchRead('stock.move.line', leaf, [], 0, 0, {}, 'id asc')
+        .searchRead("stock.move.line", leaf, [], 0, 0, {}, "id asc")
         .then((res) => {
-          let product_ids = res['records'].map(function (move) {
-            return move['product_id'][0];
+          let product_ids = res["records"].map(function(move) {
+            return move["product_id"][0];
           });
 
-          let ubications_ids = res['records'].map(function (move) {
-            return move['location_id'][0];
+          let ubications_ids = res["records"].map(function(move) {
+            return move["location_id"][0];
           });
-          let ubications_dest_ids = res['records'].map(function (move) {
-            return move['location_dest_id'][0];
+          let ubications_dest_ids = res["records"].map(function(move) {
+            return move["location_dest_id"][0];
           });
+
           const ubications = [
             ...new Set([...ubications_ids, ...ubications_dest_ids]),
           ];
 
           this.odooRPC
-            .read('product.product', product_ids, [
-              'uom_id',
-              'uom_po_id',
-              'barcode',
-              'default_code',
+            .read("product.product", product_ids, [
+              "uom_id",
+              "uom_po_id",
+              "barcode",
+              "default_code",
             ])
             .then((products) => {
               let product_dict: any = {};
-              products.map(function (p) {
-                product_dict[p['id']] = p;
+              products.map(function(p) {
+                product_dict[p["id"]] = p;
               });
               this.odooRPC
-                .read('stock.location', ubications, ['name'])
+                .read("stock.location", ubications, ["name"])
                 .then((locations) => {
                   let location_dict: any = {};
-                  locations.map(function (p) {
-                    location_dict[p['id']] = p;
+                  locations.map(function(p) {
+                    location_dict[p["id"]] = p;
                   });
                   var self = this;
-                  res['records'].forEach(async function (part, index) {
-                    res['records'][index]['barcode'] =
-                      product_dict[part['product_id'][0]]['barcode'];
-                    res['records'][index]['default_code'] =
-                      product_dict[part['product_id'][0]]['default_code'];
-                    res['records'][index]['uom_po_id'] =
-                      product_dict[part['product_id'][0]]['uom_po_id'];
-                    res['records'][index]['uom_id'] =
-                      product_dict[part['product_id'][0]]['uom_id'];
-                    res['records'][index]['location_name'] =
-                      location_dict[part['location_id'][0]]['name'];
-                    res['records'][index]['location_dest_name'] =
-                      location_dict[part['location_dest_id'][0]]['name'];
+                  res["records"].forEach(async function(part, index) {
+                    res["records"][index]["barcode"] =
+                      product_dict[part["product_id"][0]]["barcode"];
+                    res["records"][index]["default_code"] =
+                      product_dict[part["product_id"][0]]["default_code"];
+                    res["records"][index]["uom_po_id"] =
+                      product_dict[part["product_id"][0]]["uom_po_id"];
+                    res["records"][index]["uom_id"] =
+                      product_dict[part["product_id"][0]]["uom_id"];
+                    res["records"][index]["location_name"] =
+                      location_dict[part["location_id"][0]]["name"];
+                    res["records"][index]["location_dest_name"] =
+                      location_dict[part["location_dest_id"][0]]["name"];
                     if (
-                      self.getQuantity('mov_int', res['records'][index].id) > -1
+                      self.getQuantity("mov_int", res["records"][index].id) > -1
                     ) {
                       const cant = self.getQuantity(
-                        'mov_int',
-                        res['records'][index].id
+                        "mov_int",
+                        res["records"][index].id
                       );
-                      res['records'][index]['scanned_qty'] = cant;
-                      res['records'][index]['quantity_done'] = cant;
+                      res["records"][index]["scanned_qty"] = cant;
+                      res["records"][index]["quantity_done"] = cant;
                     } else {
-                      res['records'][index]['scanned_qty'] = 0;
+                      res["records"][index]["scanned_qty"] = 0;
                     }
                   });
 
@@ -135,85 +136,85 @@ export class StockService {
     return transaction$;
   }
 
-  getMoves(leaf, storage = 'moves', get_lines = false) {
+  getMoves(leaf, storage = "moves", get_lines = false) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
         .searchRead(
-          'stock.move',
+          "stock.move",
           leaf,
           [
-            'product_id',
-            'name',
-            'product_uom_qty',
-            'product_uom', // UNIDAD DE MEDIDA ESTA EN LA ORDEN DE COMPRA
-            'reserved_availability',
-            'quantity_done',
-            'sequence',
-            'picking_id',
-            'company_id',
-            'location_id',
-            'location_dest_id',
-            'purchase_line_id',
-            'move_line_ids',
-            'move_line_nosuggest_ids',
-            'origin',
+            "product_id",
+            "name",
+            "product_uom_qty",
+            "product_uom", // UNIDAD DE MEDIDA ESTA EN LA ORDEN DE COMPRA
+            "reserved_availability",
+            "quantity_done",
+            "sequence",
+            "picking_id",
+            "company_id",
+            "location_id",
+            "location_dest_id",
+            "purchase_line_id",
+            "move_line_ids",
+            "move_line_nosuggest_ids",
+            "origin",
           ],
           0,
           0
         )
         .then((res) => {
-          let product_ids = res['records'].map(function (move) {
-            return move['product_id'][0];
+          let product_ids = res["records"].map(function(move) {
+            return move["product_id"][0];
           });
 
           this.odooRPC
-            .read('product.product', product_ids, [
-              'uom_id',
-              'uom_po_id',
-              'barcode',
-              'default_code',
+            .read("product.product", product_ids, [
+              "uom_id",
+              "uom_po_id",
+              "barcode",
+              "default_code",
             ])
             .then((products) => {
               let product_dict: any = {};
-              products.map(function (p) {
-                product_dict[p['id']] = p;
+              products.map(function(p) {
+                product_dict[p["id"]] = p;
               });
               var self = this;
-              res['records'].forEach(async function (part, index) {
-                res['records'][index]['barcode'] =
-                  product_dict[part['product_id'][0]]['barcode'];
-                res['records'][index]['default_code'] =
-                  product_dict[part['product_id'][0]]['default_code'];
-                res['records'][index]['uom_po_id'] =
-                  product_dict[part['product_id'][0]]['uom_po_id'];
-                res['records'][index]['uom_id'] =
-                  product_dict[part['product_id'][0]]['uom_id'];
-                if (self.getQuantity(storage, res['records'][index].id) > -1) {
+              res["records"].forEach(async function(part, index) {
+                res["records"][index]["barcode"] =
+                  product_dict[part["product_id"][0]]["barcode"];
+                res["records"][index]["default_code"] =
+                  product_dict[part["product_id"][0]]["default_code"];
+                res["records"][index]["uom_po_id"] =
+                  product_dict[part["product_id"][0]]["uom_po_id"];
+                res["records"][index]["uom_id"] =
+                  product_dict[part["product_id"][0]]["uom_id"];
+                if (self.getQuantity(storage, res["records"][index].id) > -1) {
                   const cant = self.getQuantity(
                     storage,
-                    res['records'][index].id
+                    res["records"][index].id
                   );
-                  res['records'][index]['scanned_qty'] = cant;
-                  res['records'][index]['quantity_done'] = cant;
+                  res["records"][index]["scanned_qty"] = cant;
+                  res["records"][index]["quantity_done"] = cant;
                 } else {
-                  res['records'][index]['scanned_qty'] = 0;
+                  res["records"][index]["scanned_qty"] = 0;
                 }
               });
               if (get_lines) {
-                let move_ids = res['records'].map(function (move) {
-                  return move['id'];
+                let move_ids = res["records"].map(function(move) {
+                  return move["id"];
                 });
 
                 this.odooRPC
                   .searchRead(
-                    'stock.move.line',
-                    [['move_id', 'in', move_ids]],
+                    "stock.move.line",
+                    [["move_id", "in", move_ids]],
                     [
-                      'move_id',
-                      'picking_id',
-                      'location_id',
-                      'location_dest_id',
-                      'state',
+                      "move_id",
+                      "picking_id",
+                      "location_id",
+                      "location_dest_id",
+                      "state",
                     ]
                   )
                   .then((lines) => {
@@ -233,7 +234,7 @@ export class StockService {
     return transaction$;
   }
   private getQuantity(storage, id) {
-    let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+    let scanned_qty_array = JSON.parse(localStorage.getItem("scanned_qty"));
     if (scanned_qty_array && scanned_qty_array[storage]) {
       let element = scanned_qty_array[storage].find((e) => id == e.id);
       if (element) {
@@ -243,7 +244,7 @@ export class StockService {
     return -1;
   }
 
-  move_products(storage, move_id, qty_done, description_picking = '') {
+  move_products(storage, move_id, qty_done, description_picking = "") {
     let move_line = {
       picking_id: move_id.picking_id[0],
       move_id: move_id.id,
@@ -253,19 +254,19 @@ export class StockService {
       location_id: move_id.location_id[0],
       location_dest_id: move_id.location_dest_id[0],
       description_picking: description_picking,
-      qty_done: qty_done || move_id['qty_done'],
+      qty_done: qty_done || move_id["qty_done"],
     };
     this.deleteQuantity(storage, move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
       if (move_id.move_line_ids.length) {
-        move_line['qty_done'] =
-          qty_done + move_id['qty_done'] || move_id['qty_done'];
+        move_line["qty_done"] =
+          qty_done + move_id["qty_done"] || move_id["qty_done"];
 
         this.odooRPC
           .call(
-            'stock.move.line',
-            'write',
+            "stock.move.line",
+            "write",
             [[move_id.move_line_ids[0]], move_line],
             {}
           )
@@ -278,7 +279,7 @@ export class StockService {
           });
       } else {
         this.odooRPC
-          .call('stock.move.line', 'create', [move_line], {})
+          .call("stock.move.line", "create", [move_line], {})
           .then((res) => {
             observer.next(res);
             observer.complete();
@@ -290,6 +291,39 @@ export class StockService {
     });
     return transaction$;
   }
+  move_line_products(
+    storage,
+    move_line_id,
+    scanned_qty,
+    description_picking = ""
+  ) {
+    // Si la cantidad escaneada esta definida
+    // la qty_done es la cantidad escaneada + la ya realizada
+    let move_line = {
+      qty_done: scanned_qty
+        ? scanned_qty +
+          (move_line_id["qty_done"] ? move_line_id["qty_done"] : 0)
+        : move_line_id["qty_done"],
+    };
+
+    // Verificar el local storage
+    console.log(storage, move_line_id.id)
+    this.deleteQuantity(storage, move_line_id.id);
+
+    const transaction$ = new Observable((observer) => {
+
+      this.odooRPC
+        .call("stock.move.line", "write", [[move_line_id['id']], move_line], {})
+        .then((res) => {
+          observer.next({'name': move_line_id.product_id[1] , 'qty_done': move_line.qty_done});
+          observer.complete();
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    });
+    return transaction$;
+  }
   private pushObject(storage, id, scanned_qty, array) {
     const obj = {
       id,
@@ -297,7 +331,7 @@ export class StockService {
     };
     array.push(obj);
 
-    let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+    let scanned_qty_array = JSON.parse(localStorage.getItem("scanned_qty"));
     if (scanned_qty_array) {
       if (scanned_qty_array && scanned_qty_array[storage]) {
         scanned_qty_array[storage] = array;
@@ -309,30 +343,30 @@ export class StockService {
         [storage]: array,
       };
     }
-    localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));
+    localStorage.setItem("scanned_qty", JSON.stringify(scanned_qty_array));
   }
   deleteQuantity(storage, id) {
-    let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+    let scanned_qty_array = JSON.parse(localStorage.getItem("scanned_qty"));
 
     if (scanned_qty_array && scanned_qty_array[storage]) {
       let index = scanned_qty_array[storage].findIndex((e) => id == e.id);
       if (index > -1) {
         scanned_qty_array[storage].splice(index, 1);
-        localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));
+        localStorage.setItem("scanned_qty", JSON.stringify(scanned_qty_array));
       }
     }
   }
 
   setQuantity(storage, id, scanned_qty) {
-    let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+    let scanned_qty_array = JSON.parse(localStorage.getItem("scanned_qty"));
     if (scanned_qty_array && scanned_qty_array[storage]) {
       let index = scanned_qty_array[storage].findIndex((e) => id == e.id);
       if (index > -1) {
         let element = scanned_qty_array[storage].find((e) => id == e.id);
-        console.log('mi elemento buscado', element);
+        console.log("mi elemento buscado", element);
         element.scanned_qty += scanned_qty;
         scanned_qty_array[storage][index] = element;
-        localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));
+        localStorage.setItem("scanned_qty", JSON.stringify(scanned_qty_array));
       } else {
         this.pushObject(
           storage,
@@ -348,7 +382,7 @@ export class StockService {
   button_validate(picking_id) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
-        .call('stock.picking', 'button_validate', [picking_id], {})
+        .call("stock.picking", "button_validate", [picking_id], {})
         .then((res) => {
           observer.next(res);
           observer.complete();

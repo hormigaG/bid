@@ -8,6 +8,7 @@ import { StockService } from '../../../_services/stock.service';
 })
 export class MovIntDetailComponent implements OnInit {
   picking_id: Number = 0;
+  done_log: String = '';
   moves: any = [];
   location_id: any = [];
   inputMethod: String = 'textBus';
@@ -49,6 +50,7 @@ export class MovIntDetailComponent implements OnInit {
   }
   leave_pruduct_location(code) {
     if (code === this.moves[0].location_dest_name) {
+      console.log(code)
       this.moverProductos();
     } else {
       alert('Error, escaneo una ubicación erronea');
@@ -59,16 +61,23 @@ export class MovIntDetailComponent implements OnInit {
     this.moves[index];
     this.select_location(this.moves[index].location_id[0]);
   }
-  async moverProductos() {
+  moverProductos() {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
       for (let i = 0; i < len; i++) {
-        await this.stockService.move_products(
+        let selected_move:any = {}
+        selected_move = this.moves.find(e => e.id = scanned_qty_array['mov_int'][i]['id']); 
+         this.stockService.move_line_products(
           'mov_int',
-          scanned_qty_array['mov_int'][i]['id'],
+          selected_move,
           scanned_qty_array['mov_int'][i]['scanned_qty']
-        );
+        ).subscribe(r => {
+              selected_move['qty_done'] = r['qty_done'] ; 
+              selected_move['scanned_qty'] = 0;
+              this.done_log += r['name'] + ' ' + r['qty_done'] + '\n'; 
+          });
       }
     }
   }
@@ -84,7 +93,6 @@ export class MovIntDetailComponent implements OnInit {
 
     this.stockService.getMovesLines(leaf).subscribe((res) => {
       this.moves = res['records'];
-      console.log(this.moves);
       this.filterLocations();
     });
   }

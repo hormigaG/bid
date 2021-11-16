@@ -91,16 +91,23 @@ export class MovIntDetailProductComponent implements OnInit {
 
   addScannedQuantity(line, qty = 1) {
     this.changeDetectorRef.detectChanges();
-    if (this.products[line]['scanned_qty'] + qty < 1) {
-      this.products[line]['quantity_done'] =
-        this.products[line]['quantity_done'] -
-        this.products[line]['scanned_qty'];
-      this.products[line]['scanned_qty'] = 0;
+    let selected_product = this.products[line];
+    console.log(selected_product);
+    if (selected_product['qty_done'] + qty + selected_product['scanned_qty'] > selected_product['product_uom_qty']){
+      // TODO: mostrar un notificacion de que ya estan todos
+      // Cerrar el modal
       return;
     }
-    this.products[line]['scanned_qty'] += qty;
-    this.products[line]['quantity_done'] += qty;
-    // TODO: LocalSOTRAGE -> this.products[line]['scanned_qty']
-    this.addToLocalStorage('mov_int', this.products[line], qty);
+    if (selected_product['scanned_qty'] + qty < 1) {
+      selected_product['quantity_done'] =
+        selected_product['quantity_done'] -
+        selected_product['scanned_qty'];
+      selected_product['scanned_qty'] = 0;
+      return;
+    }
+    selected_product['scanned_qty'] += qty;
+    selected_product['quantity_done'] += qty;
+    // TODO: LocalSOTRAGE -> selected_product['scanned_qty']
+    this.addToLocalStorage('mov_int', selected_product, qty);
   }
 }
