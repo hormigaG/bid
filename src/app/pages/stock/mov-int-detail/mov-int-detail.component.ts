@@ -15,6 +15,7 @@ export class MovIntDetailComponent implements OnInit {
   moves_int: any = [];
   action: String = 'select_location';
   selected_location = true;
+  isValid: Boolean = false;
   products = [];
   constructor(
     private route: ActivatedRoute,
@@ -31,7 +32,10 @@ export class MovIntDetailComponent implements OnInit {
     this.action = 'leave';
   }
   filterLocations() {
-    this.location_id = this.moves.reduce((unique, o) => {
+    const moves_filter = this.moves.filter(
+      (e) => e.product_uom_qty > e.qty_done && e.state != 'done'
+    );
+    this.location_id = moves_filter.reduce((unique, o) => {
       if (!unique.some((obj) => obj.location_id[0] === o.location_id[0])) {
         unique.push(o);
       }
@@ -42,19 +46,28 @@ export class MovIntDetailComponent implements OnInit {
     switch (this.action) {
       case 'select_location':
         this.select_location_product(code);
+        break;
       case 'get':
         console.log('get_products');
+        break;
       case 'leave':
         this.leave_pruduct_location(code);
+        break;
     }
   }
   leave_pruduct_location(code) {
     if (code === this.moves[0].location_dest_name) {
-      console.log(code)
       this.moverProductos();
+      this.isValid = true;
     } else {
       alert('Error, escaneo una ubicación erronea');
     }
+  }
+  back() {
+    this.isValid = false;
+    this.selected_location = true;
+    this.action = 'select_location';
+    this.filterLocations();
   }
   select_location_product(code) {
     const index = this.moves.findIndex((e) => e.location_name === code);
@@ -63,23 +76,39 @@ export class MovIntDetailComponent implements OnInit {
   }
   moverProductos() {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
-
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
       for (let i = 0; i < len; i++) {
-        let selected_move:any = {}
-        selected_move = this.moves.find(e => e.id = scanned_qty_array['mov_int'][i]['id']); 
-         this.stockService.move_line_products(
-          'mov_int',
-          selected_move,
-          scanned_qty_array['mov_int'][i]['scanned_qty']
-        ).subscribe(r => {
-              selected_move['qty_done'] = r['qty_done'] ; 
-              selected_move['scanned_qty'] = 0;
-              this.done_log += r['name'] + ' ' + r['qty_done'] + '\n'; 
+        let selected_move: any = {};
+
+        selected_move = this.moves.find(
+          (e) => e.id === scanned_qty_array['mov_int'][i]['id']
+        );
+        console.log('MI SELECTED MOVE', selected_move);
+        this.stockService
+          .move_line_products(
+            'mov_int',
+            selected_move,
+            scanned_qty_array['mov_int'][i]['scanned_qty']
+          )
+          .subscribe((r) => {
+            selected_move['qty_done'] = r['qty_done'];
+            selected_move['scanned_qty'] = 0;
+            this.done_log += '\n' + r['name'] + r['qty_done'];
           });
       }
     }
+  }
+  validate() {
+    this.stockService
+      .button_validate(this.moves[0]['picking_id'][0])
+      .subscribe((r) => {
+        if (r) {
+          alert('No se pudo validar el picking');
+        } else {
+          alert('Exito al validar el picking');
+        }
+      });
   }
   getProductsByLocation(id) {
     let products;
@@ -98,6 +127,7 @@ export class MovIntDetailComponent implements OnInit {
   }
   volver() {
     this.selected_location = true;
+    this.filterLocations();
   }
   select_location(location_id) {
     this.products = this.getProductsByLocation(location_id);

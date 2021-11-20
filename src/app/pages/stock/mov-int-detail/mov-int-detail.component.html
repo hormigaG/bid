@@ -19,18 +19,34 @@
 </ul>
 
 <ng-container *ngIf="selected_location && action === 'leave'">
-  <div class="h4">
+  <div *ngIf="!isValid" class="h4">
     Por favor dirigirse a la ubicacion
     <span class="font-weight-bold">{{ moves[0].location_dest_id[1] }}</span
     >, escanear la ubicación y deje los productos escaneados anteriormente
   </div>
+  <div *ngIf="isValid" class="h4">
+    Escaneo correctamente la ubicación
+    <span class="font-weight-bold">{{ moves[0].location_dest_id[1] }}</span
+    >, En caso completar el movimiento pulse el botón validar.
+  </div>
   <pre>
     {{ done_log }}
   </pre>
-  dos botones 
-  volver 
-  validar -> action_validate(picking_id) 
-</ng-container>
+  <div class="row" *ngIf="isValid">
+    <div class="col-6 text-center">
+      <button class="btn btn-secondary" style="width: 80%" (click)="back()">
+        Volver
+      </button>
+    </div>
+    <div class="col-6 text-center">
+      <button class="btn btn-primary" style="width: 80%" (click)="validate()">
+        Validar
+      </button>
+    </div>
+  </div>
+  <!--   dos botones volver validar -> action_validate(picking_id)
+ --></ng-container
+>
 
 <app-mov-int-detail-product
   [products]="products"

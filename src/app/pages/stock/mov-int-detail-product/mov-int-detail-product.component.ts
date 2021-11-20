@@ -34,7 +34,6 @@ export class MovIntDetailProductComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Me llegan estos productos', this.products);
     //this.getMoves();
   }
   searchByCode(code) {
@@ -52,7 +51,6 @@ export class MovIntDetailProductComponent implements OnInit {
          */
       );
     });
-    console.log(line);
     if (line == -1) {
       alert(code + ' NO diponible');
     } else {
@@ -71,11 +69,9 @@ export class MovIntDetailProductComponent implements OnInit {
     }
   }
   openMoveLineModal(line) {
-    console.log(line);
     this.active_index = line;
     this.addQty = 1;
     this.qtyDir = 1;
-    console.log(this.active_index);
     this.modalService.open(this.moveLineModal).result.then((result) => {
       this.active_index = undefined;
     });
@@ -92,16 +88,17 @@ export class MovIntDetailProductComponent implements OnInit {
   addScannedQuantity(line, qty = 1) {
     this.changeDetectorRef.detectChanges();
     let selected_product = this.products[line];
-    console.log(selected_product);
-    if (selected_product['qty_done'] + qty + selected_product['scanned_qty'] > selected_product['product_uom_qty']){
+    if (
+      qty + selected_product['scanned_qty'] >
+      selected_product['product_uom_qty']
+    ) {
       // TODO: mostrar un notificacion de que ya estan todos
       // Cerrar el modal
       return;
     }
     if (selected_product['scanned_qty'] + qty < 1) {
       selected_product['quantity_done'] =
-        selected_product['quantity_done'] -
-        selected_product['scanned_qty'];
+        selected_product['quantity_done'] - selected_product['scanned_qty'];
       selected_product['scanned_qty'] = 0;
       return;
     }
