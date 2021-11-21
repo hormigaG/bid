@@ -31,6 +31,20 @@ export class MovIntDetailComponent implements OnInit {
   leaveProduct() {
     this.action = 'leave';
   }
+
+  getUbicacionesDestino() {
+    const location_dest_id = this.moves.reduce((unique, o) => {
+      if (
+        !unique.some((obj) => obj.location_dest_id[0] === o.location_dest_id[0])
+      ) {
+        unique.push(o);
+      }
+      return unique;
+    }, []);
+
+    console.log(location_dest_id);
+    return location_dest_id;
+  }
   filterLocations() {
     const moves_filter = this.moves.filter(
       (e) => e.product_uom_qty > e.qty_done && e.state != 'done'
@@ -56,12 +70,8 @@ export class MovIntDetailComponent implements OnInit {
     }
   }
   leave_pruduct_location(code) {
-    if (code === this.moves[0].location_dest_name) {
-      this.moverProductos();
-      this.isValid = true;
-    } else {
-      alert('Error, escaneo una ubicación erronea');
-    }
+    this.moverProductos(code);
+    this.isValid = true;
   }
   back() {
     this.isValid = false;
@@ -74,28 +84,28 @@ export class MovIntDetailComponent implements OnInit {
     this.moves[index];
     this.select_location(this.moves[index].location_id[0]);
   }
-  moverProductos() {
+  moverProductos(code) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
       for (let i = 0; i < len; i++) {
         let selected_move: any = {};
-
         selected_move = this.moves.find(
           (e) => e.id === scanned_qty_array['mov_int'][i]['id']
         );
-        console.log('MI SELECTED MOVE', selected_move);
-        this.stockService
-          .move_line_products(
-            'mov_int',
-            selected_move,
-            scanned_qty_array['mov_int'][i]['scanned_qty']
-          )
-          .subscribe((r) => {
-            selected_move['qty_done'] = r['qty_done'];
-            selected_move['scanned_qty'] = 0;
-            this.done_log += '\n' + r['name'] + r['qty_done'];
-          });
+        if (code === selected_move.location_dest_name) {
+          this.stockService
+            .move_line_products(
+              'mov_int',
+              selected_move,
+              scanned_qty_array['mov_int'][i]['scanned_qty']
+            )
+            .subscribe((r) => {
+              selected_move['qty_done'] = r['qty_done'];
+              selected_move['scanned_qty'] = 0;
+              this.done_log += '\n' + r['name'] + r['qty_done'];
+            });
+        }
       }
     }
   }
@@ -122,6 +132,7 @@ export class MovIntDetailComponent implements OnInit {
 
     this.stockService.getMovesLines(leaf).subscribe((res) => {
       this.moves = res['records'];
+      console.log('ACA', this.moves);
       this.filterLocations();
     });
   }

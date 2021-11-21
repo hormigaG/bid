@@ -15,7 +15,8 @@
             [ngClass]="{
               'text-bold': true,
               'text-white': true,
-              'bg-warning': true
+              'bg-warning': item['product_uom_qty'] > item['scanned_qty'],
+              'bg-success': item['product_uom_qty'] <= item['scanned_qty']
             }"
           >
             {{ item["scanned_qty"] }}<br />
@@ -56,8 +57,7 @@
           Realizado/Total:
           <strong>{{ products[active_index]["qty_done"] }}</strong
           >/
-          <strong>{{ products[active_index]["product_uom_qty"] }}</strong
-          >
+          <strong>{{ products[active_index]["product_uom_qty"] }}</strong>
         </div>
         <div>
           Origen:

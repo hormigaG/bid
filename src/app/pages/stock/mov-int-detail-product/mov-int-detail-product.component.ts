@@ -35,7 +35,9 @@ export class MovIntDetailProductComponent implements OnInit {
 
   ngOnInit(): void {
     //this.getMoves();
+    console.log(this.products);
   }
+
   searchByCode(code) {
     this.changeDetectorRef.detectChanges();
     if (code.length < 2) {
@@ -94,6 +96,9 @@ export class MovIntDetailProductComponent implements OnInit {
     ) {
       // TODO: mostrar un notificacion de que ya estan todos
       // Cerrar el modal
+      //Si el escenado + qty_done color poner en color verde
+      this.modalService.dismissAll();
+
       return;
     }
     if (selected_product['scanned_qty'] + qty < 1) {

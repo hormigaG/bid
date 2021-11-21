@@ -20,9 +20,14 @@
 
 <ng-container *ngIf="selected_location && action === 'leave'">
   <div *ngIf="!isValid" class="h4">
-    Por favor dirigirse a la ubicacion
-    <span class="font-weight-bold">{{ moves[0].location_dest_id[1] }}</span
-    >, escanear la ubicación y deje los productos escaneados anteriormente
+    Por favor dirigirse a:
+    <div
+      class="font-weight-bold"
+      *ngFor="let ubicacion of getUbicacionesDestino(); let i = index"
+    >
+      {{ ubicacion.location_dest_id[1] }}
+    </div>
+    Escanear la ubicación y deje los productos escaneados anteriormente
   </div>
   <div *ngIf="isValid" class="h4">
     Escaneo correctamente la ubicación
