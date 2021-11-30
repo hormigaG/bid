@@ -5,14 +5,14 @@ import {
   ViewChild,
   ChangeDetectorRef,
   Input,
-} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { StockService } from '../../../_services/stock.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+} from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { StockService } from "../../../_services/stock.service";
+import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
 @Component({
-  selector: 'app-mov-int-detail-product',
-  templateUrl: './mov-int-detail-product.component.html',
-  styleUrls: ['./mov-int-detail-product.component.css'],
+  selector: "app-mov-int-detail-product",
+  templateUrl: "./mov-int-detail-product.component.html",
+  styleUrls: ["./mov-int-detail-product.component.css"],
 })
 export class MovIntDetailProductComponent implements OnInit {
   location_id: Number = 0;
@@ -23,8 +23,8 @@ export class MovIntDetailProductComponent implements OnInit {
   addQty: number = 1;
   qtyDir: number = 1;
   @Input() products: any = [];
-  inputMethod: String = 'textBus';
-  @ViewChild('moveLineModal') moveLineModal: ElementRef;
+  inputMethod: String = "textBus";
+  @ViewChild("moveLineModal") moveLineModal: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,7 +35,6 @@ export class MovIntDetailProductComponent implements OnInit {
 
   ngOnInit(): void {
     //this.getMoves();
-    console.log(this.products);
   }
 
   searchByCode(code) {
@@ -43,7 +42,7 @@ export class MovIntDetailProductComponent implements OnInit {
     if (code.length < 2) {
       return;
     }
-    var line = this.products.findIndex(function (item) {
+    var line = this.products.findIndex(function(item) {
       let codeLow = code.toLowerCase();
       return (
         item.product_id[1].toLowerCase().indexOf(codeLow) !== -1 ||
@@ -54,7 +53,7 @@ export class MovIntDetailProductComponent implements OnInit {
       );
     });
     if (line == -1) {
-      alert(code + ' NO diponible');
+      alert(code + " NO diponible");
     } else {
       let openModal = this.modalService.hasOpenModals();
       this.active_index = line;
@@ -90,26 +89,27 @@ export class MovIntDetailProductComponent implements OnInit {
   addScannedQuantity(line, qty = 1) {
     this.changeDetectorRef.detectChanges();
     let selected_product = this.products[line];
-    if (
-      qty + selected_product['scanned_qty'] >
-      selected_product['product_uom_qty']
-    ) {
+
+    let total =
+      qty +
+      this.products[line]["scanned_qty"] +
+      this.products[line]["qty_done"];
+
+    if (total > this.products[line]["product_uom_qty"] || this.products[line]["scanned_qty"] + qty < 0) {
       // TODO: mostrar un notificacion de que ya estan todos
       // Cerrar el modal
       //Si el escenado + qty_done color poner en color verde
       this.modalService.dismissAll();
+      return;
+    }
 
+    this.products[line]["scanned_qty"] += qty;
+    //this.products[line]['qty_done'] += qty;
+    // TODO: LocalSOTRAGE -> this.products[line]['scanned_qty']
+    this.addToLocalStorage("mov_int", this.products[line], qty);
+    if (total == this.products[line]["product_uom_qty"]) {
+      this.modalService.dismissAll();
       return;
     }
-    if (selected_product['scanned_qty'] + qty < 1) {
-      selected_product['quantity_done'] =
-        selected_product['quantity_done'] - selected_product['scanned_qty'];
-      selected_product['scanned_qty'] = 0;
-      return;
-    }
-    selected_product['scanned_qty'] += qty;
-    selected_product['quantity_done'] += qty;
-    // TODO: LocalSOTRAGE -> selected_product['scanned_qty']
-    this.addToLocalStorage('mov_int', selected_product, qty);
   }
 }

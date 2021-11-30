@@ -29,20 +29,20 @@ export class MovIntDetailComponent implements OnInit {
     this.action = 'select_location';
   }
   leaveProduct() {
+    this.done_log= '';
     this.action = 'leave';
   }
 
-  getUbicacionesDestino() {
+  getLocationDest() {
     const location_dest_id = this.moves.reduce((unique, o) => {
       if (
-        !unique.some((obj) => obj.location_dest_id[0] === o.location_dest_id[0])
+        !unique.some((obj) => obj.location_dest_id[0] === o.location_dest_id[0]) && o.scanned_qty > 0
       ) {
         unique.push(o);
       }
       return unique;
     }, []);
 
-    console.log(location_dest_id);
     return location_dest_id;
   }
   filterLocations() {
@@ -62,7 +62,6 @@ export class MovIntDetailComponent implements OnInit {
         this.select_location_product(code);
         break;
       case 'get':
-        console.log('get_products');
         break;
       case 'leave':
         this.leave_pruduct_location(code);
@@ -103,7 +102,7 @@ export class MovIntDetailComponent implements OnInit {
             .subscribe((r) => {
               selected_move['qty_done'] = r['qty_done'];
               selected_move['scanned_qty'] = 0;
-              this.done_log += '\n' + r['name'] + r['qty_done'];
+              this.done_log += '\n' + r['name'] + ' ' + r['qty_done'];
             });
         }
       }
@@ -132,7 +131,6 @@ export class MovIntDetailComponent implements OnInit {
 
     this.stockService.getMovesLines(leaf).subscribe((res) => {
       this.moves = res['records'];
-      console.log('ACA', this.moves);
       this.filterLocations();
     });
   }

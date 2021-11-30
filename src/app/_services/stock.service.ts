@@ -69,15 +69,15 @@ export class StockService {
             return move['product_id'][0];
           });
 
-          let ubications_ids = res['records'].map(function (move) {
+          let locations_ids = res['records'].map(function (move) {
             return move['location_id'][0];
           });
-          let ubications_dest_ids = res['records'].map(function (move) {
+          let locations_dest_ids = res['records'].map(function (move) {
             return move['location_dest_id'][0];
           });
 
-          const ubications = [
-            ...new Set([...ubications_ids, ...ubications_dest_ids]),
+          const locations = [
+            ...new Set([...locations_ids, ...locations_dest_ids]),
           ];
 
           this.odooRPC
@@ -93,7 +93,7 @@ export class StockService {
                 product_dict[p['id']] = p;
               });
               this.odooRPC
-                .read('stock.location', ubications, ['name'])
+                .read('stock.location', locations, ['name'])
                 .then((locations) => {
                   let location_dict: any = {};
                   locations.map(function (p) {
@@ -121,14 +121,16 @@ export class StockService {
                         res['records'][index].id
                       );
                       res['records'][index]['scanned_qty'] = cant;
-                      res['records'][index]['quantity_done'] = cant;
+                      //res['records'][index]['quantity_done'] = cant;
                     } else {
                       res['records'][index]['scanned_qty'] = 0;
                     }
+                  
                     res['records'][index]['scanned_qty'] =
-                      res['records'][index]['scanned_qty'] +
-                      res['records'][index]['qty_done'];
+                      res['records'][index]['scanned_qty'] +0 ;
+                      //res['records'][index]['qty_done'];
                   });
+
 
                   observer.next(res);
                   observer.complete();

@@ -243,12 +243,10 @@ export class EntLocationComponent implements OnInit {
   }
 
   removeToLocalStorage(storage, move) {
-    //console.log('aca me llego', move.id, move.scanned_qty);
     this.stockService.deleteQuantity(storage, move.id);
   }
 
   addToLocalStorage(storage, move, qty) {
-    //console.log('aca me llego', move.id, move.scanned_qty);
     this.stockService.setQuantity(storage, move.id, qty);
   }
   addScannedQuantity(line, qty = 1) {
@@ -329,8 +327,7 @@ export class EntLocationComponent implements OnInit {
         this.getAssignedMoves();
       });
     }
-    /*    console.log(no_ok);
-     */
+ 
   }
   parcialMoveProducts(line) {
     if (this.moves[line]['scanned_qty'] > 0) {

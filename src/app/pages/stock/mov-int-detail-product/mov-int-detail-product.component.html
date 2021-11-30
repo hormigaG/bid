@@ -15,11 +15,11 @@
             [ngClass]="{
               'text-bold': true,
               'text-white': true,
-              'bg-warning': item['product_uom_qty'] > item['scanned_qty'],
-              'bg-success': item['product_uom_qty'] <= item['scanned_qty']
+              'bg-warning': item['product_uom_qty'] > item['scanned_qty'] + item['qty_done'],
+              'bg-success': item['product_uom_qty'] <= item['scanned_qty'] + item['qty_done']  
             }"
           >
-            {{ item["scanned_qty"] }}<br />
+            {{ item["scanned_qty"] + item['qty_done'] }}<br />
           </div>
         </div>
         <div class="col-8">
