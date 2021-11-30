@@ -16,6 +16,7 @@ export class MovIntDetailComponent implements OnInit {
   action: String = 'select_location';
   selected_location = true;
   isValid: Boolean = false;
+  forceLocation: Boolean = false;
   products = [];
   constructor(
     private route: ActivatedRoute,
@@ -24,6 +25,7 @@ export class MovIntDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMoves();
+    
   }
   selectLocation() {
     this.action = 'select_location';
@@ -92,6 +94,9 @@ export class MovIntDetailComponent implements OnInit {
         selected_move = this.moves.find(
           (e) => e.id === scanned_qty_array['mov_int'][i]['id']
         );
+        if (!selected_move){
+          continue;
+        }
         if (code === selected_move.location_dest_name) {
           this.stockService
             .move_line_products(
@@ -102,7 +107,7 @@ export class MovIntDetailComponent implements OnInit {
             .subscribe((r) => {
               selected_move['qty_done'] = r['qty_done'];
               selected_move['scanned_qty'] = 0;
-              this.done_log += '\n' + r['name'] + ' ' + r['qty_done'];
+              this.done_log += '\n' + r['name'] + '  ' + r['qty_done'];
             });
         }
       }

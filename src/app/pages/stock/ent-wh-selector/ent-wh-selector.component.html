@@ -2,8 +2,8 @@
   <div class="col-12">
 
     <ul class="list-group">
-      <li *ngFor="let item of wh" routerLink="/stock/location-entry/{{ item.lot_stock_id[0] }}" class="text-left list-group-item">
-         <i class="fa fa-fw fa-building"></i> {{ item['name']}} ({{ item.lot_stock_id[1] }})
+      <li *ngFor="let item of wh" routerLink="/stock/location-entry/{{ item.wh_input_stock_loc_id[0] }}" class="text-left list-group-item">
+         <i class="fa fa-fw fa-building"></i> {{ item['name']}} ({{ item.wh_input_stock_loc_id[1] }})
       </li>
     </ul>
   </div>

@@ -248,8 +248,10 @@ export class StockService {
     }
     return -1;
   }
-
+  
   move_products(storage, move_id, qty_done, description_picking = '') {
+    //let difference = move_id.move_line_ids.filter(x => !move_id.move_line_nosuggest_ids.includes(x));
+
     let move_line = {
       picking_id: move_id.picking_id[0],
       move_id: move_id.id,
@@ -259,43 +261,42 @@ export class StockService {
       location_id: move_id.location_id[0],
       location_dest_id: move_id.location_dest_id[0],
       description_picking: description_picking,
-      qty_done: qty_done || move_id['qty_done'],
+      qty_done: qty_done  || move_id['qty_done'],
     };
+   
     this.deleteQuantity(storage, move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
-      if (move_id.move_line_ids.length) {
-        move_line['qty_done'] =
-          qty_done + move_id['qty_done'] || move_id['qty_done'];
+      if (move_id.move_line_ids.length){
+        if (move_id['qty_done']){
+          move_line['qty_done'] = qty_done + move_id['qty_done'];
+        } else{
+          move_line['qty_done'] = qty_done;   
+        }
+        this.odooRPC
+           .call('stock.move.line', 'write', [[move_id.move_line_ids[0]],move_line], {}).then((res) =>{
+                observer.next(move_id.move_line_ids[0]);
+                observer.complete();
+           }).catch((err) => {
+             alert(err);
+           });
+      } else{      
+        this.odooRPC
+           .call('stock.move.line', 'create', [move_line], {}).then((res) =>{
 
-        this.odooRPC
-          .call(
-            'stock.move.line',
-            'write',
-            [[move_id.move_line_ids[0]], move_line],
-            {}
-          )
-          .then((res) => {
-            observer.next(move_id.move_line_ids[0]);
-            observer.complete();
-          })
-          .catch((err) => {
-            alert(err);
-          });
-      } else {
-        this.odooRPC
-          .call('stock.move.line', 'create', [move_line], {})
-          .then((res) => {
-            observer.next(res);
-            observer.complete();
-          })
-          .catch((err) => {
-            alert(err);
-          });
+                observer.next(res);
+                observer.complete();
+
+           }).catch((err) => {
+             alert(err);
+           });
       }
+        
     });
+
     return transaction$;
   }
+  
   move_line_products(
     storage,
     move_line_id,
@@ -370,7 +371,6 @@ export class StockService {
       let index = scanned_qty_array[storage].findIndex((e) => id == e.id);
       if (index > -1) {
         let element = scanned_qty_array[storage].find((e) => id == e.id);
-        console.log('mi elemento buscado', element);
         element.scanned_qty += scanned_qty;
         scanned_qty_array[storage][index] = element;
         localStorage.setItem('scanned_qty', JSON.stringify(scanned_qty_array));

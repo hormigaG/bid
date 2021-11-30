@@ -259,7 +259,7 @@ export class ReadCodeComponent implements OnInit {
         parent.changeDetectorRef.detectChanges();
       }
     });
-    /* this.HoneyService.startBarcode();
+    this.HoneyService.startBarcode();
     this.HoneyService.BarcodeData.subscribe((res: any) => {
       this.changeDetectorRef.detectChanges();
 
@@ -267,7 +267,8 @@ export class ReadCodeComponent implements OnInit {
         this.searchByCode.emit(res);
         parent.changeDetectorRef.detectChanges();
       }
-    }); */
+    });
+    //this.HoneyService.testInput();
   }
   ngOnChanges(): void {
     if (this.inputMethod == 'textBus') {

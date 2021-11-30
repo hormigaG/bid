@@ -3,6 +3,7 @@ import {Injectable, ApplicationRef } from '@angular/core';
 import { Subject } from "rxjs";
 import { Observable } from "rxjs";
 import { BehaviorSubject } from "rxjs";
+
 declare var cordova: any;
 
 function _window(): any {
@@ -15,19 +16,31 @@ function _window(): any {
 export class HoneyService {
   BarcodeData = new BehaviorSubject(null); //la declaro como observable
   constructor(private ref: ApplicationRef) {}
+
   startBarcode() {
-
     let self = this;
-    cordova.plugins.honeywell.barcode.onBarcodeScanned(
-      (result) => {
-        self.BarcodeData.next(result.data);
-        self.ref.tick();
+    if (typeof cordova !== 'undefined'){
+      cordova.plugins.honeywell.barcode.onBarcodeScanned(
+        (result) => {
+          self.BarcodeData.next(result.data);
+          self.ref.tick();
 
-      },
-      (error) => {
-        alert(error);
-      }
-    );
+        },
+        (error) => {
+          alert(error);
+        }
+      );
+    }
+  }
+
+  testInput() {
+    console.log("start test");
+
+    setTimeout(() => {
+
+      this.BarcodeData.next("Input");
+      this.test();
+    }, 3000);
   }
 
   test() {
@@ -35,7 +48,7 @@ export class HoneyService {
 
     setTimeout(() => {
 
-      this.BarcodeData.next("MF");
+      this.BarcodeData.next("896");
       this.test();
     }, 3000);
   }
