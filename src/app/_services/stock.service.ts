@@ -76,10 +76,11 @@ export class StockService {
             return move['location_dest_id'][0];
           });
 
+          // "[('categ_id', 'child_of', 94)]"
           const locations = [
             ...new Set([...locations_ids, ...locations_dest_ids]),
           ];
-
+          console.log('locationsss', locations);
           this.odooRPC
             .read('product.product', product_ids, [
               'uom_id',
@@ -94,9 +95,10 @@ export class StockService {
               });
               this.odooRPC
                 .read('stock.location', locations, ['name'])
-                .then((locations) => {
+                .then((res_locations) => {
+                  console.log('MIS UBICACIONES', res_locations);
                   let location_dict: any = {};
-                  locations.map(function (p) {
+                  res_locations.map(function (p) {
                     location_dict[p['id']] = p;
                   });
                   var self = this;
@@ -113,6 +115,44 @@ export class StockService {
                       location_dict[part['location_id'][0]]['name'];
                     res['records'][index]['location_dest_name'] =
                       location_dict[part['location_dest_id'][0]]['name'];
+                    console.log('RES', res['records']);
+
+                    self.odooRPC
+                      .searchRead(
+                        'stock.location',
+                        [
+                          [
+                            'location_id',
+                            'child_of',
+                            res['records'][0]['location_dest_id'][0],
+                          ],
+                        ],
+                        ['name', 'id'],
+                        0,
+                        0,
+                        {}
+                      )
+                      .then((res_child) => {
+                        let path_three = '';
+                        for (let i = 0; i < res_child.length; i++) {
+                          /*   path_three +=
+                            res_child.records[i].name + i < res_child.length
+                              ? '/'
+                              : ''; */
+
+                          //path_three += `${res_child.records[i].name}/`;
+                          path_three += res_child.records[i].name;
+                          i + 1 !== res_child.length
+                            ? (path_three += '/')
+                            : null;
+                        }
+                        res['records'][index]['children_path'] = path_three;
+                        res['records'][index]['children'] =
+                          res_child['records'];
+                      });
+
+                    //['stock.location'].search([['location_id', 'child_of', 12]])
+
                     if (
                       self.getQuantity('mov_int', res['records'][index].id) > -1
                     ) {
@@ -125,12 +165,11 @@ export class StockService {
                     } else {
                       res['records'][index]['scanned_qty'] = 0;
                     }
-                  
-                    res['records'][index]['scanned_qty'] =
-                      res['records'][index]['scanned_qty'] +0 ;
-                      //res['records'][index]['qty_done'];
-                  });
 
+                    res['records'][index]['scanned_qty'] =
+                      res['records'][index]['scanned_qty'] + 0;
+                    //res['records'][index]['qty_done'];
+                  });
 
                   observer.next(res);
                   observer.complete();
@@ -248,7 +287,7 @@ export class StockService {
     }
     return -1;
   }
-  
+
   move_products(storage, move_id, qty_done, description_picking = '') {
     //let difference = move_id.move_line_ids.filter(x => !move_id.move_line_nosuggest_ids.includes(x));
 
@@ -261,46 +300,53 @@ export class StockService {
       location_id: move_id.location_id[0],
       location_dest_id: move_id.location_dest_id[0],
       description_picking: description_picking,
-      qty_done: qty_done  || move_id['qty_done'],
+      qty_done: qty_done || move_id['qty_done'],
     };
-   
+
     this.deleteQuantity(storage, move_id.move_id);
 
     const transaction$ = new Observable((observer) => {
-      if (move_id.move_line_ids.length){
-        if (move_id['qty_done']){
+      if (move_id.move_line_ids.length) {
+        if (move_id['qty_done']) {
           move_line['qty_done'] = qty_done + move_id['qty_done'];
-        } else{
-          move_line['qty_done'] = qty_done;   
+        } else {
+          move_line['qty_done'] = qty_done;
         }
         this.odooRPC
-           .call('stock.move.line', 'write', [[move_id.move_line_ids[0]],move_line], {}).then((res) =>{
-                observer.next(move_id.move_line_ids[0]);
-                observer.complete();
-           }).catch((err) => {
-             alert(err);
-           });
-      } else{      
+          .call(
+            'stock.move.line',
+            'write',
+            [[move_id.move_line_ids[0]], move_line],
+            {}
+          )
+          .then((res) => {
+            observer.next(move_id.move_line_ids[0]);
+            observer.complete();
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      } else {
         this.odooRPC
-           .call('stock.move.line', 'create', [move_line], {}).then((res) =>{
-
-                observer.next(res);
-                observer.complete();
-
-           }).catch((err) => {
-             alert(err);
-           });
+          .call('stock.move.line', 'create', [move_line], {})
+          .then((res) => {
+            observer.next(res);
+            observer.complete();
+          })
+          .catch((err) => {
+            alert(err);
+          });
       }
-        
     });
 
     return transaction$;
   }
-  
+
   move_line_products(
     storage,
     move_line_id,
     scanned_qty,
+    elemento,
     description_picking = ''
   ) {
     // Si la cantidad escaneada esta definida
@@ -310,8 +356,8 @@ export class StockService {
         ? scanned_qty +
           (move_line_id['qty_done'] ? move_line_id['qty_done'] : 0)
         : move_line_id['qty_done'],
+      location_dest_id: elemento.id,
     };
-
     // Verificar el local storage
     this.deleteQuantity(storage, move_line_id.id);
 

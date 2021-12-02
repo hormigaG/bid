@@ -25,26 +25,27 @@ export class MovIntDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMoves();
-    
   }
   selectLocation() {
     this.action = 'select_location';
   }
   leaveProduct() {
-    this.done_log= '';
+    this.done_log = '';
     this.action = 'leave';
   }
 
   getLocationDest() {
     const location_dest_id = this.moves.reduce((unique, o) => {
       if (
-        !unique.some((obj) => obj.location_dest_id[0] === o.location_dest_id[0]) && o.scanned_qty > 0
+        !unique.some(
+          (obj) => obj.location_dest_id[0] === o.location_dest_id[0]
+        ) &&
+        o.scanned_qty > 0
       ) {
         unique.push(o);
       }
       return unique;
     }, []);
-
     return location_dest_id;
   }
   filterLocations() {
@@ -71,8 +72,23 @@ export class MovIntDetailComponent implements OnInit {
     }
   }
   leave_pruduct_location(code) {
-    this.moverProductos(code);
-    this.isValid = true;
+    let i = 0;
+    let childrens;
+    let elemento = null;
+    while (i < this.getLocationDest().length && !elemento) {
+      childrens = this.getLocationDest()[i].children;
+      elemento = childrens.find((e) => e.name === code);
+      if (!elemento) {
+        i += 1;
+      }
+    }
+    if (elemento) {
+      this.moverProductos(elemento);
+      this.isValid = true;
+    } else {
+      alert('Escaneo ubicación incorrecta');
+    }
+    return;
   }
   back() {
     this.isValid = false;
@@ -85,7 +101,7 @@ export class MovIntDetailComponent implements OnInit {
     this.moves[index];
     this.select_location(this.moves[index].location_id[0]);
   }
-  moverProductos(code) {
+  moverProductos(elemento) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
@@ -94,22 +110,21 @@ export class MovIntDetailComponent implements OnInit {
         selected_move = this.moves.find(
           (e) => e.id === scanned_qty_array['mov_int'][i]['id']
         );
-        if (!selected_move){
+        if (!selected_move) {
           continue;
         }
-        if (code === selected_move.location_dest_name) {
-          this.stockService
-            .move_line_products(
-              'mov_int',
-              selected_move,
-              scanned_qty_array['mov_int'][i]['scanned_qty']
-            )
-            .subscribe((r) => {
-              selected_move['qty_done'] = r['qty_done'];
-              selected_move['scanned_qty'] = 0;
-              this.done_log += '\n' + r['name'] + '  ' + r['qty_done'];
-            });
-        }
+        this.stockService
+          .move_line_products(
+            'mov_int',
+            selected_move,
+            scanned_qty_array['mov_int'][i]['scanned_qty'],
+            elemento
+          )
+          .subscribe((r) => {
+            selected_move['qty_done'] = r['qty_done'];
+            selected_move['scanned_qty'] = 0;
+            this.done_log += '\n' + r['name'] + '  ' + r['qty_done'];
+          });
       }
     }
   }
