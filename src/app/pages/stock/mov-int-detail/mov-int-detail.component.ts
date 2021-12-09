@@ -83,6 +83,7 @@ export class MovIntDetailComponent implements OnInit {
     let location = null;
     if (this.forceLocation){
       // is valid location
+      
       location = {'id':1, 'name':'code'};
     } else {
       while (i < this.getLocationDest().length && !location) {

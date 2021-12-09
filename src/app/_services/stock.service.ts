@@ -32,7 +32,30 @@ export class StockService {
     });
     return transaction$;
   }
+  getLocationByCode(code) {
+    const transaction$ = new Observable((observer) => {
+      var prlsIds: any = [];
 
+      this.odooRPC
+        .searchRead(
+          'stock.location',
+          [['name','=',code]],
+          ['name', 'barcode'],
+          1,
+          0
+        )
+        .then((res) => {
+          observer.next(res);
+          observer.complete();
+
+          observer.complete();
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    });
+    return transaction$;
+  }
   getPicking(leaf = []) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
