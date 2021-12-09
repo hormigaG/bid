@@ -45,8 +45,11 @@ export class MovIntDetailProductComponent implements OnInit {
     var line = this.products.findIndex(function(item) {
       let codeLow = code.toLowerCase();
       return (
-        item.product_id[1].toLowerCase().indexOf(codeLow) !== -1 ||
-        item.barcode == code /* && */
+        (item.default_code == code
+         ||
+        item.barcode == code)  && 
+        item.product_uom_qty > item.scanned_qty + item.qty_done 
+
         //|| item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
         /*         item.quantity_done < item.reserved_availability
          */

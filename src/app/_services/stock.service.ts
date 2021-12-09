@@ -96,7 +96,6 @@ export class StockService {
               this.odooRPC
                 .read('stock.location', locations, ['name'])
                 .then((res_locations) => {
-                  console.log('MIS UBICACIONES', res_locations);
                   let location_dict: any = {};
                   res_locations.map(function (p) {
                     location_dict[p['id']] = p;
@@ -115,14 +114,13 @@ export class StockService {
                       location_dict[part['location_id'][0]]['name'];
                     res['records'][index]['location_dest_name'] =
                       location_dict[part['location_dest_id'][0]]['name'];
-                    console.log('RES', res['records']);
 
                     self.odooRPC
                       .searchRead(
                         'stock.location',
                         [
                           [
-                            'location_id',
+                            'id',
                             'child_of',
                             res['records'][0]['location_dest_id'][0],
                           ],
@@ -135,12 +133,7 @@ export class StockService {
                       .then((res_child) => {
                         let path_three = '';
                         for (let i = 0; i < res_child.length; i++) {
-                          /*   path_three +=
-                            res_child.records[i].name + i < res_child.length
-                              ? '/'
-                              : ''; */
-
-                          //path_three += `${res_child.records[i].name}/`;
+         
                           path_three += res_child.records[i].name;
                           i + 1 !== res_child.length
                             ? (path_three += '/')
@@ -346,8 +339,9 @@ export class StockService {
     storage,
     move_line_id,
     scanned_qty,
-    elemento,
-    description_picking = ''
+    location,
+    description_picking = '',
+
   ) {
     // Si la cantidad escaneada esta definida
     // la qty_done es la cantidad escaneada + la ya realizada
@@ -356,7 +350,7 @@ export class StockService {
         ? scanned_qty +
           (move_line_id['qty_done'] ? move_line_id['qty_done'] : 0)
         : move_line_id['qty_done'],
-      location_dest_id: elemento.id,
+      location_dest_id: location.id,
     };
     // Verificar el local storage
     this.deleteQuantity(storage, move_line_id.id);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
 @Component({
@@ -20,7 +20,9 @@ export class MovIntDetailComponent implements OnInit {
   products = [];
   constructor(
     private route: ActivatedRoute,
-    private stockService: StockService
+    private stockService: StockService,
+    private changeDetectorRef: ChangeDetectorRef,
+
   ) {}
 
   ngOnInit(): void {
@@ -62,11 +64,15 @@ export class MovIntDetailComponent implements OnInit {
   searchByCode(code) {
     switch (this.action) {
       case 'select_location':
+        this.changeDetectorRef.detectChanges();
+
         this.select_location_product(code);
         break;
       case 'get':
         break;
       case 'leave':
+       this.changeDetectorRef.detectChanges();
+
         this.leave_pruduct_location(code);
         break;
     }
@@ -74,16 +80,24 @@ export class MovIntDetailComponent implements OnInit {
   leave_pruduct_location(code) {
     let i = 0;
     let childrens;
-    let elemento = null;
-    while (i < this.getLocationDest().length && !elemento) {
-      childrens = this.getLocationDest()[i].children;
-      elemento = childrens.find((e) => e.name === code);
-      if (!elemento) {
-        i += 1;
+    let location = null;
+    if (this.forceLocation){
+      // is valid location
+      location = {'id':1, 'name':'code'};
+    } else {
+      while (i < this.getLocationDest().length && !location) {
+        childrens = this.getLocationDest()[i].children;
+        location = childrens.find((e) => e.name === code);
+        if (!location) {
+          i += 1;
+        }
       }
+
     }
-    if (elemento) {
-      this.moverProductos(elemento);
+    if (location) {
+      this.changeDetectorRef.detectChanges();
+ 
+      this.moverProductos(location);
       this.isValid = true;
     } else {
       alert('Escaneo ubicación incorrecta');
@@ -101,7 +115,9 @@ export class MovIntDetailComponent implements OnInit {
     this.moves[index];
     this.select_location(this.moves[index].location_id[0]);
   }
-  moverProductos(elemento) {
+  moverProductos(location) {
+    this.changeDetectorRef.detectChanges();
+
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
@@ -113,17 +129,21 @@ export class MovIntDetailComponent implements OnInit {
         if (!selected_move) {
           continue;
         }
+        this.changeDetectorRef.detectChanges();
+
         this.stockService
           .move_line_products(
             'mov_int',
             selected_move,
             scanned_qty_array['mov_int'][i]['scanned_qty'],
-            elemento
+            location
           )
           .subscribe((r) => {
             selected_move['qty_done'] = r['qty_done'];
             selected_move['scanned_qty'] = 0;
             this.done_log += '\n' + r['name'] + '  ' + r['qty_done'];
+            this.changeDetectorRef.detectChanges();
+
           });
       }
     }
