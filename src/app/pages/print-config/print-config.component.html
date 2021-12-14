@@ -7,6 +7,7 @@
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
+  <button class="btn bg-danger" (click)="clearStorage()">Limpiar Datos</button>
   <div class="tab-pane fade show active" id="config" role="tabpanel" aria-labelledby="config-tab">
     <form [formGroup]="configForm" (ngSubmit)="saveConfig()">
       <div class="form-group" >
@@ -75,6 +76,8 @@
       <button type="button" (click)="status()" class="btn btn-secondary btn-lg btn-block">status</button>
       <button type="button" (click)="disconnect()" class="btn btn-secondary btn-lg btn-block">Desconectar</button>
       <button type="button" (click)="connected()" class="btn btn-secondary btn-lg btn-block">¿Conectada?</button>
+
+
     </div>
     <div class="row " *ngIf="printer_status">
       <h3 class="col-12">Tests de conexion</h3>
@@ -87,4 +90,4 @@
     </div>
   </div>
 </div>
-compilacion 3.0.32
+compilacion 3.0.42

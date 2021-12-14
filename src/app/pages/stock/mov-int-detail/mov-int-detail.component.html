@@ -20,25 +20,28 @@
 
 <ng-container *ngIf="selected_location && action === 'leave'">
   <div *ngIf="!isValid" class="h5">
-    Hay productos para dejar en
-  </div>
     <ul class="list-group">
     <li
-      class="list-group-item font-weight-bold"
+      class="list-group-item active">
+      Hay productos para dejar en
+        
+      </li>
+
+    <li
+      class="list-group-item"
       *ngFor="let location of getLocationDest(); let i = index"
     >
       {{ location.location_dest_id[1] }}
     </li>
   </ul>
-
-  <div *ngIf="isValid" class="h4">
-    Escaneo correctamente la ubicación
-    <span class="font-weight-bold">{{ moves[0].location_dest_id[1] }}</span
-    >, En caso completar el movimiento pulse el botón validar.
   </div>
-  <pre>
-    {{ done_log }}
-  </pre>
+
+  <div *ngIf="isValid"><div class="alert alert-success" role="alert">
+    Escaneo correctamente la ubicación {{ ok_location_name }}, En caso completar el movimiento pulse el botón validar.
+  </div></div>  
+  <small style="white-space: pre-wrap;">
+   {{ done_log }} 
+  </small>
   <div class="row" *ngIf="isValid">
     <div class="col-6 text-center">
       <button class="btn btn-secondary" style="width: 80%" (click)="back()">
@@ -51,9 +54,7 @@
       </button>
     </div>
   </div>
-  <!--   dos botones volver validar -> action_validate(picking_id)
- --></ng-container
->
+ </ng-container>
 
 <app-mov-int-detail-product
   [products]="products"
@@ -61,6 +62,26 @@
 ></app-mov-int-detail-product>
 <div class="row text-center">
   <div class="btn-group btn-group-lg fixed-bottom" role="group">
+    <button
+      type="button"
+      *ngIf="inputMethod == 'textBus'"
+
+      (click)="inputMethod = 'form'"
+      [ngClass]="{ btn: true, 'btn-info': true }"
+    >
+      <i class="fa fa-font"></i>
+    </button>
+    <button
+      type="button"
+      (click)="inputMethod = 'textBus'"
+      *ngIf="inputMethod == 'form'"
+
+      [ngClass]="{
+        btn: true,
+        'btn-info': true      }"
+    >  <i class="fa fa-barcode"></i>
+    </button>
+
     <button
       type="button"
       *ngIf="selected_location && action === 'select_location'"

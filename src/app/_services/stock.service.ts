@@ -382,6 +382,7 @@ export class StockService {
       this.odooRPC
         .call('stock.move.line', 'write', [[move_line_id['id']], move_line], {})
         .then((res) => {
+
           observer.next({
             name: move_line_id.product_id[1],
             qty_done: move_line.qty_done,
@@ -389,6 +390,7 @@ export class StockService {
           observer.complete();
         })
         .catch((err) => {
+          console.log(err)
           alert(err);
         });
     });

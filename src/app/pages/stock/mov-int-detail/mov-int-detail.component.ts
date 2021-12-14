@@ -18,6 +18,7 @@ export class MovIntDetailComponent implements OnInit {
   isValid: Boolean = false;
   forceLocation: Boolean = false;
   products = [];
+  ok_location_name: String ;
   constructor(
     private route: ActivatedRoute,
     private stockService: StockService,
@@ -83,13 +84,16 @@ export class MovIntDetailComponent implements OnInit {
     let location = null;
     if (this.forceLocation){
       // is valid location
-      
       location = {'id':1, 'name':'code'};
     } else {
       while (i < this.getLocationDest().length && !location) {
+        this.changeDetectorRef.detectChanges();
+
         childrens = this.getLocationDest()[i].children;
         location = childrens.find((e) => e.name === code);
         if (!location) {
+          this.changeDetectorRef.detectChanges();
+
           i += 1;
         }
       }
@@ -97,11 +101,12 @@ export class MovIntDetailComponent implements OnInit {
     }
     if (location) {
       this.changeDetectorRef.detectChanges();
- 
+      this.ok_location_name = location['name']
       this.moverProductos(location);
       this.isValid = true;
     } else {
-      alert('Escaneo ubicación incorrecta');
+      let children_names = childrens.map((e) =>{return e.name})
+      alert('Ubicación incorrecta "' + code + '"\n disponibles: ' + children_names.join('\n'));
     }
     return;
   }
@@ -118,10 +123,11 @@ export class MovIntDetailComponent implements OnInit {
   }
   moverProductos(location) {
     this.changeDetectorRef.detectChanges();
-
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
+
     if (scanned_qty_array && scanned_qty_array['mov_int']) {
       const len = scanned_qty_array['mov_int'].length;
+
       for (let i = 0; i < len; i++) {
         let selected_move: any = {};
         selected_move = this.moves.find(
@@ -140,6 +146,8 @@ export class MovIntDetailComponent implements OnInit {
             location
           )
           .subscribe((r) => {
+            this.changeDetectorRef.detectChanges();
+
             selected_move['qty_done'] = r['qty_done'];
             selected_move['scanned_qty'] = 0;
             this.done_log += '\n' + r['name'] + '  ' + r['qty_done'];

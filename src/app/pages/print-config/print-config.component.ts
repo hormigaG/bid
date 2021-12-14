@@ -55,6 +55,10 @@ export class PrintConfigComponent implements OnInit {
 
 
 	}
+	clearStorage(){
+		localStorage.clear();
+		alert('El localStorage es '  + localStorage.getItem('scanned_qty'));
+	}
   saveConfig() {
   	let params = {}
     params['printAuto'] = this.configForm.controls.printAuto.value;
