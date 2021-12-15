@@ -98,6 +98,14 @@
             <div class="col-2">
               <button
                 type="button"
+                (click)="print(item)"
+                [ngClass]="{ btn: true }"
+              >
+                <i class="fa fa-print"></i>
+              </button>
+
+              <button
+                type="button"
                 (click)="openMoveLineModal(i)"
                 [ngClass]="{ btn: true }"
               >

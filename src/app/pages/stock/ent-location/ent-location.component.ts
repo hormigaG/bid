@@ -83,7 +83,8 @@ export class EntLocationComponent implements OnInit {
     public ConfigService: ConfigService,
     private route: ActivatedRoute,
     public stockService: StockService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    public Router: Router,
   ) {
     /*  */
   }
@@ -350,6 +351,10 @@ export class EntLocationComponent implements OnInit {
           this.active_index = undefined;
         });
     }
+  }
+  print(item){
+            this.Router.navigateByUrl('/zpl/' + item['product_id'][0] + '/' + item['product_uom_qty']);
+
   }
   dateRange(value) {
     const index = this.filters.findIndex((e) => e.name == 'date_expected');

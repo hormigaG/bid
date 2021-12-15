@@ -16,7 +16,16 @@
       {{ item.location_id[1] }}
     </li>
   </ng-container>
+
+    <li class="list-group" *ngIf="selected_location && action === 'select_location' ">
+      <button class="btn btn-primary"  (click)="validate()">
+        Validar
+      </button>
+    </li>
+  
+
 </ul>
+
 
 <ng-container *ngIf="selected_location && action === 'leave'">
   <div *ngIf="!isValid" class="h5">
@@ -39,10 +48,12 @@
   <div *ngIf="isValid"><div class="alert alert-success" role="alert">
     Escaneo correctamente la ubicación {{ ok_location_name }}, En caso completar el movimiento pulse el botón validar.
   </div></div>  
-  <small style="white-space: pre-wrap;">
+  <div> 
+    <small >
    {{ done_log }} 
   </small>
-  <div class="row" *ngIf="isValid">
+  </div>
+  <div class="row pb-3 mb-3" *ngIf="isValid">
     <div class="col-6 text-center">
       <button class="btn btn-secondary" style="width: 80%" (click)="back()">
         Volver

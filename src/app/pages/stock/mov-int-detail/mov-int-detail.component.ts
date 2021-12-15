@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
+
 @Component({
   selector: 'app-mov-int-detail',
   templateUrl: './mov-int-detail.component.html',
@@ -21,6 +22,7 @@ export class MovIntDetailComponent implements OnInit {
   ok_location_name: String ;
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private stockService: StockService,
     private changeDetectorRef: ChangeDetectorRef,
 
@@ -165,6 +167,8 @@ export class MovIntDetailComponent implements OnInit {
           alert('No se pudo validar el picking');
         } else {
           alert('Exito al validar el picking');
+          this.router.navigate(["/picking-selector"]);
+
         }
       });
   }
@@ -192,3 +196,6 @@ export class MovIntDetailComponent implements OnInit {
   }
   refresh() {}
 }
+
+
+

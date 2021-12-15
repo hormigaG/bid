@@ -13,6 +13,7 @@ import { SelectDbComponent } from './pages/select-db/select-db.component';
 import { MovIntComponent } from './pages/stock/mov-int/mov-int.component';
 import { MovIntDetailComponent } from './pages/stock/mov-int-detail/mov-int-detail.component';
 import { MovIntDetailProductComponent } from './pages/stock/mov-int-detail-product/mov-int-detail-product.component';
+import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -47,6 +48,11 @@ const routes: Routes = [
       {
         path: 'stock/:op/:lot_stock_id',
         component: EntLocationComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'zpl/:product_id/:qty',
+        component: ZplFileComponent,
         canActivate: [AuthGuard],
       },
       {

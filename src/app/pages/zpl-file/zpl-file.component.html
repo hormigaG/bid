@@ -1,0 +1,23 @@
+<div class="text-center fixed-top spinnerContent">
+  <div class="spinner-grow text-warning" *ngIf="spinner" style="width: 5rem; height: 5rem" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<div class="row h-100 pb-3 pt-3">
+</div>
+<div *ngIf="product" class="row h-100 pb-3 pt-3">
+  <div class="col-12">
+    <h4 class="text-center">{{ product['name'] }}</h4>
+    <div class="text-center text-monospace">{{ product['default_code'] }}</div>
+    <div class="text-center text-monospace">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="">Cantidad</span>
+        </div>
+        <input type="text" class="form-control" (change)="createZPL()" [(ngModel)]="qty">
+      </div>
+    </div>
+  <a class="btn btn-primary btn-lg btn-block mt-3" [href]="fileUrl" download="file.txt">Imprimir</a>
+  <button class="btn btn-secondary btn-lg btn-block mt-3" (click)="back()">volver</button>
+</div>
+</div>

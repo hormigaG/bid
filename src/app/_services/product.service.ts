@@ -8,6 +8,30 @@ import { Observable } from "rxjs";
 export class ProductService {
   constructor(public odooRPC: OdooRPCService) {}
 
+  readProduct(productId) {
+    const transaction$ = new Observable((observer) => {
+      const leaf = [["id", "=", productId]];
+      this.odooRPC
+        .searchRead(
+          "product.product",
+          leaf,
+          ["name", "display_name", "default_code", "description","barcode"],
+          1,0,{"lang": "es_AR", 'display_default_code': false}
+        )
+        .then((res) => {
+          observer.next(res);
+          observer.complete();
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    });
+    return transaction$;
+  }
+
+
+
+
   searchByCode(code) {
     const transaction$ = new Observable((observer) => {
       const leaf = ["|", ["default_code", "=", code], ["barcode", "=", code]];
