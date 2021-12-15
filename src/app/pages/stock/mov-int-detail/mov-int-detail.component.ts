@@ -19,13 +19,12 @@ export class MovIntDetailComponent implements OnInit {
   isValid: Boolean = false;
   forceLocation: Boolean = false;
   products = [];
-  ok_location_name: String ;
+  ok_location_name: String;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private stockService: StockService,
-    private changeDetectorRef: ChangeDetectorRef,
-
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +73,7 @@ export class MovIntDetailComponent implements OnInit {
       case 'get':
         break;
       case 'leave':
-       this.changeDetectorRef.detectChanges();
+        this.changeDetectorRef.detectChanges();
 
         this.leave_pruduct_location(code);
         break;
@@ -84,9 +83,9 @@ export class MovIntDetailComponent implements OnInit {
     let i = 0;
     let childrens;
     let location = null;
-    if (this.forceLocation){
+    if (this.forceLocation) {
       // is valid location
-      location = {'id':1, 'name':'code'};
+      location = { id: 1, name: 'code' };
     } else {
       while (i < this.getLocationDest().length && !location) {
         this.changeDetectorRef.detectChanges();
@@ -99,16 +98,22 @@ export class MovIntDetailComponent implements OnInit {
           i += 1;
         }
       }
-
     }
     if (location) {
       this.changeDetectorRef.detectChanges();
-      this.ok_location_name = location['name']
+      this.ok_location_name = location['name'];
       this.moverProductos(location);
       this.isValid = true;
     } else {
-      let children_names = childrens.map((e) =>{return e.name})
-      alert('Ubicación incorrecta "' + code + '"\n disponibles: ' + children_names.join('\n'));
+      let children_names = childrens.map((e) => {
+        return e.name;
+      });
+      alert(
+        'Ubicación incorrecta "' +
+          code +
+          '"\n disponibles: ' +
+          children_names.join('\n')
+      );
     }
     return;
   }
@@ -152,9 +157,16 @@ export class MovIntDetailComponent implements OnInit {
 
             selected_move['qty_done'] = r['qty_done'];
             selected_move['scanned_qty'] = 0;
-            this.done_log += '\n' + r['name'] + '  ' + r['qty_done'];
-            this.changeDetectorRef.detectChanges();
+            selected_move['moved'] = 'OK';
+            this.done_log +=
+              '\n' +
+              r['name'] +
+              '  ' +
+              r['qty_done'] +
+              ' - ' +
+              selected_move['moved'];
 
+            this.changeDetectorRef.detectChanges();
           });
       }
     }
