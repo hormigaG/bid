@@ -1,57 +1,36 @@
-<read-code
-  class="col-12"
-  [inputMethod]="inputMethod"
-  (searchByCode)="searchByCode($event)"
-  *ngIf="selected_location"
-></read-code>
-<ul
-  class="list-group"
-  *ngIf="selected_location && action === 'select_location'"
->
+<read-code class="col-12" [inputMethod]="inputMethod" (searchByCode)="searchByCode($event)" *ngIf="selected_location"></read-code>
+<ul class="list-group" *ngIf="selected_location && action === 'select_location'">
   <ng-container *ngFor="let item of location_id; let i = index">
-    <li
-      class="text-left list-group-item"
-      (click)="select_location(item.location_id[0])"
-    >
+    <li class="text-left list-group-item" >
       {{ item.location_id[1] }}
     </li>
   </ng-container>
-
-    <li class="list-group" *ngIf="selected_location && action === 'select_location' ">
-      <button class="btn btn-primary"  (click)="validate()">
-        Validar
-      </button>
-    </li>
-  
-
+  <li class="list-group" *ngIf="selected_location && action === 'select_location' ">
+    <button class="btn btn-primary" (click)="validate()">
+      Validar
+    </button>
+  </li>
 </ul>
-
-
 <ng-container *ngIf="selected_location && action === 'leave'">
   <div *ngIf="!isValid" class="h5">
     <ul class="list-group">
-    <li
-      class="list-group-item active">
-      Hay productos para dejar en
-        
+      <li class="list-group-item active">
+        Hay productos para dejar en
       </li>
-
-    <li
-      class="list-group-item"
-      *ngFor="let location of getLocationDest(); let i = index"
-    >
-      {{ location.location_dest_id[1] }}
-    </li>
-  </ul>
+      <li class="list-group-item" *ngFor="let location of getLocationDest(); let i = index">
+        {{ location.location_dest_id[1] }}
+        <div><small innerHTML="{{ getProductsByDestLocation(location.location_dest_id[0]) }}"></small></div>
+      </li>
+    </ul>
   </div>
-
-  <div *ngIf="isValid"><div class="alert alert-success" role="alert">
-    Escaneo correctamente la ubicación {{ ok_location_name }}, En caso completar el movimiento pulse el botón validar.
-  </div></div>  
-  <div> 
-    <small >
-   {{ done_log }} 
-  </small>
+  <div *ngIf="isValid">
+    <div class="alert alert-success" role="alert">
+      Escaneo correctamente la ubicación {{ ok_location_name }}, En caso completar el movimiento pulse el botón validar.
+    </div>
+    <div>
+      <small>{{ done_log }}
+      </small>
+    </div>
   </div>
   <div class="row pb-3 mb-3" *ngIf="isValid">
     <div class="col-6 text-center">
@@ -65,65 +44,25 @@
       </button>
     </div>
   </div>
- </ng-container>
-
-<app-mov-int-detail-product
-  [products]="products"
-  *ngIf="!selected_location"
-></app-mov-int-detail-product>
+</ng-container>
+<app-mov-int-detail-product [products]="products" *ngIf="!selected_location"></app-mov-int-detail-product>
 <div class="row text-center">
   <div class="btn-group btn-group-lg fixed-bottom" role="group">
-    <button
-      type="button"
-      *ngIf="inputMethod == 'textBus'"
-
-      (click)="inputMethod = 'form'"
-      [ngClass]="{ btn: true, 'btn-info': true }"
-    >
-      <i class="fa fa-font"></i>
+    <button type="button" *ngIf="selected_location && action !== 'leave'" (click)="leaveProduct()" [ngClass]="{ btn: true, 'btn-info': true }">
+      Dejar
     </button>
-    <button
-      type="button"
-      (click)="inputMethod = 'textBus'"
-      *ngIf="inputMethod == 'form'"
-
-      [ngClass]="{
-        btn: true,
-        'btn-info': true      }"
-    >  <i class="fa fa-barcode"></i>
-    </button>
-
-    <button
-      type="button"
-      *ngIf="selected_location && action === 'select_location'"
-      (click)="leaveProduct()"
-      [ngClass]="{ btn: true, 'btn-info': true }"
-    >
-      Dejar Productos
-    </button>
-
-    <button
-      type="button"
-      *ngIf="selected_location && action === 'leave'"
-      (click)="selectLocation()"
-      [ngClass]="{ btn: true, 'btn-info': true }"
-    >
+    <button type="button" *ngIf="selected_location && action === 'leave'" (click)="selectLocation()" [ngClass]="{ btn: true, 'btn-info': true }">
       Cambiar Ubicación
     </button>
-
-    <button
-      *ngIf="!selected_location"
-      type="button"
-      (click)="selected_location = !selected_location"
-      [ngClass]="{ btn: true, 'btn-info': true }"
-    >
+    <button *ngIf="!selected_location" type="button" (click)="selected_location = !selected_location" [ngClass]="{ btn: true, 'btn-info': true }">
       Volver
     </button>
-    <button
-      type="button"
-      (click)="refresh()"
-      [ngClass]="{ btn: true, 'btn-info': true }"
-    >
+    <button type="button" *ngIf="inputMethod == 'textBus'" (click)="inputMethod = 'form'" [ngClass]="{ btn: true, 'btn-info': true }">
+      <i class="fa fa-font"></i>
+    </button>
+    <button type="button" (click)="inputMethod = 'textBus'" *ngIf="inputMethod == 'form'" [ngClass]="{btn: true,'btn-info': true}"> <i class="fa fa-barcode"></i>
+    </button>
+    <button type="button" (click)="refresh()" [ngClass]="{ btn: true, 'btn-info': true }">
       <i class="fa fa-refresh"></i>
     </button>
   </div>

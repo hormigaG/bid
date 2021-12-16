@@ -23,7 +23,8 @@
       "cordova-plugin-btprinter": {},
       "com.darktalker.cordova.screenshot": {},
       "com-darryncampbell-cordova-plugin-intent": {},
-      "cordova-plugin-honeywell-barcode-scanner": {}
+      "cordova-plugin-honeywell-barcode-scanner": {},
+      "cordova-plugin-file": {}
     },
     "platforms": [
       "android"

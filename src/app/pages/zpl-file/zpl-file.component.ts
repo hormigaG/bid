@@ -41,9 +41,13 @@ export class ZplFileComponent implements OnInit {
     const blob = new Blob([data], { type: 'application/octet-stream' });
 
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
-      this.spinner = false;
+    this.spinner = false;
+    // https://esstudio.site/2019/02/16/downloading-saving-and-opening-files-with-cordova.html
+    //let storageLocation = cordova.file.externalDataDirectory;
+
 
   }
+
 
   back(): void {
     this.location.back()
