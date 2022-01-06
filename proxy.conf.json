@@ -1,6 +1,6 @@
 {
 
-    "\/odoo": {
+    "\/odoo2": {
         "target": "https://train-bidargentinasa-15-12-1.nubeadhoc.com/",
         "secure": true,
         "changeOrigin": true,
@@ -9,7 +9,7 @@
         }
     },
 
-    "\/odoo2": {
+    "\/odoo": {
         "target": "http://localhost:8013/",
         "secure": false,
         "changeOrigin": true,

@@ -29,7 +29,7 @@ export class PrintConfigComponent implements OnInit {
 	test_text: string = "texto de prueba";
 	status_text = '';
 	priceChageDate: string = "2021-06-24 00:00:00";
-
+	printUrl:string ;
 	configForm: FormGroup;
 
 	constructor(
@@ -42,6 +42,7 @@ export class PrintConfigComponent implements OnInit {
 		this.connected(false);
 	    this.configForm = this.formBuilder.group({
 	      printAuto: [this.ConfigService.params.printAuto],
+	      printUrl: [this.ConfigService.params.printUrl],
 	      printAutoDelay: [this.ConfigService.params.printAutoDelay],
 	      labelWidth: [this.ConfigService.params.labelWidth],
 	      labelHeight: [this.ConfigService.params.labelHeight],
@@ -49,7 +50,7 @@ export class PrintConfigComponent implements OnInit {
 	      showLog: [this.ConfigService.params.showLog],
 	      PrinterName: [this.ConfigService.params.PrinterName],
 	      priceChageDate: ["2021-05-14 00:00:00"],
-
+				
 
 	    });
 
@@ -69,7 +70,10 @@ export class PrintConfigComponent implements OnInit {
     params['showLog'] = this.configForm.controls.showLog.value;
     params['PrinterName'] = this.configForm.controls.PrinterName.value;
     params['priceChageDate'] = this.configForm.controls.priceChageDate.value;
+    params['printUrl'] = this.configForm.controls.printUrl.value;
+    console.log(params);
     this.ConfigService.saveConfig(params);
+    alert('Config saved');
   }
 
 	searchPrinters() {

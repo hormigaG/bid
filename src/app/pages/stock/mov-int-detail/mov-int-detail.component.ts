@@ -85,9 +85,12 @@ export class MovIntDetailComponent implements OnInit {
       location = { id: 1, name: "code" };
     } else {
       while (i < this.getLocationDest().length && !location) {
+        this.changeDetectorRef.detectChanges();
         childrens = this.getLocationDest()[i].children;
         location = childrens.find((e) => e.name === code);
+
         if (!location) {
+          this.changeDetectorRef.detectChanges();
           i += 1;
         }
       }
@@ -121,7 +124,9 @@ export class MovIntDetailComponent implements OnInit {
     this.select_location(this.moves[index].location_id[0]);
   }
   moveProduct(location) {
+
     let scanned_qty_array = JSON.parse(localStorage.getItem("scanned_qty"));
+    this.changeDetectorRef.detectChanges();
 
     if (scanned_qty_array && scanned_qty_array["mov_int"]) {
       const len = scanned_qty_array["mov_int"].length;
@@ -134,6 +139,7 @@ export class MovIntDetailComponent implements OnInit {
         if (!selected_move) {
           continue;
         }
+        this.changeDetectorRef.detectChanges();
 
         this.stockService
           .move_line_products(
@@ -143,6 +149,7 @@ export class MovIntDetailComponent implements OnInit {
             location
           )
           .subscribe((r) => {
+            this.changeDetectorRef.detectChanges();
             selected_move["qty_done"] = r["qty_done"];
             selected_move["scanned_qty"] = 0;
             this.done_log += r["name"] + "  " + r["qty_done"]  +  "\n" ;

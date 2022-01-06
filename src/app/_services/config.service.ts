@@ -15,6 +15,7 @@ export class ConfigService {
     labelHeight:250,
     PrinterName: '',
     priceChageDate:  "2021-06-24 00:00:00",
+    printUrl: '',
 
   });
 

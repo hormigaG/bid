@@ -15,8 +15,9 @@
   "devDependencies": {
     "com-darryncampbell-cordova-plugin-intent": "^2.0.0",
     "com.darktalker.cordova.screenshot": "git+https://github.com/gitawego/cordova-screenshot.git",
-    "cordova-android": "^10.0.0",
-    "cordova-plugin-btprinter": "git+https://github.com/CesarBalzer/Cordova-Plugin-BTPrinter.git"
+    "cordova-android": "^10.1.1",
+    "cordova-plugin-btprinter": "git+https://github.com/CesarBalzer/Cordova-Plugin-BTPrinter.git",
+    "cordova-plugin-file-opener2": "^3.0.5"
   },
   "cordova": {
     "plugins": {
@@ -24,7 +25,10 @@
       "com.darktalker.cordova.screenshot": {},
       "com-darryncampbell-cordova-plugin-intent": {},
       "cordova-plugin-honeywell-barcode-scanner": {},
-      "cordova-plugin-file": {}
+      "cordova-plugin-file": {},
+      "cordova-plugin-file-opener2": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
     "platforms": [
       "android"
