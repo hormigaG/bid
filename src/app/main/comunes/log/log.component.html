@@ -1,0 +1,19 @@
+<div class="row" *ngFor="let l of log; let i = index">
+  <div class="col-6">
+    {{ l.date }}
+  </div>
+  <div class="col-6">
+    {{ l.component }}
+  </div>
+  <div class="col-12">
+    {{ l.error }}
+  </div>
+</div>
+
+<button
+  type="button"
+  [ngClass]="{ btn: true, 'btn-danger': true }"
+  (click)="clearLog()"
+>
+  LIMPIAR LOG
+</button>

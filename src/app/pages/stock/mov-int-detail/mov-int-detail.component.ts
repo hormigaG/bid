@@ -1,21 +1,21 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { Router, ActivatedRoute, ParamMap } from "@angular/router";
-import { StockService } from "../../../_services/stock.service";
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { StockService } from '../../../_services/stock.service';
 
 @Component({
-  selector: "app-mov-int-detail",
-  templateUrl: "./mov-int-detail.component.html",
-  styleUrls: ["./mov-int-detail.component.css"],
+  selector: 'app-mov-int-detail',
+  templateUrl: './mov-int-detail.component.html',
+  styleUrls: ['./mov-int-detail.component.css'],
 })
 export class MovIntDetailComponent implements OnInit {
   picking_id: Number = 0;
   picking: any = [];
-  done_log: String = "";
+  done_log: String = '';
   moves: any = [];
   location_id: any = [];
-  inputMethod: String = "textBus";
+  inputMethod: String = 'textBus';
   moves_int: any = [];
-  action: String = "select_location";
+  action: String = 'select_location';
   selected_location = true;
   isValid: Boolean = false;
   forceLocation: Boolean = false;
@@ -32,11 +32,11 @@ export class MovIntDetailComponent implements OnInit {
     this.getMoves();
   }
   selectLocation() {
-    this.action = "select_location";
+    this.action = 'select_location';
   }
   leaveProduct() {
-    this.done_log = "";
-    this.action = "leave";
+    this.done_log = '';
+    this.action = 'leave';
   }
 
   getLocationDest() {
@@ -55,7 +55,7 @@ export class MovIntDetailComponent implements OnInit {
   }
   filterLocations() {
     const moves_filter = this.moves.filter(
-      (e) => e.product_uom_qty > e.qty_done && e.state != "done"
+      (e) => e.product_uom_qty > e.qty_done && e.state != 'done'
     );
     this.location_id = moves_filter.reduce((unique, o) => {
       if (!unique.some((obj) => obj.location_id[0] === o.location_id[0])) {
@@ -64,14 +64,15 @@ export class MovIntDetailComponent implements OnInit {
       return unique;
     }, []);
   }
+
   searchByCode(code) {
     switch (this.action) {
-      case "select_location":
+      case 'select_location':
         this.select_location_product(code);
         break;
-      case "get":
+      case 'get':
         break;
-      case "leave":
+      case 'leave':
         this.leave_product_location(code);
         break;
     }
@@ -82,7 +83,7 @@ export class MovIntDetailComponent implements OnInit {
     let location = null;
     if (this.forceLocation) {
       // is valid location
-      location = { id: 1, name: "code" };
+      location = { id: 1, name: 'code' };
     } else {
       while (i < this.getLocationDest().length && !location) {
         this.changeDetectorRef.detectChanges();
@@ -96,7 +97,7 @@ export class MovIntDetailComponent implements OnInit {
       }
     }
     if (location) {
-      this.ok_location_name = location["name"];
+      this.ok_location_name = location['name'];
       this.moveProduct(location);
       this.isValid = true;
     } else {
@@ -107,7 +108,7 @@ export class MovIntDetailComponent implements OnInit {
         'Ubicación incorrecta "' +
           code +
           '"\n disponibles: ' +
-          children_names.join("\n")
+          children_names.join('\n')
       );
     }
     return;
@@ -115,7 +116,7 @@ export class MovIntDetailComponent implements OnInit {
   back() {
     this.isValid = false;
     this.selected_location = true;
-    this.action = "select_location";
+    this.action = 'select_location';
     this.filterLocations();
   }
   select_location_product(code) {
@@ -124,17 +125,16 @@ export class MovIntDetailComponent implements OnInit {
     this.select_location(this.moves[index].location_id[0]);
   }
   moveProduct(location) {
-
-    let scanned_qty_array = JSON.parse(localStorage.getItem("scanned_qty"));
+    let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
     this.changeDetectorRef.detectChanges();
 
-    if (scanned_qty_array && scanned_qty_array["mov_int"]) {
-      const len = scanned_qty_array["mov_int"].length;
+    if (scanned_qty_array && scanned_qty_array['mov_int']) {
+      const len = scanned_qty_array['mov_int'].length;
 
       for (let i = 0; i < len; i++) {
         let selected_move: any = {};
         selected_move = this.moves.find(
-          (e) => e.id === scanned_qty_array["mov_int"][i]["id"]
+          (e) => e.id === scanned_qty_array['mov_int'][i]['id']
         );
         if (!selected_move) {
           continue;
@@ -143,29 +143,29 @@ export class MovIntDetailComponent implements OnInit {
 
         this.stockService
           .move_line_products(
-            "mov_int",
+            'mov_int',
             selected_move,
-            scanned_qty_array["mov_int"][i]["scanned_qty"],
+            scanned_qty_array['mov_int'][i]['scanned_qty'],
             location
           )
           .subscribe((r) => {
             this.changeDetectorRef.detectChanges();
-            selected_move["qty_done"] = r["qty_done"];
-            selected_move["scanned_qty"] = 0;
-            this.done_log += r["name"] + "  " + r["qty_done"]  +  "\n" ;
+            selected_move['qty_done'] = r['qty_done'];
+            selected_move['scanned_qty'] = 0;
+            this.done_log += r['name'] + '  ' + r['qty_done'] + '\n';
           });
       }
     }
   }
   validate() {
     this.stockService
-      .button_validate(this.moves[0]["picking_id"][0])
+      .button_validate(this.moves[0]['picking_id'][0])
       .subscribe((r) => {
         if (r) {
-          alert("No se pudo validar el picking");
+          alert('No se pudo validar el picking');
         } else {
-          alert("Exito al validar el picking");
-          this.router.navigate(["/picking-selector"]);
+          alert('Exito al validar el picking');
+          this.router.navigate(['/picking-selector']);
         }
       });
   }
@@ -180,17 +180,17 @@ export class MovIntDetailComponent implements OnInit {
     let products;
     products = this.moves
       .filter((e) => e.location_dest_id[0] == id && e.scanned_qty > 0)
-      .map(function(line) {
-        return line["scanned_qty"] + " -> " + line["product_id"][1];
+      .map(function (line) {
+        return line['scanned_qty'] + ' -> ' + line['product_id'][1];
       });
-    return products.join("<br/>");
+    return products.join('<br/>');
   }
   getMoves() {
-    this.picking_id = this.route["params"]["value"]["picking_id"];
-    let leaf = [["picking_id", "=", Number(this.picking_id)]];
+    this.picking_id = this.route['params']['value']['picking_id'];
+    let leaf = [['picking_id', '=', Number(this.picking_id)]];
 
     this.stockService.getMovesLines(leaf).subscribe((res) => {
-      this.moves = res["records"];
+      this.moves = res['records'];
       this.filterLocations();
     });
   }

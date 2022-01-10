@@ -15,7 +15,6 @@ import { ConfigService } from '../../../_services/config.service';
 import { HoneyService } from '../../../_services/honey.service';
 import { BarcodeProvider } from '../../../_services/intent.service';
 import { Events } from '../../../_services/events.service';
-
 @Component({
   selector: 'read-code',
   templateUrl: './read-code.component.html',

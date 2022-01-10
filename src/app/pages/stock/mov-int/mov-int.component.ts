@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StockService } from '../../../_services/stock.service';
+import { LogService } from '../../../_services/log.service';
 
 @Component({
   selector: 'app-mov-int',
@@ -27,10 +28,10 @@ export class MovIntComponent implements OnInit {
 
   getPicking() {
     let leaf = [
-          ['state', 'in', ['assigned', 'draft', 'partially_available']],
-          ['picking_type_id.code', '=', 'internal']
-    ]
-       let dateExpected = this.filters.filter(
+      ['state', 'in', ['assigned', 'draft', 'partially_available']],
+      ['picking_type_id.code', '=', 'internal'],
+    ];
+    let dateExpected = this.filters.filter(
       (filter) => filter.name == 'scheduled_date'
     );
     if (dateExpected.length) {
@@ -99,6 +100,7 @@ export class MovIntComponent implements OnInit {
 
     this.getPicking();
   }
+
   makeDateLeaf(fromDate, toDate) {
     let leaf: any = [];
     if (!toDate) {
@@ -128,8 +130,7 @@ export class MovIntComponent implements OnInit {
   }
   refresh() {
     this.spinner = true;
-   
     this.filters = [];
     this.getPicking();
-  }  
+  }
 }

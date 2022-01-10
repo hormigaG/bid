@@ -1,23 +1,22 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule , ChangeDetectorRef} from '@angular/core';
-
+import { NgModule, ChangeDetectorRef, ErrorHandler } from '@angular/core';
+import { GlobalErrorHandlerService } from './_services/global-error-handler.service';
 import { environment } from '../environments/environment';
 import { OdooRPCService } from './_services/odoo-rpc.service';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { PrintConfigComponent } from './pages/print-config/print-config.component';
 import { PrintLabelComponent } from './pages/print-label/print-label.component';
 import { MenuComponent } from './main/menu/menu.component';
 import { PinterStateComponent } from './main/pinter-state/pinter-state.component';
 import { DasboardComponent } from './main/dasboard/dasboard.component';
-import { Events } from "./_services/events.service"
+import { Events } from './_services/events.service';
 
-import { BarcodeProvider } from "./_services/intent.service"
-
+import { BarcodeProvider } from './_services/intent.service';
 
 import { HTTP } from '@ionic-native/http/ngx';
 import { PriceLabelComponent } from './main/elements/price-label/price-label.component';
@@ -37,7 +36,7 @@ import { MovIntComponent } from './pages/stock/mov-int/mov-int.component';
 import { MovIntDetailComponent } from './pages/stock/mov-int-detail/mov-int-detail.component';
 import { MovIntDetailProductComponent } from './pages/stock/mov-int-detail-product/mov-int-detail-product.component';
 import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
-
+import { LogComponent } from './main/comunes/log/log.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +63,7 @@ import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
     MovIntDetailComponent,
     MovIntDetailProductComponent,
     ZplFileComponent,
+    LogComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,36 +72,21 @@ import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
   ],
-  providers: [HTTP, OdooRPCService],
-  exports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule
+  providers: [
+    HTTP,
+    OdooRPCService,
+    { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
   ],
-  bootstrap: [AppComponent]
+  exports: [CommonModule, FormsModule, ReactiveFormsModule],
+  bootstrap: [AppComponent],
 })
-export class AppModule { 
-
-
-
-      constructor(public odooRPC:OdooRPCService,
-
-        ) { 
-        this.odooRPC.init({
-            odoo_server: localStorage.getItem('url'),
-            http_auth: "username:password" // optional
-        });
-
-  
+export class AppModule {
+  constructor(public odooRPC: OdooRPCService) {
+    this.odooRPC.init({
+      odoo_server: localStorage.getItem('url'),
+      http_auth: 'username:password', // optional
+    });
   }
 }
-
-
-
-
-
-
-
-  

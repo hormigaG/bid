@@ -1,15 +1,50 @@
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link  active" id="config-tab" data-toggle="tab" href="#config" role="tab" aria-controls="config" aria-selected="true">Configuracion</a>
+    <a
+      class="nav-link active"
+      id="config-tab"
+      data-toggle="tab"
+      href="#config"
+      role="tab"
+      aria-controls="config"
+      aria-selected="true"
+      >Configuracion</a
+    >
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="print-tab" data-toggle="tab" href="#print" role="tab" aria-controls="print" aria-selected="false">Impresoras</a>
+    <a
+      class="nav-link"
+      id="print-tab"
+      data-toggle="tab"
+      href="#print"
+      role="tab"
+      aria-controls="print"
+      aria-selected="false"
+      >Impresoras</a
+    >
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      id="log-tab"
+      data-toggle="tab"
+      href="#log"
+      role="tab"
+      aria-controls="log"
+      aria-selected="false"
+      >Log de errores</a
+    >
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="config" role="tabpanel" aria-labelledby="config-tab">
+  <div
+    class="tab-pane fade show active"
+    id="config"
+    role="tabpanel"
+    aria-labelledby="config-tab"
+  >
     <form [formGroup]="configForm" (ngSubmit)="saveConfig()">
-      <div class="form-group" >
+      <div class="form-group">
         <label for="labelWidth">Metodo de scan</label>
         <select class="form-control" formControlName="scanMethod" #scanMethod>
           <option *ngFor="let method of scanMethods" [value]="method">
@@ -17,82 +52,209 @@
           </option>
         </select>
       </div>
-      <div class="form-group" >
+      <div class="form-group">
         <label for="printUrl">Path Impresora</label>
-        <input type="text" formControlName="printUrl" class="form-control" id="printUrl" aria-describedby="printUrlHelp" placeholder="http://192.168.0.1/printer">
-        <small id="printUrlHelp" class="form-text text-muted">URL de la impresora.</small>
-      </div>
-
-      <div class="form-group" >
-        <label for="labelWidth">Ancho Etiqueta</label>
-        <input type="number" formControlName="labelWidth" class="form-control" id="labelWidth" aria-describedby="labelWidthHelp" placeholder="px">
-        <small id="labelWidthHelp" class="form-text text-muted">Ancho en PX de la etiqueta.</small>
-      </div>
-      <div class="form-group" >
-        <label for="labelHeight">Alto Etiqueta</label>
-        <input type="number" formControlName="labelHeight" class="form-control" id="labelHeight" aria-describedby="labelHeightHelp" placeholder="px">
-        <small id="labelHeightHelp" class="form-text text-muted">Alto en PX de la etiqueta.</small>
-      </div>
-
-
-      <div class="form-check">
-        <input type="checkbox" formControlName="printAuto" class="form-check-input" id="printAuto">
-        <label class="form-check-label" for="printAuto">Imprimir automaticamente</label>
-      </div>
-
-      <div class="form-check">
-        <input type="checkbox" formControlName="showLog" class="form-check-input" id="showLog">
-        <label class="form-check-label" for="showLog">Mostrar LOG</label>
-      </div>
-      <div class="form-group" >
-        <label for="PrinterName">Impresora por defecto</label>
-        <input type="text" formControlName="PrinterName" class="form-control" id="PrinterName" aria-describedby="labelWidthHelp" placeholder="Nombre">
-        <small id="labelWidthHelp" class="form-text text-muted">Impresora a la que conecta automaticamente.</small>
-      </div>
-      <div class="form-group" >
-        <label for="printAutoDelay">Delay de impresión</label>
-        <input type="number" formControlName="printAutoDelay" class="form-control" id="printAutoDelay" aria-describedby="printAutoDelayHelp" placeholder="milisegudos">
-        <small id="printAutoDelayHelp" class="form-text text-muted">Tiempo que tarda en milisegundos en imprimir automaticamente.</small>
+        <input
+          type="text"
+          formControlName="printUrl"
+          class="form-control"
+          id="printUrl"
+          aria-describedby="printUrlHelp"
+          placeholder="http://192.168.0.1/printer"
+        />
+        <small id="printUrlHelp" class="form-text text-muted"
+          >URL de la impresora.</small
+        >
       </div>
 
       <div class="form-group">
-        <label for="priceChageDate" class="col-form-label">Cambio de precios</label>
-          <input class="form-control" type="text" [value]="priceChageDate" id="priceChageDate">
+        <label for="labelWidth">Ancho Etiqueta</label>
+        <input
+          type="number"
+          formControlName="labelWidth"
+          class="form-control"
+          id="labelWidth"
+          aria-describedby="labelWidthHelp"
+          placeholder="px"
+        />
+        <small id="labelWidthHelp" class="form-text text-muted"
+          >Ancho en PX de la etiqueta.</small
+        >
       </div>
-      <button type="submit" class="btn btn-primary btn-block btn-lg">Guardar</button>
-  <button class="btn bg-danger btn-block btn-lg" (click)="clearStorage()">Limpiar Datos</button>
+      <div class="form-group">
+        <label for="labelHeight">Alto Etiqueta</label>
+        <input
+          type="number"
+          formControlName="labelHeight"
+          class="form-control"
+          id="labelHeight"
+          aria-describedby="labelHeightHelp"
+          placeholder="px"
+        />
+        <small id="labelHeightHelp" class="form-text text-muted"
+          >Alto en PX de la etiqueta.</small
+        >
+      </div>
 
+      <div class="form-check">
+        <input
+          type="checkbox"
+          formControlName="printAuto"
+          class="form-check-input"
+          id="printAuto"
+        />
+        <label class="form-check-label" for="printAuto"
+          >Imprimir automaticamente</label
+        >
+      </div>
+
+      <div class="form-check">
+        <input
+          type="checkbox"
+          formControlName="showLog"
+          class="form-check-input"
+          id="showLog"
+        />
+        <label class="form-check-label" for="showLog">Mostrar LOG</label>
+      </div>
+      <div class="form-group">
+        <label for="PrinterName">Impresora por defecto</label>
+        <input
+          type="text"
+          formControlName="PrinterName"
+          class="form-control"
+          id="PrinterName"
+          aria-describedby="labelWidthHelp"
+          placeholder="Nombre"
+        />
+        <small id="labelWidthHelp" class="form-text text-muted"
+          >Impresora a la que conecta automaticamente.</small
+        >
+      </div>
+      <div class="form-group">
+        <label for="printAutoDelay">Delay de impresión</label>
+        <input
+          type="number"
+          formControlName="printAutoDelay"
+          class="form-control"
+          id="printAutoDelay"
+          aria-describedby="printAutoDelayHelp"
+          placeholder="milisegudos"
+        />
+        <small id="printAutoDelayHelp" class="form-text text-muted"
+          >Tiempo que tarda en milisegundos en imprimir automaticamente.</small
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="priceChageDate" class="col-form-label"
+          >Cambio de precios</label
+        >
+        <input
+          class="form-control"
+          type="text"
+          [value]="priceChageDate"
+          id="priceChageDate"
+        />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        Guardar
+      </button>
+      <button class="btn bg-danger btn-block btn-lg" (click)="clearStorage()">
+        Limpiar Datos
+      </button>
     </form>
   </div>
-  <div class="tab-pane fade" id="print" role="tabpanel" aria-labelledby="print-tab">
-    <div class="row ">
+  <div
+    class="tab-pane fade"
+    id="print"
+    role="tabpanel"
+    aria-labelledby="print-tab"
+  >
+    <div class="row">
       <h2 class="col-12">
         {{ selected_printer }}
       </h2>
-      <button type="button" (click)="searchPrinters()" class="btn btn-primary btn-lg btn-block">Buscar Impresoras</button>
+      <button
+        type="button"
+        (click)="searchPrinters()"
+        class="btn btn-primary btn-lg btn-block"
+      >
+        Buscar Impresoras
+      </button>
     </div>
     <div class="row col-12">
       <ul class="list-group col-12">
-        <li class="list-group-item " *ngFor="let printer of printers">
-          {{printer.name}} ({{printer.MAC}})
-          <button type="button" (click)="connectPrinter(printer.name)" class="btn btn-primary">Conectar</button>
+        <li class="list-group-item" *ngFor="let printer of printers">
+          {{ printer.name }} ({{ printer.MAC }})
+          <button
+            type="button"
+            (click)="connectPrinter(printer.name)"
+            class="btn btn-primary"
+          >
+            Conectar
+          </button>
         </li>
       </ul>
-      <button type="button" (click)="status()" class="btn btn-secondary btn-lg btn-block">status</button>
-      <button type="button" (click)="disconnect()" class="btn btn-secondary btn-lg btn-block">Desconectar</button>
-      <button type="button" (click)="connected()" class="btn btn-secondary btn-lg btn-block">¿Conectada?</button>
-
-
+      <button
+        type="button"
+        (click)="status()"
+        class="btn btn-secondary btn-lg btn-block"
+      >
+        status
+      </button>
+      <button
+        type="button"
+        (click)="disconnect()"
+        class="btn btn-secondary btn-lg btn-block"
+      >
+        Desconectar
+      </button>
+      <button
+        type="button"
+        (click)="connected()"
+        class="btn btn-secondary btn-lg btn-block"
+      >
+        ¿Conectada?
+      </button>
     </div>
-    <div class="row " *ngIf="printer_status">
+    <div class="row" *ngIf="printer_status">
       <h3 class="col-12">Tests de conexion</h3>
       <div class="btn-group-vertical" role="group">
-        <button type="button btn-block" (click)="printText()" class="btn btn-secondary">{{test_text}}</button>
-        <button type="button btn-block" (click)="printBarcode()" class="btn btn-secondary">Codigo</button>
-        <button type="button btn-block" (click)="lineFeed()" class="btn btn-secondary">Linea</button>
-        <button type="button btn-block" (click)="printBase64()" class="btn btn-secondary">Imagen</button>
+        <button
+          type="button btn-block"
+          (click)="printText()"
+          class="btn btn-secondary"
+        >
+          {{ test_text }}
+        </button>
+        <button
+          type="button btn-block"
+          (click)="printBarcode()"
+          class="btn btn-secondary"
+        >
+          Codigo
+        </button>
+        <button
+          type="button btn-block"
+          (click)="lineFeed()"
+          class="btn btn-secondary"
+        >
+          Linea
+        </button>
+        <button
+          type="button btn-block"
+          (click)="printBase64()"
+          class="btn btn-secondary"
+        >
+          Imagen
+        </button>
       </div>
     </div>
+  </div>
+
+  <div class="tab-pane fade" id="log" role="tabpanel" aria-labelledby="log-tab">
+     <log></log>
   </div>
 </div>
 compilacion 3.0.43
