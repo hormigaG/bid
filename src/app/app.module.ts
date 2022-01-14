@@ -16,7 +16,7 @@ import { PinterStateComponent } from './main/pinter-state/pinter-state.component
 import { DasboardComponent } from './main/dasboard/dasboard.component';
 import { Events } from './_services/events.service';
 
-import { BarcodeProvider } from './_services/intent.service';
+//import { BarcodeProvider } from './_services/intent.service';
 
 import { HTTP } from '@ionic-native/http/ngx';
 import { PriceLabelComponent } from './main/elements/price-label/price-label.component';
@@ -37,6 +37,7 @@ import { MovIntDetailComponent } from './pages/stock/mov-int-detail/mov-int-deta
 import { MovIntDetailProductComponent } from './pages/stock/mov-int-detail-product/mov-int-detail-product.component';
 import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
 import { LogComponent } from './main/comunes/log/log.component';
+import { ZplMoveComponent } from './pages/zpl-move/zpl-move.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { LogComponent } from './main/comunes/log/log.component';
     MovIntDetailProductComponent,
     ZplFileComponent,
     LogComponent,
+    ZplMoveComponent,
   ],
   imports: [
     BrowserModule,

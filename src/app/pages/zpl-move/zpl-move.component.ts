@@ -6,11 +6,13 @@ import { Location } from '@angular/common';
 import { ConfigService } from '../../_services/config.service';
 
 @Component({
-  selector: 'app-zpl-file',
-  templateUrl: './zpl-file.component.html',
-  styleUrls: ['./zpl-file.component.css'],
+  selector: 'app-zpl-move',
+  templateUrl: './zpl-move.component.html',
+  styleUrls: ['./zpl-move.component.css']
 })
-export class ZplFileComponent implements OnInit {
+export class ZplMoveComponent implements OnInit {
+
+
   product_id: number;
   qty: number = 3;
   product: any = {};
@@ -46,10 +48,11 @@ export class ZplFileComponent implements OnInit {
         'product_name' +
         '^FS^CI27 ^BY2,2,81^FT36,142^BCN,,Y,N  ^FH^FD>:' +
         'default_code'
-        '^FS^PQ1,0,1,Y ^XZ';
+        '^FS^PQ1,0,1,Y ^XZ ';
     zpl = zpl.replace('product_name',this.product['name'])
     zpl = zpl.replace('default_code',this.product['default_code'])
     console.log(zpl);
+    return;
     for (let i = 0; i < this.qty; i++) {
       data = data + zpl;
     }
@@ -62,8 +65,7 @@ export class ZplFileComponent implements OnInit {
 
     request.onerror = function (err) {
       self.spinner = false;
-      console.log(err);
-      alert(JSON.stringify(err));
+      alert(err);
     };
     request.onreadystatechange = function () {
       if (request.readyState == 4) {

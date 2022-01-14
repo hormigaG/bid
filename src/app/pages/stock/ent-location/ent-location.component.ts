@@ -9,7 +9,7 @@ import { HostListener } from '@angular/core';
 import { ProductService } from '../../../_services/product.service';
 import { environment } from '../../../../environments/environment';
 import { Events } from '../../../_services/events.service';
-import { BarcodeProvider } from '../../../_services/intent.service';
+//import { BarcodeProvider } from '../../../_services/intent.service';
 import { HoneyService } from '../../../_services/honey.service';
 import { ConfigService } from '../../../_services/config.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -76,9 +76,7 @@ export class EntLocationComponent implements OnInit {
   constructor(
     public productService: ProductService,
     private formBuilder: FormBuilder,
-    public barcodeProvider: BarcodeProvider,
     public HoneyService: HoneyService,
-    public events: Events,
     private changeDetectorRef: ChangeDetectorRef,
     public ConfigService: ConfigService,
     private route: ActivatedRoute,

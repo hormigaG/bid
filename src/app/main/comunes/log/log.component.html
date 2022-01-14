@@ -1,13 +1,13 @@
 <div class="row" *ngFor="let l of log; let i = index">
-  <div class="col-6">
-    {{ l.date }}
-  </div>
-  <div class="col-6">
+  <div class="col-12 text-primary bg-danger text-bold text-center ">
     {{ l.component }}
   </div>
-  <div class="col-12">
-    {{ l.error }}
+  <div class="col-12 text-right">
+    {{ l.date }}
   </div>
+  <small class="col-12 text-monospace">
+    {{ l.error }}
+  </small>
 </div>
 
 <button
