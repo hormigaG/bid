@@ -1,4 +1,5 @@
 <read-code class="col-12" [inputMethod]="inputMethod" (searchByCode)="searchByCode($event)" *ngIf="selected_location"></read-code>
+
 <ul class="list-group" *ngIf="selected_location && action === 'select_location'">
   <ng-container *ngFor="let item of location_id; let i = index">
     <li class="text-left list-group-item" >

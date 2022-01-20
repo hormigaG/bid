@@ -1,7 +1,7 @@
 {
 
-    "\/odoo2": {
-        "target": "https://train-bidargentinasa-15-12-1.nubeadhoc.com/",
+    "\/odoo": {
+        "target": "https://train-bidargentinasa-11-01-1.nubeadhoc.com/",
         "secure": true,
         "changeOrigin": true,
         "pathRewrite": {
@@ -9,12 +9,12 @@
         }
     },
 
-    "\/odoo": {
+    "\/odoo2": {
         "target": "http://localhost:8013/",
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
-             "^\/odoo/": "/"
+             "^\/odoo2/": "/"
         }
     }
 }

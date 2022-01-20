@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.filoquin.bid" version="1.0.45" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.filoquin.bid" version="1.0.48" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" 
+ xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>BID</name>
     <description>
 	BID
@@ -16,17 +17,21 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <platform name="android">
-        <preference name="AndroidPersistentFileLocation" value="Compatibility" />
         <allow-intent href="market:*" />
         <icon density="mdpi" src="res/mdpi.png" />
         <icon density="ldpi" src="res/ldpi.png" />
         <icon density="hdpi" src="res/hdpi.png" />
         <icon density="xhdpi" src="res/xdpi.png" />
         <icon density="xxhdpi" src="res/xxdpi.png" />
+        <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
+
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
+    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <preference name="AndroidInsecureFileModeEnabled" value="true" />
 </widget>

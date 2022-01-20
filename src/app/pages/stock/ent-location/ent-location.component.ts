@@ -9,7 +9,7 @@ import { HostListener } from '@angular/core';
 import { ProductService } from '../../../_services/product.service';
 import { environment } from '../../../../environments/environment';
 import { Events } from '../../../_services/events.service';
-import { BarcodeProvider } from '../../../_services/intent.service';
+//import { BarcodeProvider } from '../../../_services/intent.service';
 import { HoneyService } from '../../../_services/honey.service';
 import { ConfigService } from '../../../_services/config.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -43,42 +43,14 @@ export class EntLocationComponent implements OnInit {
   op: string;
   filters: any = [];
 
-  //ZEBRA
-  private scans = [];
-  private scanners = [
-    {
-      SCANNER_NAME: 'Please Wait...',
-      SCANNER_INDEX: 0,
-      SCANNER_CONNECTION_STATE: true,
-    },
-  ];
-  private selectedScanner = 'Please Select...';
-  private selectedScannerId = -1;
-  private ean8Decoder = true; //  Model for decoder
-  private ean13Decoder = true; //  Model for decoder
-  private code39Decoder = true; //  Model for decoder
-  private code128Decoder = true; //  Model for decoder
-  private dataWedgeVersion =
-    'Pre 6.3. Please create & configure profile manually.  See the ReadMe for more details.';
-  private availableScannersText = 'Requires Datawedge 6.3+';
-  private activeProfileText = 'Requires Datawedge 6.3+';
-  private commandResultText = 'Messages from DataWedge will go here';
-  private uiHideDecoders = true;
-  private uiDatawedgeVersionAttention = true;
-  private uiHideSelectScanner = true;
-  private uiHideShowAvailableScanners = false;
-  private uiHideCommandMessages = true;
-  private uiHideFloatingActionButton = true;
-  //ZEBRA
+  
   @ViewChild('search') searchElement: ElementRef;
   @ViewChild('moveLineModal') moveLineModal: ElementRef;
 
   constructor(
     public productService: ProductService,
     private formBuilder: FormBuilder,
-    public barcodeProvider: BarcodeProvider,
     public HoneyService: HoneyService,
-    public events: Events,
     private changeDetectorRef: ChangeDetectorRef,
     public ConfigService: ConfigService,
     private route: ActivatedRoute,
@@ -353,7 +325,7 @@ export class EntLocationComponent implements OnInit {
     }
   }
   print(item){
-            this.Router.navigateByUrl('/zpl/' + item['product_id'][0] + '/' + item['product_uom_qty']);
+            this.Router.navigateByUrl('/move_zpl/' + item['id'] + '/' + item['product_uom_qty']);
 
   }
   dateRange(value) {

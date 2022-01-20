@@ -49,6 +49,8 @@ export class PrintConfigComponent implements OnInit {
       scanMethod: [this.ConfigService.params.scanMethod],
       showLog: [this.ConfigService.params.showLog],
       PrinterName: [this.ConfigService.params.PrinterName],
+      DefaultEntryLocation: [this.ConfigService.params.DefaultEntryLocation || 21 ],
+
       priceChageDate: ['2021-05-14 00:00:00'],
     });
   }
@@ -67,6 +69,8 @@ export class PrintConfigComponent implements OnInit {
     params['PrinterName'] = this.configForm.controls.PrinterName.value;
     params['priceChageDate'] = this.configForm.controls.priceChageDate.value;
     params['printUrl'] = this.configForm.controls.printUrl.value;
+    params['DefaultEntryLocation'] = this.configForm.controls.DefaultEntryLocation.value;
+
     console.log(params);
     this.ConfigService.saveConfig(params);
     alert('Config saved');
