@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LogService } from '../../../_services/log.service';
+import * as moment from 'moment';
 @Component({
   selector: 'log',
   templateUrl: './log.component.html',
@@ -26,10 +27,16 @@ export class LogComponent implements OnInit {
   }
 
   sendLog() {
-    let self = this;
-    let data = '';
     let log = this.logService.getLog();
+    let logAux = '';
+    for (let i = 0; i < log.length; i++) {
+      logAux += JSON.stringify(log[i]) + '\n';
+    }
+    let data = `appName=bid&date=${moment().format(
+      'YYYY-MM-DD HH:mm:ss'
+    )}%log=${logAux}`;
     var request = new XMLHttpRequest();
+    request.open('POST', 'https://hormigag.ar/whm_logger/new', true);
     request.ontimeout = function () {
       alert('Timeout');
     };
@@ -38,18 +45,22 @@ export class LogComponent implements OnInit {
       console.log(err);
       alert(JSON.stringify(err));
     };
+
+    request.setRequestHeader(
+      'Content-Type',
+      'application/x-www-form-urlencoded'
+    );
+
     request.onreadystatechange = function () {
       if (request.readyState == 4) {
         if (request.status == 200) {
           alert('Log enviado ');
-
         } else {
           alert('error status ' + request.status);
         }
       }
     };
-
-    request.open('POST', 'erroURL', true);
+    console.log(data);
     request.send(data);
-  }  
+  }
 }
