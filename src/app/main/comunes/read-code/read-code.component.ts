@@ -27,7 +27,7 @@ export class ReadCodeComponent implements OnInit {
   showLog: boolean = false;
   searchForm: FormGroup;
   @ViewChild('search') searchElement: ElementRef;
-  
+
   constructor(
     private formBuilder: FormBuilder,
     public ConfigService: ConfigService,
@@ -35,9 +35,7 @@ export class ReadCodeComponent implements OnInit {
     //public barcodeProvider: BarcodeProvider,
     private changeDetectorRef: ChangeDetectorRef,
     public events: Events
-  ) {
-    
-  }
+  ) {}
 
   ngOnInit(): void {
     this.inputMethod = this.ConfigService.params.scanMethod;
@@ -47,7 +45,7 @@ export class ReadCodeComponent implements OnInit {
     });
     let parent = this;
 
-    this.HoneyService.startBarcode();
+    // this.HoneyService.startBarcode();
     this.HoneyService.BarcodeData.subscribe((res: any) => {
       this.changeDetectorRef.detectChanges();
 
@@ -57,6 +55,8 @@ export class ReadCodeComponent implements OnInit {
       }
     });
     //this.HoneyService.testInput();
+
+    //this.HoneyService.stopBarcode();
   }
   ngOnChanges(): void {
     if (this.inputMethod == 'textBus') {

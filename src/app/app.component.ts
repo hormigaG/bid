@@ -1,4 +1,5 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { HoneyService } from '../app/_services/honey.service';
 //import { Plugins } from '@capacitor/core';
 //import { BarcodeProvider } from "./_services/intent.service"
 //import { Events } from "./_services/events.service"
@@ -8,22 +9,18 @@ import { Component, ChangeDetectorRef } from '@angular/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   //providers: [BarcodeProvider],
-
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Zebra';
 
+  constructor(
+    //private barcodeProvider: BarcodeProvider,
+    //public events: Events,
+    public HoneyService: HoneyService,
 
-
-      constructor(
-        //private barcodeProvider: BarcodeProvider,
-        //public events: Events, 
-        private changeDetectorRef: ChangeDetectorRef,    
-
-        ) { 
- 
-
-      
-
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
+  ngOnInit(): void {
+    this.HoneyService.startBarcode();
   }
 }
