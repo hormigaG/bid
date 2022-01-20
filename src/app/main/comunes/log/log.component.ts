@@ -30,13 +30,17 @@ export class LogComponent implements OnInit {
     let log = this.logService.getLog();
     let logAux = '';
     for (let i = 0; i < log.length; i++) {
-      logAux += JSON.stringify(log[i]) + '\n';
+      logAux += log[i]['date'] + '\n';
+      logAux += log[i]['component'] + '\n';
+      logAux += log[i]['error'] + '\n';
+      logAux += '-----\n';
     }
     let data = `appName=bid&date=${moment().format(
       'YYYY-MM-DD HH:mm:ss'
-    )}%log=${logAux}`;
+    )}&log=${logAux}`;
     var request = new XMLHttpRequest();
     request.open('POST', 'https://hormigag.ar/whm_logger/new', true);
+    //request.open('POST', '/odoo/whm_logger/new', true);
     request.ontimeout = function () {
       alert('Timeout');
     };

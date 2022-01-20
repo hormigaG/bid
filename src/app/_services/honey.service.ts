@@ -19,6 +19,7 @@ export class HoneyService {
 
   startBarcode() {
     let self = this;
+    console.log('startBarcode')
     if (typeof cordova !== 'undefined'){
       cordova.plugins.honeywell.barcode.onBarcodeScanned(
         (result) => {

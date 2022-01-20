@@ -113,7 +113,7 @@ export class EntLocationComponent implements OnInit {
 
     if (this.op == 'location-entry') {
       leaf = [
-        ['state', '=', ['assigned', 'draft', 'partially_available']],
+        ['state', 'in', ['assigned', 'draft', 'partially_available']],
         ['location_dest_id', 'child_of', this.lot_stock_id],
       ];
     } else if (this.op == 'picking') {
