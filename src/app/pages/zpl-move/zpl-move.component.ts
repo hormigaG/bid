@@ -48,7 +48,7 @@ export class ZplMoveComponent implements OnInit {
         'product_name' +
         '^FS^CI27 ^BY2,2,81^FT36,142^BCN,,Y,N  ^FH^FD>:' +
         'default_code'
-        '^FS^PQ1,0,1,Y ^XZ ';
+        '^FS^PQ1,0,1,Y ^XZ';
     zpl = zpl.replace('product_name',this.product['name'])
     zpl = zpl.replace('default_code',this.product['default_code'])
     console.log(zpl);

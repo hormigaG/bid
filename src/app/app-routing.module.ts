@@ -56,6 +56,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: 'move_zpl/:move_id/:qty',
+        component: ZplFileComponent,
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'picking-selector',
         component: MovIntComponent,
         canActivate: [AuthGuard],
