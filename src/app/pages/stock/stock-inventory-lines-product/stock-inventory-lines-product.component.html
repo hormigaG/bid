@@ -1,0 +1,267 @@
+<div class="text-center fixed-top spinnerContent">
+  <div
+    class="spinner-grow text-warning"
+    *ngIf="spinner"
+    style="width: 5rem; height: 5rem"
+    role="status"
+  >
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<div class="row text-center mt-2">
+  <div class="col-12">
+    <!-- <div *ngIf="this.inputMethod == 'textBus'" class="text-center card "><strong>{{textBus}}</strong></div> -->
+
+    <div class="row">
+      <div class="col-2">
+        <button
+          type="button"
+          class="btn btn-primary shadow"
+          (click)="collapse.toggle()"
+          [attr.aria-expanded]="!isCollapsed"
+          aria-controls="collapseExample"
+        >
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+      <read-code
+        class="col-10"
+        [inputMethod]="inputMethod"
+        (searchByCode)="searchByCode($event)"
+      ></read-code>
+    </div>
+
+    <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
+      <div class="pb-0">
+        <div class="row pb-0">
+          <div class="col-2">
+          </div>
+          <div class="col-2">
+            <button
+              type="button"
+              (click)="togleShowOk()"
+              class="btn btn-light shadow"
+            >
+              <i
+                [ngClass]="{
+                  fa: true,
+                  'fa-eye': showOk,
+                  'fa-eye-slash': !showOk
+                }"
+              ></i>
+            </button>
+          </div>
+          <div class="col-8"></div>
+        </div>
+      </div>
+    </div>
+    <div class="text-left">
+      
+    </div>
+    <ul class="list-group">
+      <ng-container *ngFor="let item of stock_inventory_lines; let i = index">
+        <li
+          class="text-left list-group-item"
+        >
+          <div class="row">
+            <div class="text-center col-2 pt-0 pb-0 pl-0 pr-0">
+              <div
+                (click)="openMoveLineModal(i)"
+                [ngClass]="{
+                  'text-bold': true,
+                  'text-white': true,
+                  'bg-danger': item['theoretical_qty'] > item['product_qty'],
+                  'bg-success': item['theoretical_qty'] == item['product_qty'],
+                  'bg-warning': item['theoretical_qty'] < item['product_qty']
+                }"
+              >
+                {{ item["product_qty"] }}<br />
+                <small class="text-bold">Scan</small>
+              </div>
+              <div>
+                {{ item["theoretical_qty"] }}
+                <small class="">Cantidad</small>
+              </div>
+            </div>
+            <div class="col-8">
+              <div>{{ item["product_id"][1] }}</div>
+            </div>
+            <div class="col-2">
+              <button
+                type="button"
+                (click)="print(item)"
+                [ngClass]="{ btn: true }"
+              >
+                <i class="fa fa-print"></i>
+              </button>
+
+              <button
+                type="button"
+                (click)="openMoveLineModal(i)"
+                [ngClass]="{ btn: true }"
+              >
+                <i class="fa fa-list"></i>
+              </button>
+            </div>
+          </div>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</div>
+
+<div class="row text-center">
+  <div class="btn-group btn-group-lg fixed-bottom" role="group">
+    <button
+      type="button"
+      (click)="inputMethod = 'form'"
+      [ngClass]="{ btn: true, 'btn-info': true, active: inputMethod == 'form' }"
+    >
+      <i class="fa fa-font"></i>
+    </button>
+    <button
+      type="button"
+      (click)="inputMethod = 'textBus'"
+      [ngClass]="{
+        btn: true,
+        'btn-info': true,
+        active: inputMethod == 'textBus'
+      }"
+    >
+      <i class="fa fa-barcode"></i>
+    </button>
+    <button
+      type="button"
+      (click)="refresh()"
+      [ngClass]="{ btn: true, 'btn-info': true }"
+    >
+      <i class="fa fa-refresh"></i>
+    </button>
+  </div>
+</div>
+
+<ng-template #moveLineModal let-modal>
+  <div *ngIf="active_index !== undefined" class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{ stock_inventory_lines[active_index]["product_id"][1] }}
+        </h5>
+      </div>
+      <div class="modal-body">
+        <h2 class="bg-danger text-center text-white mb-0">
+          {{ stock_inventory_lines[active_index]["scanned_qty"] }}
+        </h2>
+        <div class="bg-dark text-center text-white mt-0">Escaneados</div>
+
+        <div *ngIf="stock_inventory_lines[active_index]['picking_id']">
+          Remito:
+          <strong>{{
+            stock_inventory_lines[active_index]["picking_id"][1]
+          }}</strong>
+        </div>
+        <div>
+          Unidad:
+          <strong>{{
+            stock_inventory_lines[active_index]["product_uom_id"][1]
+          }}</strong>
+        </div>
+
+        <div>
+          Real/Total:
+          <strong>{{
+            stock_inventory_lines[active_index]["product_qty"]
+          }}</strong
+          >/
+          <strong>{{
+            stock_inventory_lines[active_index]["reserved_availability"]
+          }}</strong
+          >(
+          <strong>{{
+            stock_inventory_lines[active_index]["product_uom_qty"]
+          }}</strong>
+          )
+        </div>
+        <div>
+          Origen:
+          <strong>{{ stock_inventory_lines[active_index]["origin"] }}</strong>
+        </div>
+
+        <div *ngIf="stock_inventory_lines[active_index]['barcode']">
+          Codigo de barra:
+          <strong>{{ stock_inventory_lines[active_index]["barcode"] }}</strong>
+        </div>
+        <div>
+          Codigo interno:
+          <strong>{{
+            stock_inventory_lines[active_index]["default_code"]
+          }}</strong>
+        </div>
+        <div class="btn-group w-100" role="group">
+          <button
+            type="button"
+            (click)="qtyDir = -1"
+            [ngClass]="{ btn: true, 'btn-dark': true, active: qtyDir == -1 }"
+          >
+            <i class="fa fa-minus"></i>
+          </button>
+          <button
+            type="button"
+            (click)="qtyDir = 1"
+            [ngClass]="{ btn: true, 'btn-dark': true, active: qtyDir == 1 }"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+        <div class="btn-group btn-group-lg w-100" role="group">
+          <button
+            type="button"
+            (click)="addScannedQuantity(active_index, 1 * qtyDir)"
+            [ngClass]="{ btn: true, 'btn-danger': true }"
+          >
+            1
+          </button>
+          <button
+            type="button"
+            (click)="addScannedQuantity(active_index, 5 * qtyDir)"
+            [ngClass]="{ btn: true, 'btn-danger': true }"
+          >
+            5
+          </button>
+          <button
+            type="button"
+            (click)="addScannedQuantity(active_index, 10 * qtyDir)"
+            [ngClass]="{ btn: true, 'btn-danger': true }"
+          >
+            10
+          </button>
+          <button
+            type="button"
+            (click)="addScannedQuantity(active_index, 50 * qtyDir)"
+            [ngClass]="{ btn: true, 'btn-danger': true }"
+          >
+            50
+          </button>
+          <button
+            type="button"
+            (click)="addScannedQuantity(active_index, 100 * qtyDir)"
+            [ngClass]="{ btn: true, 'btn-danger': true }"
+          >
+            100
+          </button>
+        </div>
+        <hr />
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          aria-label="Close"
+          (click)="cerrarModal()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

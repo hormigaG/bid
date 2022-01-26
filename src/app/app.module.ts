@@ -38,6 +38,9 @@ import { MovIntDetailProductComponent } from './pages/stock/mov-int-detail-produ
 import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
 import { LogComponent } from './main/comunes/log/log.component';
 import { ZplMoveComponent } from './pages/zpl-move/zpl-move.component';
+import { StockInventoryComponent } from './pages/stock/stock-inventory/stock-inventory.component';
+import { StockInventoryLinesComponent } from './pages/stock/stock-inventory-lines/stock-inventory-lines.component';
+import { StockInventoryLinesProductComponent } from './pages/stock/stock-inventory-lines-product/stock-inventory-lines-product.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +69,9 @@ import { ZplMoveComponent } from './pages/zpl-move/zpl-move.component';
     ZplFileComponent,
     LogComponent,
     ZplMoveComponent,
+    StockInventoryComponent,
+    StockInventoryLinesComponent,
+    StockInventoryLinesProductComponent,
   ],
   imports: [
     BrowserModule,
