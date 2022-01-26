@@ -29,23 +29,11 @@
 <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
   <div class="pb-0">
     <div class="row pb-0">
-      <div class="col-2">
-        <range-picker (evento)="dateRange($event)"> </range-picker>
-      </div>
       <div class="col-10"></div>
     </div>
   </div>
 </div>
-<div class="text-left">
-  <strong *ngIf="filters && filters.length">:: </strong>
-  <span
-    *ngFor="let filter of filters; let i = index"
-    class="badge badge-primary"
-    (click)="removeFilter(filter.name)"
-  >
-    {{ filter.label }}
-  </span>
-</div>
+
 <ul class="list-group">
   <ng-container *ngFor="let item of locations; let i = index">
     <li
