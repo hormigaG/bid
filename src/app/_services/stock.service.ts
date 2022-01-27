@@ -18,10 +18,8 @@ export class StockService {
 
   controlInventory() {
     const controlInventory = this.getQuantityStorage('stock_inventory');
-    console.log('MI ARREGLO', controlInventory);
     if (controlInventory.stock_inventory.length) {
       for (let i = 0; i < controlInventory.stock_inventory.length; i++) {
-        console.log(controlInventory.stock_inventory[i]);
         this.odooRPC
           .call(
             'stock.inventory.line',
@@ -37,7 +35,6 @@ export class StockService {
               'stock_inventory',
               controlInventory.stock_inventory[i].id
             );
-            console.log(res);
           });
       }
     }
@@ -166,7 +163,6 @@ export class StockService {
       this.odooRPC
         .searchRead('stock.inventory', leaf, [], 0, 0, {}, 'id asc')
         .then(async (res) => {
-          console.log(res);
           const len = res.records.length;
           for (let i = 0; i < len; i++) {
             let locations_id = res['records'][i]['location_ids'];
@@ -199,7 +195,6 @@ export class StockService {
         .then((res) => {
           var self = this;
           let product_ids = res.records.map((e) => e.product_id[0]);
-          console.log('mis productos', product_ids);
           this.odooRPC
             .read('product.product', product_ids, [
               'uom_id',
@@ -236,6 +231,27 @@ export class StockService {
                 observer.next(res);
                 observer.complete();
               });
+            });
+          //});
+        });
+    });
+    return transaction$;
+  }
+
+  getStockInventoryLineUbications(leaf = []) {
+    const transaction$ = new Observable((observer) => {
+      this.odooRPC
+        .searchRead('stock.inventory.line', leaf, [], 0, 0, {}, 'id asc')
+        .then((res) => {
+          var self = this;
+          let locations_ids = res['records'].map(function (move) {
+            return move['location_id'][0];
+          });
+          this.odooRPC
+            .read('stock.location', locations_ids, ['name'])
+            .then((res_locations) => {
+              observer.next(res_locations);
+              observer.complete();
             });
           //});
         });
