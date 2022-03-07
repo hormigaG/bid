@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StockService } from '../../../_services/stock.service';
 import { LogService } from '../../../_services/log.service';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-mov-int',
@@ -13,12 +14,22 @@ export class MovIntComponent implements OnInit {
   filters: any = [];
   isCollapsed: boolean = true;
   spinner = true;
+  sequence_code: string = 'all';
+  picking_type_id: number ;
 
   inputMethod: String = 'textBus';
-
-  constructor(public stockService: StockService) {}
+  base_leaf: any= [
+      ['state', 'in', ['assigned', 'draft', 'partially_available']],
+      ['picking_type_id.code', '=', 'internal'],
+   ];
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    public stockService: StockService) {}
 
   ngOnInit(): void {
+
+    this.sequence_code = this.route['params']['value']['picking_code'] || 'all';
     this.getPicking();
   }
 
@@ -26,11 +37,23 @@ export class MovIntComponent implements OnInit {
     console.log(code);
   }
 
-  getPicking() {
-    let leaf = [
+  getLeaf(){
+    let domain:any = [
       ['state', 'in', ['assigned', 'draft', 'partially_available']],
-      ['picking_type_id.code', '=', 'internal'],
-    ];
+   ];
+    if(this.sequence_code){
+      this.picking_type_id = this.route['params']['value']['picking_code'];
+
+      domain.push(['picking_type_id','=',Number(this.picking_type_id)])
+    } else{
+      domain.push(['picking_type_id.code', '=', 'internal']);
+
+
+    }
+    return domain;
+  }
+  getPicking() {
+    let leaf =  this.getLeaf();
     let dateExpected = this.filters.filter(
       (filter) => filter.name == 'scheduled_date'
     );
@@ -41,13 +64,13 @@ export class MovIntComponent implements OnInit {
       );
     } else if (!this.filters.length) {
       dateExpected = this.makeDateLeaf(
-        this.parseDateObject(new Date()),
-        undefined
+        undefined,
+        this.parseDateObject(new Date())
       );
 
       this.filters.push({
         label: 'Ingresos hasta hoy',
-        value: { fromDate: this.parseDateObject(new Date()) },
+        value: { toDate: this.parseDateObject(new Date()) },
         name: 'scheduled_date',
       });
     }
@@ -103,11 +126,13 @@ export class MovIntComponent implements OnInit {
 
   makeDateLeaf(fromDate, toDate) {
     let leaf: any = [];
-    if (!toDate) {
-      toDate = fromDate;
+    if (fromDate) {
+      leaf.push(['scheduled_date', '>=', fromDate + ' 00:00:00']);
     }
-    leaf.push(['scheduled_date', '>=', fromDate + ' 00:00:00']);
-    leaf.push(['scheduled_date', '<', toDate + ' 23:59:59']);
+    if (toDate) {
+      leaf.push(['scheduled_date', '<', toDate + ' 23:59:59']);
+    }    
+    
     return leaf;
   }
 

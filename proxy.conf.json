@@ -1,13 +1,13 @@
 {
 
     "\/odoo": {
-        "target": "https://train-bidargentinasa-20-01-1.nubeadhoc.com/",
+        "target": "https://bidargentinasa.nubeadhoc.com/",
         "secure": true,
         "changeOrigin": true,
         "pathRewrite": {
              "^\/odoo/": "/"
         }
-    },
+    },  
 
     "\/odoo2": {
         "target": "http://localhost:8013/",

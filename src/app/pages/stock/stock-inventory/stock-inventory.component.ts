@@ -14,7 +14,7 @@ export class StockInventoryComponent implements OnInit {
   }
 
   getStockInventory() {
-    this.stockService.getStockInventory([]).subscribe((res) => {
+    this.stockService.getStockInventory([['state', '=', 'confirm']]).subscribe((res) => {
       this.stock_inventory = res['records'];
     });
   }
