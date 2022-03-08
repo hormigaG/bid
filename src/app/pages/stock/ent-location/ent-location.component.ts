@@ -139,12 +139,11 @@ export class EntLocationComponent implements OnInit {
 
       this.filters.push({
         label: 'Ingresos hasta hoy',
-        value: { fromDate: this.parseDateObject(new Date()) },
+        value: { toDate: this.parseDateObject(new Date()) },
         name: 'date_expected',
       });
     }
     leaf.push(...dateExpected);
-
     if (leaf.length) {
       this.stockService.getMoves(leaf, 'incoming').subscribe((res) => {
         res['records'].forEach(function (part, index, theArray) {});
@@ -159,9 +158,13 @@ export class EntLocationComponent implements OnInit {
     let leaf: any = [];
     if (!toDate) {
       toDate = fromDate;
-    }
+    }else if (!fromDate) {
+      leaf.push(['date_expected', '<', toDate + ' 23:59:59']);
+    } else{
     leaf.push(['date_expected', '>=', fromDate + ' 00:00:00']);
     leaf.push(['date_expected', '<', toDate + ' 23:59:59']);
+
+    }
     return leaf;
   }
   formSearch() {
@@ -348,6 +351,18 @@ export class EntLocationComponent implements OnInit {
           fromDate: this.parseDate(value.fromDate),
           toDate: this.parseDate(value.toDate),
         },
+        name: 'date_expected',
+      });
+    } else if (value.toDate) {
+      const toDate =
+        value.toDate.day +
+        '/' +
+        value.toDate.month +
+        '/' +
+        value.toDate.year;
+      this.filters.push({
+        label: toDate,
+        value: { toDate: this.parseDate(value.toDate) },
         name: 'date_expected',
       });
     } else if (value.fromDate) {

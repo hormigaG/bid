@@ -71,7 +71,6 @@ export class ReadCodeComponent implements OnInit {
       //TODO: NO SE COMO HACER EL FOCUS
     }
   }
-
   formSearch() {
     const search = this.searchForm.controls.search.value;
 

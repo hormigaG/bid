@@ -4,3 +4,7 @@
 	z-index: 4000;
 	bottom: 0;
 }
+.buttonSpacer{
+	height: 80px;
+    background-image: linear-gradient(180deg, rgba(#FFF, 1) 5px, rgba(#FDBE00, .001) 80px );
+}

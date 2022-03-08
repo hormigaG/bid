@@ -69,7 +69,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'picking-selector/:picking_id',
+        path: 'picking-selector/:picking_code',
+        component: MovIntComponent,
+        canActivate: [AuthGuard],
+      },
+
+
+      {
+        path: 'picking-selector/:picking_code/:picking_id',
         component: MovIntDetailComponent,
         canActivate: [AuthGuard],
       },

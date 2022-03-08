@@ -27,6 +27,10 @@ export class EntWhSelectorComponent implements OnInit {
     }
   }
 
+  setDefaultLocation(location_id){
+    this.ConfigService.saveParam('DefaultEntryLocation' , location_id)
+    this.Router.navigateByUrl('/stock/location-entry/' + location_id);
+  }
   getWh(){
         this.stockService.getWh().subscribe((wh) => {
           this.wh = wh['records'];
