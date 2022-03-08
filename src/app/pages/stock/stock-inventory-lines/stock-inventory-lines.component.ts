@@ -64,7 +64,7 @@ export class StockInventoryLinesComponent implements OnInit {
   async getStockInventory(leaf) {
     this.spinner = true;
     this.stockService.getStockInventoryLineUbications(leaf).subscribe((res) => {
-      const result = res;
+      const result = <Array<any>>res;
       this.locations = result.reduce((unique, o) => {
         if (!unique.some((obj) => obj.id === o.id)) {
           unique.push(o);

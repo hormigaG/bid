@@ -17,9 +17,12 @@ import { StockInventoryLinesComponent } from './pages/stock/stock-inventory-line
 import { StockInventoryLinesProductComponent } from './pages/stock/stock-inventory-lines-product/stock-inventory-lines-product.component';
 import { MovIntDetailProductComponent } from './pages/stock/mov-int-detail-product/mov-int-detail-product.component';
 import { ZplFileComponent } from './pages/zpl-file/zpl-file.component';
+import {TestBarCodeComponent} from './pages/test-bar-code/test-bar-code.component'
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'test', component: TestBarCodeComponent },
+
   { path: 'db', component: SelectDbComponent },
   {
     path: '',
