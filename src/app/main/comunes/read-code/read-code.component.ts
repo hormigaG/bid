@@ -28,6 +28,7 @@ export class ReadCodeComponent implements OnInit {
   textBus: string = '';
   showLog: boolean = false;
   searchForm: FormGroup;
+  log: string='';
   @ViewChild('search') searchElement: ElementRef;
 
   constructor(
@@ -41,6 +42,7 @@ export class ReadCodeComponent implements OnInit {
   ) {}
   startScan() {
     var defaultReader;
+    var self = this;
     function onCommitComplete(resultArray) {
       if (resultArray.length > 0) {
         for (var i = 0; i < resultArray.length; i++) {
@@ -56,7 +58,8 @@ export class ReadCodeComponent implements OnInit {
       }
     }
     function onBarcodeDataReady(data, type, time) {
-      this.searchByCode.emit(data);
+      alert(data + ' ' + type + ' ' + time);
+      self.searchByCode.emit(data);
     }
   
     function onSetBufferedComplete(result) {
@@ -101,6 +104,8 @@ export class ReadCodeComponent implements OnInit {
       defaultReader = new barcode.BarcodeReader(null, onBarcodeReaderComplete);
     }
   }
+  
+
   ngOnInit(): void {
     this.inputMethod = this.ConfigService.params.scanMethod;
     this.showLog = this.ConfigService.params.showLog;

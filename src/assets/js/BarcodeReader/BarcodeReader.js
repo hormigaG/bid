@@ -289,7 +289,7 @@ var HoneywellBarcodeReaderUtils = {
                     e(b);
                   }, 0));
           }),
-          c.open("POST", "http://127.0.0.1:8080/jsonrpc/" + a, !0),
+          c.open("POST", "http://127.0.0.1:9090/jsonrpc/" + a, !0),
           c.send(JSON.stringify(d));
       else if (g.isFunction(e)) {
         var b = { jsonrpc: "2.0" };
@@ -489,7 +489,7 @@ var HoneywellBarcodeReaderUtils = {
             : HoneywellBarcodeReaderUtils.log(a + g);
         }
       }
-      var e = "http://127.0.0.1:8080/jsonrpc/" + a + "/events",
+      var e = "http://127.0.0.1:9090/jsonrpc/" + a + "/events",
         g = !1,
         c = null,
         h = null,
