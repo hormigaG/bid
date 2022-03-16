@@ -41,6 +41,7 @@ import { ZplMoveComponent } from './pages/zpl-move/zpl-move.component';
 import { StockInventoryComponent } from './pages/stock/stock-inventory/stock-inventory.component';
 import { StockInventoryLinesComponent } from './pages/stock/stock-inventory-lines/stock-inventory-lines.component';
 import { StockInventoryLinesProductComponent } from './pages/stock/stock-inventory-lines-product/stock-inventory-lines-product.component';
+import { TestBarCodeComponent } from './pages/test-bar-code/test-bar-code.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { StockInventoryLinesProductComponent } from './pages/stock/stock-invento
     StockInventoryComponent,
     StockInventoryLinesComponent,
     StockInventoryLinesProductComponent,
+    TestBarCodeComponent,
   ],
   imports: [
     BrowserModule,

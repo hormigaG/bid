@@ -15,6 +15,8 @@ import { ConfigService } from '../../../_services/config.service';
 import { HoneyService } from '../../../_services/honey.service';
 //import { BarcodeProvider } from '../../../_services/intent.service';
 import { Events } from '../../../_services/events.service';
+import { ScanService } from '../../../_services/scan.service';
+import * as barcode from '../../../../assets/js/BarcodeReader/BarcodeReader.js';
 @Component({
   selector: 'read-code',
   templateUrl: './read-code.component.html',
@@ -26,6 +28,7 @@ export class ReadCodeComponent implements OnInit {
   textBus: string = '';
   showLog: boolean = false;
   searchForm: FormGroup;
+  log: string='';
   @ViewChild('search') searchElement: ElementRef;
 
   constructor(
@@ -34,8 +37,74 @@ export class ReadCodeComponent implements OnInit {
     public HoneyService: HoneyService,
     //public barcodeProvider: BarcodeProvider,
     private changeDetectorRef: ChangeDetectorRef,
-    public events: Events
+    public events: Events,
+    private scanService: ScanService
   ) {}
+  startScan() {
+    var defaultReader;
+    var self = this;
+    function onCommitComplete(resultArray) {
+      if (resultArray.length > 0) {
+        for (var i = 0; i < resultArray.length; i++) {
+          var result = resultArray[i];
+          if (result.status !== 0) {
+            if (
+              result.method === 'getBuffered' ||
+              result.method === 'setBuffered'
+            ) {
+            }
+          } //endfor
+        }
+      }
+    }
+    function onBarcodeDataReady(data, type, time) {
+      alert(data + ' ' + type + ' ' + time);
+      self.searchByCode.emit(data);
+    }
+  
+    function onSetBufferedComplete(result) {
+      if (result.status !== 0) {
+      }
+    }
+    function onBeforeUnload(e) {
+      var message = 'Please close BarcodeReader before leaving this page.';
+      (e || window.event).returnValue = message;
+      return message;
+    }
+    function onBarcodeReaderComplete(result) {
+      if (result.status === 0) {
+        defaultReader.setBuffered(
+          'Symbology',
+          'Code39',
+          'Enable',
+          'true',
+          onSetBufferedComplete
+        );
+        defaultReader.setBuffered(
+          'Symbology',
+          'Code128',
+          'EnableCode128',
+          'true',
+          onSetBufferedComplete
+        );
+        defaultReader.commitBuffer(onCommitComplete);
+        // Add an event handler for the barcodedataready event
+        defaultReader.addEventListener(
+          'barcodedataready',
+          onBarcodeDataReady,
+          false
+        );
+        // Add an event handler for the window's beforeunload event
+        window.addEventListener('beforeunload', onBeforeUnload);
+      } else {
+        defaultReader = null;
+      }
+    }
+    if (!defaultReader) {
+      defaultReader = new barcode.BarcodeReader(null, onBarcodeReaderComplete);
+    }
+  }
+  
 
   ngOnInit(): void {
     this.inputMethod = this.ConfigService.params.scanMethod;
@@ -44,8 +113,9 @@ export class ReadCodeComponent implements OnInit {
       search: ['', Validators.required],
     });
     let parent = this;
+    this.startScan();
 
-    // this.HoneyService.startBarcode();
+    /* 
     this.HoneyService.BarcodeData.subscribe((res: any) => {
       this.changeDetectorRef.detectChanges();
 
@@ -53,10 +123,7 @@ export class ReadCodeComponent implements OnInit {
         this.searchByCode.emit(res);
         parent.changeDetectorRef.detectChanges();
       }
-    });
-    //this.HoneyService.testInput();
-
-    //this.HoneyService.stopBarcode();
+    }); */
   }
   ngOnChanges(): void {
     if (this.inputMethod == 'textBus') {
@@ -66,9 +133,6 @@ export class ReadCodeComponent implements OnInit {
     } else {
       this.textBus = '';
       console.log(this.searchElement);
-      //this.searchElement.nativeElement.focus();
-      //console.log(document.getElementById('bus'));
-      //TODO: NO SE COMO HACER EL FOCUS
     }
   }
   formSearch() {

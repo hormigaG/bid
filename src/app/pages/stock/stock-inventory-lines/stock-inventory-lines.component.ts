@@ -49,7 +49,6 @@ export class StockInventoryLinesComponent implements OnInit {
   searchByCode(code) {
     const elemento = this.locations.find((e) => e.name === code);
     if (elemento) {
-      console.log(elemento, this.route);
       this.router.navigate([
         `/stock-inventory/${this.stock_id}/${elemento.id}`,
       ]); // navigate to other page
@@ -59,15 +58,19 @@ export class StockInventoryLinesComponent implements OnInit {
   }
   ngOnInit(): void {
     this.stock_id = Number(this.route.snapshot.params.stock_inventory_id);
-    console.log(this.stock_id);
-    let leaf = [['id', '=', this.stock_id]];
+    let leaf = [['inventory_id', '=', this.stock_id]];
     this.getStockInventory(leaf);
   }
   async getStockInventory(leaf) {
     this.spinner = true;
-    this.stockService.getStockInventory(leaf).subscribe((res) => {
-      this.stock_inventory = res['records'];
-      this.locations = this.stock_inventory[0]['locations'];
+    this.stockService.getStockInventoryLineUbications(leaf).subscribe((res) => {
+      const result = <Array<any>>res;
+      this.locations = result.reduce((unique, o) => {
+        if (!unique.some((obj) => obj.id === o.id)) {
+          unique.push(o);
+        }
+        return unique;
+      }, []);
       this.spinner = false;
     });
   }
