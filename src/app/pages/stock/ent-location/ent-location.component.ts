@@ -43,7 +43,6 @@ export class EntLocationComponent implements OnInit {
   op: string;
   filters: any = [];
 
-  
   @ViewChild('search') searchElement: ElementRef;
   @ViewChild('moveLineModal') moveLineModal: ElementRef;
 
@@ -56,7 +55,7 @@ export class EntLocationComponent implements OnInit {
     private route: ActivatedRoute,
     public stockService: StockService,
     private modalService: NgbModal,
-    public Router: Router,
+    public Router: Router
   ) {
     /*  */
   }
@@ -158,12 +157,11 @@ export class EntLocationComponent implements OnInit {
     let leaf: any = [];
     if (!toDate) {
       toDate = fromDate;
-    }else if (!fromDate) {
+    } else if (!fromDate) {
       leaf.push(['date_expected', '<', toDate + ' 23:59:59']);
-    } else{
-    leaf.push(['date_expected', '>=', fromDate + ' 00:00:00']);
-    leaf.push(['date_expected', '<', toDate + ' 23:59:59']);
-
+    } else {
+      leaf.push(['date_expected', '>=', fromDate + ' 00:00:00']);
+      leaf.push(['date_expected', '<', toDate + ' 23:59:59']);
     }
     return leaf;
   }
@@ -180,10 +178,10 @@ export class EntLocationComponent implements OnInit {
       return;
     }
     var line = this.moves.findIndex(function (item) {
-      let codeLow = code.toLowerCase();
+      let codeLow = code;
       return (
-        (item.default_code.toLowerCase().indexOf(codeLow) !== -1 ||
-          item.product_id[1].toLowerCase().indexOf(codeLow) !== -1 ||
+        (item.default_code == codeLow ||
+          // item.product_id[1].toLowerCase().indexOf(codeLow) !== -1 ||
           item.barcode == code) &&
         //|| item.picking_id[1].toLowerCase().indexOf(codeLow) !== -1
         item.quantity_done < item.reserved_availability
@@ -303,7 +301,6 @@ export class EntLocationComponent implements OnInit {
         this.getAssignedMoves();
       });
     }
- 
   }
   parcialMoveProducts(line) {
     if (this.moves[line]['scanned_qty'] > 0) {
@@ -327,9 +324,10 @@ export class EntLocationComponent implements OnInit {
         });
     }
   }
-  print(item){
-            this.Router.navigateByUrl('/move_zpl/' + item['id'] + '/' + item['product_uom_qty']);
-
+  print(item) {
+    this.Router.navigateByUrl(
+      '/move_zpl/' + item['id'] + '/' + item['product_uom_qty']
+    );
   }
   dateRange(value) {
     const index = this.filters.findIndex((e) => e.name == 'date_expected');
@@ -355,11 +353,7 @@ export class EntLocationComponent implements OnInit {
       });
     } else if (value.toDate) {
       const toDate =
-        value.toDate.day +
-        '/' +
-        value.toDate.month +
-        '/' +
-        value.toDate.year;
+        value.toDate.day + '/' + value.toDate.month + '/' + value.toDate.year;
       this.filters.push({
         label: toDate,
         value: { toDate: this.parseDate(value.toDate) },
