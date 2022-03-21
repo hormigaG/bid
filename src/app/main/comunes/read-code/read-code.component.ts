@@ -18,6 +18,28 @@ import { Events } from '../../../_services/events.service';
 import { ScanService } from '../../../_services/scan.service';
 import * as barcode from '../../../../assets/js/BarcodeReader/BarcodeReader.js';
 import { AlertService } from '../../../_services/alert.service';
+/*
+  TODO:
+
+  Ahora este componente emite un string y deeberia emitir un objeto
+  siempre emite code que es el codigo que lee
+  {code-> codigo}
+  otros atributos que puede emitir
+  - inputMethod -> desde donde lee (si lee desde el teclado o desde zebra o otro)
+  - Tipo de codigo (si es code 39 etc)
+  Y lo importante
+  -------------
+  unit -> unidad de medida (id de unidad de medida)
+  qty -> cantidad 
+  como se va a comportar esto 
+  Creamos el parametro identificador de mascara (parametro) -> !
+  
+  si el codido de barra que leemos comienza con el (!) identificador de mascara
+  hacemos un split('!')
+  si leo  585558858 -> {'code' :'585558858'}
+  si leo  !585558858!008!558 -> {'code' :'585558858', 'unit': 008, 'qty':558}
+*/
+
 @Component({
   selector: 'read-code',
   templateUrl: './read-code.component.html',
@@ -60,7 +82,6 @@ export class ReadCodeComponent implements OnInit {
       }
     }
     function onBarcodeDataReady(data, type, time) {
-      this.alertService.showAlert(data + ' ' + type + ' ' + time);
       self.searchByCode.emit(data);
     }
 
