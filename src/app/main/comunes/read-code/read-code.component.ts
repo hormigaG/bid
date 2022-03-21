@@ -113,7 +113,7 @@ export class ReadCodeComponent implements OnInit {
       search: ['', Validators.required],
     });
     let parent = this;
-    this.startScan();
+    //this.startScan();
 
     /* 
     this.HoneyService.BarcodeData.subscribe((res: any) => {

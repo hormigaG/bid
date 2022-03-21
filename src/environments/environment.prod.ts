@@ -4,9 +4,9 @@
 
 export const environment = {
   production: true,
-  odoo_server: "https://train-bidargentinasa-20-10-2.nubeadhoc.com",
+  odoo_server: "https://train-bidargentinasa-14-03-1.nubeadhoc.com/",
   //db: 'testing.casagoro.com.ar',
-  db: 'train-bidargentinasa-20-10-2',
+  db: 'train-bidargentinasa-14-03-1',
   password:"",
   user: "",
 };
