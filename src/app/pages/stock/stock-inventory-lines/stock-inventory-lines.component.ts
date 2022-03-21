@@ -9,6 +9,7 @@ import { StockService } from '../../../_services/stock.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { AlertService } from '../../../_services/alert.service';
 @Component({
   selector: 'app-stock-inventory-lines',
   templateUrl: './stock-inventory-lines.component.html',
@@ -44,7 +45,8 @@ export class StockInventoryLinesComponent implements OnInit {
     private stockService: StockService,
     private route: ActivatedRoute,
     private router: Router,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private alertService: AlertService
   ) {}
   searchByCode(code) {
     const elemento = this.locations.find((e) => e.name === code);
@@ -53,7 +55,9 @@ export class StockInventoryLinesComponent implements OnInit {
         `/stock-inventory/${this.stock_id}/${elemento.id}`,
       ]); // navigate to other page
     } else {
-      alert('La ubicación escaneada no corresponde al control de inventario');
+      this.alertService.showAlert(
+        'La ubicación escaneada no corresponde al control de inventario'
+      );
     }
   }
   ngOnInit(): void {

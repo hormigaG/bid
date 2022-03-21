@@ -3,7 +3,7 @@ import { LogService } from '../_services/log.service';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
-
+import { AlertService } from '../_services/alert.service';
 declare var cordova: any;
 
 function _window(): any {
@@ -17,7 +17,7 @@ export class HoneyService {
   BarcodeData = new BehaviorSubject(null); //la declaro como observable
   constructor(
     private ref: ApplicationRef,
-
+    private alertService: AlertService,
     private logService: LogService
   ) {}
 
@@ -31,7 +31,7 @@ export class HoneyService {
           self.ref.tick();
         },
         (error) => {
-          alert(error);
+          this.alertService.showAlert(error);
         }
       );
     }

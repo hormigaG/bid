@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { OdooRPCService } from './odoo-rpc.service';
 import { Observable } from 'rxjs';
-
+import {AlertService} from '../_services/alert.service'
 @Injectable({
   providedIn: 'root',
 })
 export class StockService {
-  constructor(public odooRPC: OdooRPCService) {}
+  constructor(public odooRPC: OdooRPCService, private alertService: AlertService) {}
 
   private getQuantityStorage(storage) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
@@ -15,7 +15,7 @@ export class StockService {
     }
     return [];
   }
-
+  
   controlInventory() {
     const controlInventory = this.getQuantityStorage('stock_inventory');
     if (controlInventory.stock_inventory.length) {
@@ -58,7 +58,7 @@ export class StockService {
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
@@ -82,7 +82,7 @@ export class StockService {
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
@@ -462,7 +462,7 @@ export class StockService {
             });
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
@@ -514,7 +514,7 @@ export class StockService {
             observer.complete();
           })
           .catch((err) => {
-            alert(err);
+            this.alertService.showAlert(err);
           });
       } else {
         this.odooRPC
@@ -524,7 +524,7 @@ export class StockService {
             observer.complete();
           })
           .catch((err) => {
-            alert(err);
+            this.alertService.showAlert(err);
           });
       }
     });
@@ -563,7 +563,7 @@ export class StockService {
         })
         .catch((err) => {
           console.log(err);
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
@@ -632,7 +632,7 @@ export class StockService {
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
 

@@ -9,6 +9,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import {AlertService} from '../../../_services/alert.service'
 @Component({
   selector: 'app-mov-int-detail-product',
   templateUrl: './mov-int-detail-product.component.html',
@@ -30,7 +31,8 @@ export class MovIntDetailProductComponent implements OnInit {
     private route: ActivatedRoute,
     private stockService: StockService,
     private modalService: NgbModal,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +56,7 @@ export class MovIntDetailProductComponent implements OnInit {
       );
     });
     if (line == -1) {
-      alert(code + ' NO diponible');
+      this.alertService.showAlert(code + ' NO diponible');
     } else {
       let openModal = this.modalService.hasOpenModals();
       this.active_index = line;

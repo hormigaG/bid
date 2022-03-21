@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LogService } from '../../../_services/log.service';
 import * as moment from 'moment';
+import {AlertService} from '../../../_services/alert.service'
 @Component({
   selector: 'log',
   templateUrl: './log.component.html',
@@ -8,7 +9,7 @@ import * as moment from 'moment';
 })
 export class LogComponent implements OnInit {
   log: [];
-  constructor(private logService: LogService) {}
+  constructor(private logService: LogService, private alertService: AlertService) {}
 
   ngOnInit(): void {
     this.log = this.logService.getLog();
@@ -39,15 +40,16 @@ export class LogComponent implements OnInit {
       'YYYY-MM-DD HH:mm:ss'
     )}&log=${logAux}`;
     var request = new XMLHttpRequest();
+    var self = this
     request.open('POST', 'https://hormigag.ar/whm_logger/new', true);
     //request.open('POST', '/odoo/whm_logger/new', true);
     request.ontimeout = function () {
-      alert('Timeout');
+      self.alertService.showAlert('Timeout');
     };
 
     request.onerror = function (err) {
       console.log(err);
-      alert(JSON.stringify(err));
+      self.alertService.showAlert(JSON.stringify(err));
     };
 
     request.setRequestHeader(
@@ -58,9 +60,9 @@ export class LogComponent implements OnInit {
     request.onreadystatechange = function () {
       if (request.readyState == 4) {
         if (request.status == 200) {
-          alert('Log enviado ');
+          self.alertService.showAlert('Log enviado ');
         } else {
-          alert('error status ' + request.status);
+          self.alertService.showAlert('error status ' + request.status);
         }
       }
     };

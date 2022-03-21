@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Location } from '@angular/common';
 import { ConfigService } from '../../_services/config.service';
 import { StockService } from '../../_services/stock.service';
-
+import { AlertService } from '../../_services/alert.service';
 @Component({
   selector: 'app-zpl-file',
   templateUrl: './zpl-file.component.html',
@@ -26,8 +26,8 @@ export class ZplFileComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private location: Location,
     public ConfigService: ConfigService,
-    public StockService: StockService
-
+    public StockService: StockService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -37,42 +37,43 @@ export class ZplFileComponent implements OnInit {
     this.move_id = this.route['params']['value']['move_id'];
 
     this.qty = Number(this.route['params']['value']['qty']);
-    if (this.product_id){
+    if (this.product_id) {
       this.ProductService.readProduct(this.product_id).subscribe((res) => {
         this.product = res['records'][0];
         this.spinner = false;
-      });      
-    }
-    else if (this.move_id){
+      });
+    } else if (this.move_id) {
       this.StockService.getMoveById(Number(this.move_id)).subscribe((res) => {
         console.log(res);
         let name = res[0]['product_id'][1];
 
         this.product = {
-            name: name,
-            default_code:name.split(']')[0].replace('[',''),
-            product_uom_id:res[0]['product_uom'],
-          }
+          name: name,
+          default_code: name.split(']')[0].replace('[', ''),
+          product_uom_id: res[0]['product_uom'],
+        };
 
         this.spinner = false;
-      });      
+      });
     }
-
   }
-
 
   sendZPL() {
     this.spinner = true;
     let self = this;
     let data = '';
-    let zpl = '^XA ~TA000 ~JSN ^LT0 ^MNW ^MTT ^PON ^PMN ^LH0,0 ^JMA ^PR8,8 ~SD15 ^JUS ^LRN ^CI27 ^PA0,1,1,0 ^XZ ^XA ^MMT ^PW609 ^LL203 ^LS0 ^FT11,36^A0N,16,16^FH^CI28^FD' + 
-    'product_name' + 
-    '^FS^CI27 ^BY2,2,81^FT36,142^BCN,,Y,N  ^FH^FD>:' + 
-    'default_code' + '^FS^PQ1,0,1,Y' +
-    '^FT11,200^A0N,28,28^FH^CI28^FDUnidad:'+ 'product_uom_id' +'^FS^CI27 ^XZ';
-    zpl = zpl.replace('product_name',this.product['name'])
-    zpl = zpl.replace('default_code',this.product['default_code'])
-    zpl = zpl.replace('product_uom_id',this.product['product_uom_id'][1])
+    let zpl =
+      '^XA ~TA000 ~JSN ^LT0 ^MNW ^MTT ^PON ^PMN ^LH0,0 ^JMA ^PR8,8 ~SD15 ^JUS ^LRN ^CI27 ^PA0,1,1,0 ^XZ ^XA ^MMT ^PW609 ^LL203 ^LS0 ^FT11,36^A0N,16,16^FH^CI28^FD' +
+      'product_name' +
+      '^FS^CI27 ^BY2,2,81^FT36,142^BCN,,Y,N  ^FH^FD>:' +
+      'default_code' +
+      '^FS^PQ1,0,1,Y' +
+      '^FT11,200^A0N,28,28^FH^CI28^FDUnidad:' +
+      'product_uom_id' +
+      '^FS^CI27 ^XZ';
+    zpl = zpl.replace('product_name', this.product['name']);
+    zpl = zpl.replace('default_code', this.product['default_code']);
+    zpl = zpl.replace('product_uom_id', this.product['product_uom_id'][1]);
 
     console.log(zpl);
     for (let i = 0; i < this.qty; i++) {
@@ -82,13 +83,13 @@ export class ZplFileComponent implements OnInit {
     var request = new XMLHttpRequest();
     request.ontimeout = function () {
       self.spinner = false;
-      alert('Timeout');
+      self.alertService.showAlert('Timeout');
     };
 
     request.onerror = function (err) {
       self.spinner = false;
       console.log(err);
-      alert(JSON.stringify(err));
+      self.alertService.showAlert(JSON.stringify(err));
     };
     request.onreadystatechange = function () {
       if (request.readyState == 4) {
@@ -97,7 +98,7 @@ export class ZplFileComponent implements OnInit {
           self.back();
         } else {
           self.spinner = false;
-          alert('error status ' + request.status);
+          self.alertService.showAlert('error status ' + request.status);
         }
       }
     };

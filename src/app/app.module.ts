@@ -42,6 +42,7 @@ import { StockInventoryComponent } from './pages/stock/stock-inventory/stock-inv
 import { StockInventoryLinesComponent } from './pages/stock/stock-inventory-lines/stock-inventory-lines.component';
 import { StockInventoryLinesProductComponent } from './pages/stock/stock-inventory-lines-product/stock-inventory-lines-product.component';
 import { TestBarCodeComponent } from './pages/test-bar-code/test-bar-code.component';
+import { AlertComponent } from './main/comunes/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { TestBarCodeComponent } from './pages/test-bar-code/test-bar-code.compon
     StockInventoryLinesComponent,
     StockInventoryLinesProductComponent,
     TestBarCodeComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,

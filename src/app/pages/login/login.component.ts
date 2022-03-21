@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
-import { OdooRPCService } from "../../_services/odoo-rpc.service";
-import { environment } from "../../../environments/environment";
-
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { OdooRPCService } from '../../_services/odoo-rpc.service';
+import { environment } from '../../../environments/environment';
+import { AlertService } from '../../_services/alert.service';
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   authForm: FormGroup;
@@ -24,26 +24,26 @@ export class LoginComponent implements OnInit {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    public odooRPC: OdooRPCService
+    public odooRPC: OdooRPCService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
     this.authForm = this.formBuilder.group({
-      email: ["", Validators.required],
-      password: ["", Validators.required],
+      email: ['', Validators.required],
+      password: ['', Validators.required],
     });
 
     this.server_url = localStorage.getItem('url');
     this.server_db = localStorage.getItem('dbName');
-    if (!localStorage.getItem('url') || !localStorage.getItem('dbName')){
-      this.router.navigate(["/db"]);
-
+    if (!localStorage.getItem('url') || !localStorage.getItem('dbName')) {
+      this.router.navigate(['/db']);
     }
     this.odooRPC.isLoggedIn().then((res) => {
       this.isLogged = res;
     });
   }
-  
+
   logout() {
     this.odooRPC.logout();
     this.isLogged = false;
@@ -63,11 +63,11 @@ export class LoginComponent implements OnInit {
       .login(localStorage.getItem('dbName'), username, password)
       .then((res) => {
         this.isLogged = res;
-        this.router.navigate(["/"]);
+        this.router.navigate(['/']);
       })
       .catch((err) => {
         console.log(err);
-        alert(err.message);
+        this.alertService.showAlert(err.message);
       });
   }
 }

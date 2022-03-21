@@ -14,7 +14,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { convertCompilerOptionsFromJson } from 'typescript';
-
+import {AlertService} from '../../../_services/alert.service'
 @Component({
   selector: 'app-stock-inventory-lines-product',
   templateUrl: './stock-inventory-lines-product.component.html',
@@ -50,7 +50,8 @@ export class StockInventoryLinesProductComponent implements OnInit {
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private changeDetectorRef: ChangeDetectorRef,
-    private config: NgbModalConfig
+    private config: NgbModalConfig,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -146,7 +147,7 @@ export class StockInventoryLinesProductComponent implements OnInit {
               this.getStockInventory(leaf);
             });
         } else {
-          alert('Producto no encontrado');
+          this.alertService.showAlert('Producto no encontrado');
         }
       });
     } else {
