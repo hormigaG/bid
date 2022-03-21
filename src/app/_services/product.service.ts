@@ -1,53 +1,58 @@
-import { Injectable } from "@angular/core";
-import { OdooRPCService } from "./odoo-rpc.service";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { OdooRPCService } from './odoo-rpc.service';
+import { Observable } from 'rxjs';
+import { AlertService } from '../_services/alert.service';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ProductService {
-  constructor(public odooRPC: OdooRPCService) {}
+  constructor(
+    public odooRPC: OdooRPCService,
+    private alertService: AlertService
+  ) {}
 
   readProduct(productId) {
     const transaction$ = new Observable((observer) => {
-      const leaf = [["id", "=", productId]];
+      const leaf = [['id', '=', productId]];
       this.odooRPC
         .searchRead(
-          "product.product",
+          'product.product',
           leaf,
-          ["name", "display_name", "default_code", "description","barcode"],
-          1,0,{"lang": "es_AR", 'display_default_code': false}
+          ['name', 'display_name', 'default_code', 'description', 'barcode'],
+          1,
+          0,
+          { lang: 'es_AR', display_default_code: false }
         )
         .then((res) => {
           observer.next(res);
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
   }
 
-
-
-
   searchByCode(code) {
     const transaction$ = new Observable((observer) => {
-      const leaf = ["|", ["default_code", "=", code], ["barcode", "=", code]];
+      const leaf = ['|', ['default_code', '=', code], ['barcode', '=', code]];
       this.odooRPC
         .searchRead(
-          "product.product",
+          'product.product',
           leaf,
-          ["name", "display_name", "default_code", "description","barcode"],
-          1,0,{"lang": "es_AR", 'display_default_code': false}
+          ['name', 'display_name', 'default_code', 'description', 'barcode'],
+          1,
+          0,
+          { lang: 'es_AR', display_default_code: false }
         )
         .then((res) => {
           observer.next(res);
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
@@ -60,7 +65,7 @@ export class ProductService {
         prlsIds.push(pricelist_ids[list].id);
       }
       this.odooRPC
-        .call("product.pricelist", "price_get", [prlsIds, product_id, 1], {})
+        .call('product.pricelist', 'price_get', [prlsIds, product_id, 1], {})
         .then((res) => {
           for (let list in pricelist_ids) {
             observer.next({
@@ -73,27 +78,26 @@ export class ProductService {
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
   }
 
-
   get_stock(product_id) {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
         .searchRead(
-          "stock.availability",
-          [["product_id", "=", product_id]],
-          ["virtual_available", "warehouse_id"]
+          'stock.availability',
+          [['product_id', '=', product_id]],
+          ['virtual_available', 'warehouse_id']
         )
         .then((res) => {
           observer.next(res);
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
@@ -101,41 +105,38 @@ export class ProductService {
   get_pricelists() {
     const transaction$ = new Observable((observer) => {
       this.odooRPC
-        .searchRead(
-          "product.pricelist",
-          [["selectable", "=", true]],
-          ["name"]
-        )
+        .searchRead('product.pricelist', [['selectable', '=', true]], ['name'])
         .then((res) => {
           observer.next(res);
           observer.complete();
         })
         .catch((err) => {
-          alert(err);
-        });
-    });
-    return transaction$;
-  } 
-  searchByTmplId(id) {
-    const transaction$ = new Observable((observer) => {
-      this.odooRPC
-        .searchRead(
-          "product.product",
-          [['product_tmpl_id', '=', id]],
-          ["name", "display_name", "default_code", "description","barcode"],
-          1,0,{"lang": "es_AR", 'display_default_code': false}
-        )
-        .then((res) => {
-          observer.next(res);
-          observer.complete();
-        })
-        .catch((err) => {
-          alert(err);
+          this.alertService.showAlert(err);
         });
     });
     return transaction$;
   }
-
+  searchByTmplId(id) {
+    const transaction$ = new Observable((observer) => {
+      this.odooRPC
+        .searchRead(
+          'product.product',
+          [['product_tmpl_id', '=', id]],
+          ['name', 'display_name', 'default_code', 'description', 'barcode'],
+          1,
+          0,
+          { lang: 'es_AR', display_default_code: false }
+        )
+        .then((res) => {
+          observer.next(res);
+          observer.complete();
+        })
+        .catch((err) => {
+          this.alertService.showAlert(err);
+        });
+    });
+    return transaction$;
+  }
 }
 /*  getDetail(item) {
     if (item.detailed) {

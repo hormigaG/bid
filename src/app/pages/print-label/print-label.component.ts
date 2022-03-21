@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Events } from "../../_services/events.service";
 //import { BarcodeProvider } from "../../_services/intent.service";
 import { ConfigService } from "../../_services/config.service";
+import { AlertService } from "../../_services/alert.service";
 
 function _window(): any {
   // return the global native browser window object
@@ -59,7 +60,8 @@ export class PrintLabelComponent implements OnInit {
     public PrinterService: PrinterService,
     public events: Events,
     private changeDetectorRef: ChangeDetectorRef,
-    public ConfigService: ConfigService
+    public ConfigService: ConfigService,
+    private alertService: AlertService
   ) {
 
     
@@ -160,7 +162,7 @@ export class PrintLabelComponent implements OnInit {
         parent.product['prices'] = [];
         parent.load_price(res["records"][0]["id"]);
       } else {
-        alert("Codigo invalido");
+        this.alertService.showAlert("Codigo invalido");
         this.spinner = false;
       }
     });

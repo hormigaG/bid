@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
-
+import { AlertService } from '../../../_services/alert.service';
 @Component({
   selector: 'app-mov-int-detail',
   templateUrl: './mov-int-detail.component.html',
@@ -25,7 +25,8 @@ export class MovIntDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private stockService: StockService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -104,7 +105,7 @@ export class MovIntDetailComponent implements OnInit {
       let children_names = childrens.map((e) => {
         return e.name;
       });
-      alert(
+      this.alertService.showAlert(
         'Ubicación incorrecta "' +
           code +
           '"\n disponibles: ' +
@@ -162,9 +163,9 @@ export class MovIntDetailComponent implements OnInit {
       .button_validate(this.moves[0]['picking_id'][0])
       .subscribe((r) => {
         if (r) {
-          alert('No se pudo validar el picking');
+          this.alertService.showAlert('No se pudo validar el picking');
         } else {
-          alert('Exito al validar el picking');
+          this.alertService.showAlert('Exito al validar el picking');
           this.router.navigate(['/picking-selector']);
         }
       });

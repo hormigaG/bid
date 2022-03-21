@@ -20,5 +20,4 @@ let onDeviceReady = () => {
 document.addEventListener('deviceready', onDeviceReady, false);
 
 function onResume() {
-	//alert('resume');
 }

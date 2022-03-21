@@ -1,0 +1,8 @@
+<div class="customAlert row" *ngIf="alertService.getStatus()">
+  <div class="col-12">
+    {{ alertService.getMsg() }}
+  </div>
+  <div class="col-12 text-center">
+    <button class="btn btn-primary" (click)="alertService.hiddeAlert()">ACEPTAR</button>
+  </div>
+</div>

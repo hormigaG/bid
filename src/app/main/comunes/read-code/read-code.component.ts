@@ -17,6 +17,7 @@ import { HoneyService } from '../../../_services/honey.service';
 import { Events } from '../../../_services/events.service';
 import { ScanService } from '../../../_services/scan.service';
 import * as barcode from '../../../../assets/js/BarcodeReader/BarcodeReader.js';
+import { AlertService } from '../../../_services/alert.service';
 @Component({
   selector: 'read-code',
   templateUrl: './read-code.component.html',
@@ -28,7 +29,7 @@ export class ReadCodeComponent implements OnInit {
   textBus: string = '';
   showLog: boolean = false;
   searchForm: FormGroup;
-  log: string='';
+  log: string = '';
   @ViewChild('search') searchElement: ElementRef;
 
   constructor(
@@ -38,7 +39,8 @@ export class ReadCodeComponent implements OnInit {
     //public barcodeProvider: BarcodeProvider,
     private changeDetectorRef: ChangeDetectorRef,
     public events: Events,
-    private scanService: ScanService
+    private scanService: ScanService,
+    private alertService: AlertService
   ) {}
   startScan() {
     var defaultReader;
@@ -58,10 +60,10 @@ export class ReadCodeComponent implements OnInit {
       }
     }
     function onBarcodeDataReady(data, type, time) {
-      alert(data + ' ' + type + ' ' + time);
+      this.alertService.showAlert(data + ' ' + type + ' ' + time);
       self.searchByCode.emit(data);
     }
-  
+
     function onSetBufferedComplete(result) {
       if (result.status !== 0) {
       }
@@ -104,7 +106,6 @@ export class ReadCodeComponent implements OnInit {
       defaultReader = new barcode.BarcodeReader(null, onBarcodeReaderComplete);
     }
   }
-  
 
   ngOnInit(): void {
     this.inputMethod = this.ConfigService.params.scanMethod;

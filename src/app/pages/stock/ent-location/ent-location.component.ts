@@ -16,7 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { StockService } from '../../../_services/stock.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
+import { AlertService } from '../../../_services/alert.service';
 @Component({
   selector: 'app-ent-location',
   templateUrl: './ent-location.component.html',
@@ -55,7 +55,8 @@ export class EntLocationComponent implements OnInit {
     private route: ActivatedRoute,
     public stockService: StockService,
     private modalService: NgbModal,
-    public Router: Router
+    public Router: Router,
+    private alertService: AlertService
   ) {
     /*  */
   }
@@ -190,7 +191,7 @@ export class EntLocationComponent implements OnInit {
     this.textBus = '';
 
     if (line == -1) {
-      alert(code + ' NO diponible');
+      this.alertService.showAlert(code + ' NO diponible');
     } else {
       let openModal = this.modalService.hasOpenModals();
       this.active_index = line;
@@ -296,7 +297,7 @@ export class EntLocationComponent implements OnInit {
 
       this.stockService.button_validate(picking_id).subscribe((res: any) => {
         if (res.name) {
-          alert(res.name);
+          this.alertService.showAlert(res.name);
         }
         this.getAssignedMoves();
       });

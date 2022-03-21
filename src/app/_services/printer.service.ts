@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 //declare let _window().BTPrinter: any;
 declare let cordova: any;
 declare let BTPrinter: any;
-
+import { AlertService } from '../_services/alert.service';
 import { Observable } from 'rxjs';
 //https://medium.com/@EliaPalme/how-to-wrap-an-angular-app-with-apache-cordova-909024a25d79
 function _window(): any {
@@ -17,7 +17,7 @@ export class PrinterService {
   printers: any = [];
   selected_printer: string;
 
-  constructor() {}
+  constructor(private alertService: AlertService) {}
 
   searchPrinters() {
     const printOBS = new Observable((observer) => {
@@ -47,7 +47,7 @@ export class PrinterService {
           observer.complete();
         },
         function (err) {
-          alert('Err:' + err);
+          this.alertService.showAlert('Err:' + err);
           observer.error(err);
         },
         PrinterName
@@ -96,7 +96,7 @@ export class PrinterService {
           observer.complete();
         },
         function (err) {
-          alert('Err:' + err);
+          this.alertService.showAlert('Err:' + err);
           observer.error(err);
         }
       );
