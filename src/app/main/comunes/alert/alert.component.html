@@ -1,4 +1,5 @@
-<div class="customAlert row" *ngIf="alertService.getStatus()">
+<block-ui *ngIf="alertService.getStatus()">
+<div class="customAlert row" >
   <div class="col-12">
     {{ alertService.getMsg() }}
   </div>
@@ -6,3 +7,4 @@
     <button class="btn btn-primary" (click)="alertService.hiddeAlert()">ACEPTAR</button>
   </div>
 </div>
+</block-ui>
