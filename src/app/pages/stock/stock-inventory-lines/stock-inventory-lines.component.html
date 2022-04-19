@@ -40,7 +40,10 @@
       class="text-left list-group-item"
       routerLink="/stock-inventory/{{ stock_id }}/{{ item.id }}"
     >
-      <strong class="h5">{{ item.name }}</strong> <br /></li
+      <strong class="h5">{{
+        item.display_name ? item.display_name : item.name
+      }}</strong>
+      <br /></li
   ></ng-container>
 </ul>
 <!-- <div class="row text-center">

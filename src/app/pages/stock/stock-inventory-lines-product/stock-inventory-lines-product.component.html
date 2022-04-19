@@ -34,8 +34,7 @@
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed">
       <div class="pb-0">
         <div class="row pb-0">
-          <div class="col-2">
-          </div>
+          <div class="col-2"></div>
           <div class="col-2">
             <button
               type="button"
@@ -55,14 +54,13 @@
         </div>
       </div>
     </div>
-    <div class="text-left">
-      
-    </div>
+    <div class="text-left"></div>
+    <span class="h5"> {{ location.name }} </span> -
+    <kbd class="font-italic"> {{ location.display_name }}</kbd>
+    <br />
     <ul class="list-group">
       <ng-container *ngFor="let item of stock_inventory_lines; let i = index">
-        <li
-          class="text-left list-group-item"
-        >
+        <li class="text-left list-group-item">
           <div class="row">
             <div class="text-center col-2 pt-0 pb-0 pl-0 pr-0">
               <div
@@ -78,23 +76,16 @@
                 {{ item["product_qty"] }}<br />
                 <small class="text-bold">Scan</small>
               </div>
-             <!--  <div>
+              <!--  <div>
                 {{ item["theoretical_qty"] }}
                 <small class="">Cantidad</small>
               </div> -->
             </div>
             <div class="col-8">
               <div>{{ item["product_id"][1] }}</div>
+              <strong>{{ item["product_uom_id"][1] }}</strong>
             </div>
             <div class="col-2">
-              <button
-                type="button"
-                (click)="print(item)"
-                [ngClass]="{ btn: true }"
-              >
-                <i class="fa fa-print"></i>
-              </button>
-
               <button
                 type="button"
                 (click)="openMoveLineModal(i)"
@@ -168,30 +159,16 @@
         </div>
 
         <div>
-          Real/Total:
+          Cantidad:
           <strong>{{
             stock_inventory_lines[active_index]["product_qty"]
-          }}</strong
-          >/
-          <strong>{{
-            stock_inventory_lines[active_index]["reserved_availability"]
-          }}</strong
-          >(
-          <strong>{{
-            stock_inventory_lines[active_index]["product_uom_qty"]
           }}</strong>
-          )
         </div>
-        <div>
-          Origen:
-          <strong>{{ stock_inventory_lines[active_index]["origin"] }}</strong>
-        </div>
-
         <div *ngIf="stock_inventory_lines[active_index]['barcode']">
           Codigo de barra:
           <strong>{{ stock_inventory_lines[active_index]["barcode"] }}</strong>
         </div>
-        <div>
+        <div *ngIf="stock_inventory_lines[active_index]['default_code']">
           Codigo interno:
           <strong>{{
             stock_inventory_lines[active_index]["default_code"]

@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { OdooRPCService } from './odoo-rpc.service';
 import { Observable } from 'rxjs';
-import {AlertService} from '../_services/alert.service'
+import { AlertService } from '../_services/alert.service';
 @Injectable({
   providedIn: 'root',
 })
 export class StockService {
-  constructor(public odooRPC: OdooRPCService, private alertService: AlertService) {}
+  constructor(
+    public odooRPC: OdooRPCService,
+    private alertService: AlertService
+  ) {}
 
   private getQuantityStorage(storage) {
     let scanned_qty_array = JSON.parse(localStorage.getItem('scanned_qty'));
@@ -15,7 +18,7 @@ export class StockService {
     }
     return [];
   }
-  
+
   controlInventory() {
     const controlInventory = this.getQuantityStorage('stock_inventory');
     if (controlInventory.stock_inventory.length) {
@@ -72,6 +75,30 @@ export class StockService {
           'stock.location',
           [['name', '=', code]],
           ['name', 'barcode'],
+          1,
+          0
+        )
+        .then((res) => {
+          observer.next(res);
+          observer.complete();
+
+          observer.complete();
+        })
+        .catch((err) => {
+          this.alertService.showAlert(err);
+        });
+    });
+    return transaction$;
+  }
+  getLocationById(idLocation) {
+    const transaction$ = new Observable((observer) => {
+      var prlsIds: any = [];
+
+      this.odooRPC
+        .searchRead(
+          'stock.location',
+          [['id', '=', idLocation]],
+          ['name', 'display_name'],
           1,
           0
         )
@@ -248,7 +275,7 @@ export class StockService {
             return move['location_id'][0];
           });
           this.odooRPC
-            .read('stock.location', locations_ids, ['name'])
+            .read('stock.location', locations_ids, ['name', 'display_name'])
             .then((res_locations) => {
               observer.next(res_locations);
               observer.complete();

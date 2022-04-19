@@ -14,7 +14,8 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { convertCompilerOptionsFromJson } from 'typescript';
-import {AlertService} from '../../../_services/alert.service'
+import { AlertService } from '../../../_services/alert.service';
+
 @Component({
   selector: 'app-stock-inventory-lines-product',
   templateUrl: './stock-inventory-lines-product.component.html',
@@ -42,6 +43,7 @@ export class StockInventoryLinesProductComponent implements OnInit {
   showLog: boolean = false;
   lot_stock_id: number;
   op: string;
+  location: any;
   filters: any = [];
   @ViewChild('search') searchElement: ElementRef;
   @ViewChild('moveLineModal') moveLineModal: ElementRef;
@@ -61,10 +63,10 @@ export class StockInventoryLinesProductComponent implements OnInit {
     this.config.keyboard = false;
 
     let leaf = [];
-
     leaf.push(['inventory_id', '=', this.stock_id]);
     leaf.push(['location_id', '=', this.location_id]);
     this.getStockInventory(leaf);
+    this.getUbication(this.location_id);
   }
   getStockInventory(leaf) {
     this.stockService.getStockInventoryLine(leaf).subscribe((res) => {
@@ -77,6 +79,11 @@ export class StockInventoryLinesProductComponent implements OnInit {
           element['product_qty']
         );
       });
+    });
+  }
+  getUbication(ubication) {
+    this.stockService.getLocationById(ubication).subscribe((res: any) => {
+      this.location = res.records[0];
     });
   }
   openMoveLineModal(line) {
