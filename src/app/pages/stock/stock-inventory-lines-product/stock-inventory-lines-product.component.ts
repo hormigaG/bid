@@ -203,6 +203,7 @@ export class StockInventoryLinesProductComponent implements OnInit {
       let message =
         'Esta por confirmar mas items de los esperados ¿esta seguro?';
       if (!window.confirm(message)) {
+        //TODO: Cambiar por algo que no quite foco
         this.stock_inventory_lines[line]['scanned_qty'] -= qty;
         this.stock_inventory_lines[line]['product_qty'] -= qty;
         this.addToLocalStorage(

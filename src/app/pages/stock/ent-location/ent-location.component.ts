@@ -245,6 +245,7 @@ export class EntLocationComponent implements OnInit {
       let message =
         'Esta por confirmar mas items de los esperados ¿esta seguro?';
       if (!window.confirm(message)) {
+         //TODO: Cambiar por algo que no quite foco
         this.moves[line]['scanned_qty'] -= qty;
         this.moves[line]['quantity_done'] -= qty;
         this.addToLocalStorage('incoming', this.moves[line], -qty);
