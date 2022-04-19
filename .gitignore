@@ -51,3 +51,4 @@ Thumbs.db
 src/environments/*
 *build.json
 proxy.conf.json
+proxy.conf.json
