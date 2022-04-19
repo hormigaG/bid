@@ -46,6 +46,7 @@ testem.log
 Thumbs.db
 
 #dev 
+.proxy.conf.json
 *proxy.conf.json
 src/environments/*
 *build.json
